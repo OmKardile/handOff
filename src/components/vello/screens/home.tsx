@@ -14,6 +14,7 @@ import {
   Copy,
   Check,
   ChevronRight,
+  FileText,
 } from "lucide-react";
 import { useVello } from "@/lib/store";
 import { useView } from "../view-context";
@@ -21,6 +22,7 @@ import { QrPreview } from "../qr-preview";
 import { Wordmark } from "../app-shell";
 import { getQrSizeInfo } from "@/lib/qr";
 import { getQrPayload } from "@/lib/qr";
+import { getFieldBytes, getTotalBytes, formatContactText } from "@/lib/qr-insights";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { QrReveal, Reveal } from "../motion";
@@ -173,6 +175,9 @@ export function HomeScreen() {
       </div>
       </Reveal>
 
+      {/* QR insights — byte breakdown */}
+      <QrInsights card={card} />
+
       {/* primary actions */}
       <Reveal delay={0.15}>
       <div className="mt-5 grid grid-cols-3 gap-2.5">
@@ -258,6 +263,20 @@ export function HomeScreen() {
             <ImageIcon className="h-3 w-3" />
             Copy image
           </button>
+          <button
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(formatContactText(card));
+                toast.success("Contact copied — paste into messages or notes");
+              } catch {
+                toast.error("Couldn't copy");
+              }
+            }}
+            className="no-tap flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <FileText className="h-3 w-3" />
+            Copy as text
+          </button>
         </div>
       </div>
       </Reveal>
@@ -342,5 +361,70 @@ function EmptyContactState({ onEdit }: { onEdit: () => void }) {
         <ChevronRight className="h-3 w-3" />
       </button>
     </div>
+  );
+}
+
+/** QR insights panel — byte breakdown by field, with a visual bar chart. */
+function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useVello.getState>["card"]> }) {
+  const { navigate } = useView();
+  const [expanded, setExpanded] = React.useState(false);
+  const fields = getFieldBytes(card);
+  const total = getTotalBytes(fields);
+  const maxField = Math.max(...fields.map((f) => f.bytes), 1);
+
+  if (total === 0) return null;
+
+  return (
+    <Reveal delay={0.1}>
+      <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-card">
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="no-tap flex w-full items-center justify-between px-4 py-3"
+          aria-expanded={expanded}
+        >
+          <span className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-clay" />
+            <span className="text-[12px] font-semibold tracking-tight">QR breakdown</span>
+          </span>
+          <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
+            {total} bytes
+            <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", expanded && "rotate-90")} />
+          </span>
+        </button>
+        {expanded && (
+          <div className="space-y-2 border-t border-border px-4 py-3">
+            {fields
+              .slice()
+              .sort((a, b) => b.bytes - a.bytes)
+              .map((f) => (
+                <div key={f.id} className="flex items-center gap-2">
+                  <span className="w-16 flex-shrink-0 text-[10.5px] text-muted-foreground">{f.label}</span>
+                  <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className={cn(
+                        "absolute inset-y-0 left-0 rounded-full",
+                        f.id === "envelope" ? "bg-muted-foreground/40" : "bg-clay"
+                      )}
+                      style={{ width: `${(f.bytes / maxField) * 100}%` }}
+                    />
+                  </div>
+                  <span className="w-10 flex-shrink-0 text-right font-mono text-[10px] text-muted-foreground">
+                    {f.bytes}B
+                  </span>
+                </div>
+              ))}
+            <p className="pt-1 text-[10.5px] leading-relaxed text-muted-foreground">
+              The QR encodes a compact vCard. Fewer bytes = faster, more reliable scans.
+              <button
+                onClick={() => navigate("editor")}
+                className="ml-1 font-medium text-clay underline-offset-2 hover:underline"
+              >
+                Edit contents
+              </button>
+            </p>
+          </div>
+        )}
+      </div>
+    </Reveal>
   );
 }

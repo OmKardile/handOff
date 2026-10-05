@@ -457,3 +457,43 @@ Unresolved / next-phase:
 - Consider adding a "clear font favourites" option to the font picker (currently only style recents can be cleared)
 - Document the memories field in DATA_MODEL.md (it's optional/backwards-compatible)
 - Consider a "recents" indicator count badge on the studio tab
+
+---
+Task ID: CRON-8 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). Previous rounds added many features; CRON-7 fixed eraseAll localStorage clearing, added Clear recents + Copy image.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 93 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → privacy screen (6 fact cards + promise verified) → backup (export "Backup saved") → help center (8 categories). No console errors, no runtime errors.
+- NEW FEATURE: QR insights panel on the Home screen:
+  - Created src/lib/qr-insights.ts with getFieldBytes() (per-field byte breakdown of the compact vCard), getTotalBytes(), and formatContactText() (plain-text contact card)
+  - getFieldBytes computes the exact UTF-8 byte contribution of each field (envelope, name, company, title, phone, email, website, location, social links in the user's order), including CRLF and escaping
+  - Added a QrInsights component on the home screen below the hero card: a collapsible "QR breakdown" panel showing the total bytes, and when expanded, a horizontal bar chart of each field's byte contribution sorted largest-first
+  - The envelope bar uses muted-foreground (overhead), data fields use clay (the tunable part)
+  - Includes an "Edit contents" link that navigates to the editor
+  - Browser-verified: panel shows "60 bytes" for a minimal card (Aarav); expanded shows vCard envelope 37B + Name 23B sorted by size
+- NEW FEATURE: "Copy as text" button on the Home screen:
+  - Added a third copy button "Copy as text" (FileText icon) next to the existing "Copy vCard text" and "Copy image"
+  - Uses formatContactText() to build a plain-text contact card (name, title, company, phone, email, website, location, social links in order) and copies it to the clipboard via navigator.clipboard.writeText
+  - Shows "Contact copied — paste into messages or notes" toast
+  - Useful for pasting into chat apps/notes where a vCard isn't ideal
+  - Browser-verified: clicking showed "Contact copied" toast
+- STYLING POLISH: Home copy buttons now wrap in a flex-wrap container with three consistent pill buttons (vCard text, image, as text). The insights panel uses the same Reveal animation as the rest of the home screen.
+
+Stage Summary:
+- 2 new features (QR insights panel, Copy as text) + 1 styling polish (three-button copy row)
+- New files: src/lib/qr-insights.ts
+- Modified: src/components/vello/screens/home.tsx (QrInsights component + Copy as text button + FileText import)
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 94 files no network calls
+- Browser-verified: QR breakdown panel expands to show per-field byte bar chart, Copy as text shows "Contact copied" toast, no console errors
+- Screenshots saved: qa-qr-insights, qa-privacy-polish, qa-round8-{privacy,backup,help}
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- The QR insights bar chart could show percentage of total instead of raw bytes
+- Consider adding the insights panel to the editor (live update as toggles change)
+- Document the qr-insights module in TECHNICAL.md
+- Consider a "field count" summary (e.g. "6 fields included")
