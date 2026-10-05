@@ -13,6 +13,7 @@ import {
   X,
   Copy,
   Check,
+  ChevronRight,
 } from "lucide-react";
 import { useVello } from "@/lib/store";
 import { useView } from "../view-context";
@@ -22,6 +23,7 @@ import { getQrSizeInfo } from "@/lib/qr";
 import { getQrPayload } from "@/lib/qr";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { QrReveal, Reveal } from "../motion";
 
 export function HomeScreen() {
   const { card, style, photo, qrChanged, dismissQrChanged } = useVello();
@@ -32,6 +34,9 @@ export function HomeScreen() {
 
   const fullName = [card.firstName, card.lastName].filter(Boolean).join(" ");
   const size = getQrSizeInfo(card);
+  const hasContactDetails = Boolean(
+    card.phone || card.email || card.website || card.location || card.linkedin || card.instagram || card.xHandle
+  );
 
   async function copyVcard() {
     if (!card) return;
@@ -82,6 +87,7 @@ export function HomeScreen() {
       )}
 
       {/* hero card */}
+      <Reveal delay={0.05}>
       <div className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
         {/* name plate */}
         <div className="flex items-start justify-between gap-4 px-6 pt-6">
@@ -109,6 +115,7 @@ export function HomeScreen() {
 
         {/* QR */}
         <div className="flex justify-center px-6 py-6">
+          <QrReveal>
           <button
             onClick={() => navigate("fullscreen-qr")}
             className="no-tap group relative"
@@ -124,6 +131,7 @@ export function HomeScreen() {
               <Maximize2 className="h-5 w-5 text-foreground/40" />
             </div>
           </button>
+          </QrReveal>
         </div>
 
         {/* size meter */}
@@ -142,8 +150,10 @@ export function HomeScreen() {
           </span>
         </div>
       </div>
+      </Reveal>
 
       {/* primary actions */}
+      <Reveal delay={0.15}>
       <div className="mt-5 grid grid-cols-3 gap-2.5">
         <PrimaryAction
           icon={Maximize2}
@@ -162,8 +172,10 @@ export function HomeScreen() {
           onClick={() => navigate("studio")}
         />
       </div>
+      </Reveal>
 
       {/* secondary actions */}
+      <Reveal delay={0.22}>
       <div className="mt-3 grid grid-cols-3 gap-2.5">
         <SecondaryAction
           icon={Pencil}
@@ -181,21 +193,31 @@ export function HomeScreen() {
           onClick={() => navigate("wallpaper")}
         />
       </div>
+      </Reveal>
 
       {/* contact details */}
+      <Reveal delay={0.28}>
       <div className="mt-7 mb-4">
         <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           On your card
         </p>
-        <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-          <DetailRow label="Phone" value={card.phone} />
-          <DetailRow label="Email" value={card.email} />
-          <DetailRow label="Website" value={card.website.replace(/^https?:\/\//, "")} />
-          <DetailRow label="Location" value={card.location} />
-          {card.linkedin && <DetailRow label="LinkedIn" value={card.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, "@")} />}
-          {card.instagram && <DetailRow label="Instagram" value={card.instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//, "@")} />}
-          {card.xHandle && <DetailRow label="X" value={card.xHandle.replace(/^https?:\/\/(www\.)?x\.com\//, "@")} />}
-        </div>
+        {hasContactDetails ? (
+          <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+            <DetailRow label="Phone" value={card.phone} />
+            <DetailRow label="Email" value={card.email} />
+            <DetailRow label="Website" value={card.website.replace(/^https?:\/\//, "")} />
+            <DetailRow label="Location" value={card.location} />
+            {(card.socialOrder?.length === 4 ? card.socialOrder : ["linkedin", "instagram", "x", "whatsapp"]).map((id) => {
+              if (id === "linkedin" && card.linkedin) return <DetailRow key={id} label="LinkedIn" value={card.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, "@")} />;
+              if (id === "instagram" && card.instagram) return <DetailRow key={id} label="Instagram" value={card.instagram.replace(/^https?:\/\/(www\.)?instagram\.com\//, "@")} />;
+              if (id === "x" && card.xHandle) return <DetailRow key={id} label="X" value={card.xHandle.replace(/^https?:\/\/(www\.)?x\.com\//, "@")} />;
+              if (id === "whatsapp" && card.whatsapp) return <DetailRow key={id} label="WhatsApp" value={card.whatsapp} />;
+              return null;
+            })}
+          </div>
+        ) : (
+          <EmptyContactState onEdit={() => navigate("editor")} />
+        )}
         <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
           The QR contains a vCard. Stock phone cameras offer{" "}
           <span className="font-medium text-foreground">Add contact</span> — no app needed.
@@ -208,6 +230,7 @@ export function HomeScreen() {
           {copied ? "Copied" : "Copy vCard text"}
         </button>
       </div>
+      </Reveal>
     </div>
   );
 }
@@ -265,6 +288,29 @@ function DetailRow({ label, value }: { label: string; value: string }) {
     <div className="flex items-baseline justify-between gap-3 px-4 py-3">
       <span className="text-[12px] text-muted-foreground">{label}</span>
       <span className="truncate text-right text-[13px] text-foreground">{value}</span>
+    </div>
+  );
+}
+
+function EmptyContactState({ onEdit }: { onEdit: () => void }) {
+  return (
+    <div className="rounded-2xl border border-dashed border-border bg-card/50 px-4 py-8 text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+        <Pencil className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
+      </div>
+      <p className="mt-3 font-display text-[15px] font-medium tracking-tight">
+        No contact details yet
+      </p>
+      <p className="mx-auto mt-1 max-w-[15rem] text-[12px] leading-relaxed text-muted-foreground">
+        Add a phone, email or social link so people can reach you.
+      </p>
+      <button
+        onClick={onEdit}
+        className="no-tap mx-auto mt-3 flex items-center gap-1.5 rounded-full border border-border px-3.5 py-1.5 text-[12px] font-medium transition-colors hover:border-clay/50 hover:text-clay"
+      >
+        Add details
+        <ChevronRight className="h-3 w-3" />
+      </button>
     </div>
   );
 }

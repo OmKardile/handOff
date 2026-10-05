@@ -1,10 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { CreditCard, Palette, Settings as SettingsIcon } from "lucide-react";
+import { CreditCard, Palette, Settings as SettingsIcon, HelpCircle } from "lucide-react";
 import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
+import { HELP_GUIDES, setSelectedGuide } from "@/lib/help-content";
 
 const TABS = [
   { id: "card", label: "Card", icon: CreditCard, view: "home" as const },
@@ -77,10 +78,12 @@ export function ScreenHeader({
   title,
   onBack,
   action,
+  helpGuideId,
 }: {
   title: string;
   onBack?: () => void;
   action?: React.ReactNode;
+  helpGuideId?: string;
 }) {
   const { navigate } = useView();
   return (
@@ -99,6 +102,21 @@ export function ScreenHeader({
       <h1 className="flex-1 truncate font-display text-lg font-medium tracking-tight">
         {title}
       </h1>
+      {helpGuideId && (
+        <button
+          onClick={() => {
+            const g = HELP_GUIDES.find((x) => x.id === helpGuideId);
+            if (g) {
+              setSelectedGuide(g);
+              navigate("help-guide");
+            }
+          }}
+          className="no-tap flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+          aria-label={`Help with ${title}`}
+        >
+          <HelpCircle className="h-4 w-4" strokeWidth={1.75} />
+        </button>
+      )}
       {action}
     </header>
   );

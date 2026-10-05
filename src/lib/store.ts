@@ -63,6 +63,7 @@ export function makeEmptyCard(): Card {
       x: false,
       whatsapp: false,
     },
+    socialOrder: ["linkedin", "instagram", "x", "whatsapp"],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     qrFingerprint: "",

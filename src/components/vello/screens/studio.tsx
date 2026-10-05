@@ -13,6 +13,8 @@ import { getQrPayload } from "@/lib/qr";
 import type { ModuleShape, EyeShape, QrStyle, Card } from "@/shared/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useFontMemory } from "@/lib/font-memory";
+import { Heart, Clock } from "lucide-react";
 
 const SHAPES: { id: ModuleShape; label: string }[] = [
   { id: "square", label: "Square" },
@@ -39,6 +41,7 @@ export function StudioScreen() {
   const [scanOk, setScanOk] = React.useState<boolean | null>(null);
   const [scanMsg, setScanMsg] = React.useState<string>("");
   const checkRef = React.useRef<HTMLCanvasElement | null>(null);
+  const { remember: rememberFont } = useFontMemory();
 
   // scan check (debounced)
   React.useEffect(() => {
@@ -66,6 +69,7 @@ export function StudioScreen() {
       <ScreenHeader
         title="Style studio"
         onBack={() => navigate("home")}
+        helpGuideId="style-qr"
         action={
           <div className="flex gap-1.5">
             <button
@@ -335,20 +339,13 @@ export function StudioScreen() {
                   />
                 </ControlGroup>
                 <ControlGroup title="Font">
-                  <div className="grid grid-cols-2 gap-2">
-                    {QR_FONTS.map((f) => (
-                      <button
-                        key={f.family}
-                        onClick={() => setStyle((st) => ({ ...st, captionFont: f.family }))}
-                        className={cn("no-tap rounded-xl border px-3 py-3 text-left", style.captionFont === f.family ? "border-clay bg-clay/5" : "border-border")}
-                      >
-                        <p className="text-[11px] text-muted-foreground">{f.category}</p>
-                        <p className="text-[15px]" style={{ fontFamily: f.family }}>
-                          {f.label}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
+                  <FontPicker
+                    current={style.captionFont}
+                    onSelect={(family) => {
+                      setStyle((st) => ({ ...st, captionFont: family }));
+                      rememberFont(family);
+                    }}
+                  />
                 </ControlGroup>
               </>
             )}
@@ -484,6 +481,99 @@ function ColorRow({
         onChange={(e) => onChange(e.target.value)}
         className="no-tap w-24 rounded-lg border border-input bg-background px-2 py-2 text-[13px] font-mono outline-none focus:border-clay"
       />
+    </div>
+  );
+}
+
+function FontPicker({
+  current,
+  onSelect,
+}: {
+  current: string;
+  onSelect: (family: string) => void;
+}) {
+  const { recents, favs, toggleFav, isFav } = useFontMemory();
+
+  const recentFonts = recents
+    .map((f) => QR_FONTS.find((q) => q.family === f))
+    .filter(Boolean) as typeof QR_FONTS;
+  const favFonts = favs
+    .map((f) => QR_FONTS.find((q) => q.family === f))
+    .filter(Boolean) as typeof QR_FONTS;
+
+  return (
+    <div className="space-y-3">
+      {favFonts.length > 0 && (
+        <div>
+          <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-clay">
+            <Heart className="h-3 w-3 fill-clay" /> Favourites
+          </p>
+          <FontGrid fonts={favFonts} current={current} onSelect={onSelect} isFav={isFav} onToggleFav={toggleFav} />
+        </div>
+      )}
+      {recentFonts.length > 0 && (
+        <div>
+          <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <Clock className="h-3 w-3" /> Recent
+          </p>
+          <FontGrid fonts={recentFonts} current={current} onSelect={onSelect} isFav={isFav} onToggleFav={toggleFav} />
+        </div>
+      )}
+      <div>
+        {(favFonts.length > 0 || recentFonts.length > 0) && (
+          <p className="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">All</p>
+        )}
+        <FontGrid fonts={QR_FONTS} current={current} onSelect={onSelect} isFav={isFav} onToggleFav={toggleFav} />
+      </div>
+    </div>
+  );
+}
+
+function FontGrid({
+  fonts,
+  current,
+  onSelect,
+  isFav,
+  onToggleFav,
+}: {
+  fonts: typeof QR_FONTS;
+  current: string;
+  onSelect: (f: string) => void;
+  isFav: (f: string) => boolean;
+  onToggleFav: (f: string) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      {fonts.map((f) => {
+        const active = current === f.family;
+        const fav = isFav(f.family);
+        return (
+          <div
+            key={f.family}
+            className={cn(
+              "group relative rounded-xl border px-3 py-3 text-left transition-colors",
+              active ? "border-clay bg-clay/5" : "border-border"
+            )}
+          >
+            <button
+              onClick={() => onSelect(f.family)}
+              className="no-tap block w-full text-left"
+            >
+              <p className="text-[11px] text-muted-foreground">{f.category}</p>
+              <p className="text-[15px]" style={{ fontFamily: f.family }}>
+                {f.label}
+              </p>
+            </button>
+            <button
+              onClick={() => onToggleFav(f.family)}
+              className="no-tap absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground/50 opacity-0 transition-opacity hover:text-clay group-hover:opacity-100"
+              aria-label={fav ? "Remove favourite" : "Add favourite"}
+            >
+              <Heart className={cn("h-3 w-3", fav && "fill-clay text-clay")} />
+            </button>
+          </div>
+        );
+      })}
     </div>
   );
 }

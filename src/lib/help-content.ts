@@ -377,3 +377,12 @@ export function searchGuides(query: string): HelpGuide[] {
       g.steps.some((s) => s.text.toLowerCase().includes(q))
   );
 }
+
+/** Module-level store for the currently selected guide (shared with the app-shell help links). */
+const SELECTED: { current: HelpGuide | null } = { current: null };
+export function setSelectedGuide(g: HelpGuide | null) {
+  SELECTED.current = g;
+}
+export function getSelectedGuide(): HelpGuide | null {
+  return SELECTED.current;
+}

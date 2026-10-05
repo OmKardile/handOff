@@ -56,7 +56,7 @@ export function BackupScreen() {
 
   return (
     <div className="mx-auto max-w-md">
-      <ScreenHeader title="Backup & restore" onBack={() => navigate("settings")} />
+      <ScreenHeader title="Backup & restore" onBack={() => navigate("settings")} helpGuideId="backup-export" />
       <div className="px-5 pb-28 pt-4">
         <div className="rounded-3xl border border-border bg-card p-6 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-clay/10">

@@ -17,9 +17,18 @@ import { WalletScreen } from "@/components/vello/screens/wallet";
 import { WallpaperScreen } from "@/components/vello/screens/wallpaper";
 import { ShowcaseScreen } from "@/components/vello/screens/showcase";
 import { HelpScreen, HelpGuideScreen } from "@/components/vello/screens/help";
+import { ViewTransition } from "@/components/vello/motion";
 
 function Screens() {
   const { view } = useView();
+  return (
+    <ViewTransition viewKey={view}>
+      {renderScreen(view)}
+    </ViewTransition>
+  );
+}
+
+function renderScreen(view: string) {
   switch (view) {
     case "onboarding":
       return <Onboarding />;

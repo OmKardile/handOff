@@ -36,10 +36,15 @@ export interface Card {
   whatsapp: string; // E.164 or empty
   photoPresent: boolean;
   qrInclude: QrInclude;
+  /** Order of social links for display + QR. */
+  socialOrder: SocialLinkId[];
   createdAt: string;
   updatedAt: string;
   qrFingerprint: string;
 }
+
+/** Identifiers for the four social/deep-link fields, reorderable. */
+export type SocialLinkId = "linkedin" | "instagram" | "x" | "whatsapp";
 
 /** QR error-correction level. */
 export type EccLevel = "L" | "M" | "Q" | "H";

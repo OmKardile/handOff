@@ -1,7 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { Camera, Check, X, AlertTriangle, RotateCcw, ChevronDown } from "lucide-react";
+import { Camera, Check, X, AlertTriangle, RotateCcw, ChevronDown, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { useVello } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
@@ -21,7 +37,7 @@ import {
   normalizeX,
   normalizeWhatsapp,
 } from "@/lib/normalizers";
-import type { Card, QrInclude } from "@/shared/types";
+import type { Card, QrInclude, SocialLinkId } from "@/shared/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -66,6 +82,7 @@ export function EditorScreen() {
       <ScreenHeader
         title="Edit card"
         onBack={() => navigate("home")}
+        helpGuideId="edit-card"
         action={
           <button
             onClick={save}
@@ -178,10 +195,10 @@ export function EditorScreen() {
 
         {/* Links */}
         <Section title="Social links" open={open === "links"} onToggle={() => setOpen(open === "links" ? "" : "links")}>
-          <TextField label="LinkedIn" value={card.linkedin} onChange={(v) => update({ linkedin: normalizeLinkedin(v) })} placeholder="linkedin.com/in/handle or @handle" />
-          <TextField label="Instagram" value={card.instagram} onChange={(v) => update({ instagram: normalizeInstagram(v) })} placeholder="@handle" />
-          <TextField label="X" value={card.xHandle} onChange={(v) => update({ xHandle: normalizeX(v) })} placeholder="@handle" />
-          <TextField label="WhatsApp" value={card.whatsapp} onChange={(v) => update({ whatsapp: normalizeWhatsapp(v) })} placeholder="+91 98765 43210" type="tel" />
+          <p className="mb-3 text-[11px] text-muted-foreground">
+            Drag to reorder. The order is used in the QR, the .vcf file and on your card.
+          </p>
+          <SortableSocialLinks card={card} update={update} />
         </Section>
 
         {/* QR contents */}
@@ -347,6 +364,109 @@ function SizeMeter({
           Remove fields
         </span>
       )}
+    </div>
+  );
+}
+
+const SOCIAL_META: Record<SocialLinkId, { label: string; placeholder: string; type?: string; normalize: (v: string) => string }> = {
+  linkedin: { label: "LinkedIn", placeholder: "linkedin.com/in/handle or @handle", normalize: normalizeLinkedin },
+  instagram: { label: "Instagram", placeholder: "@handle", normalize: normalizeInstagram },
+  x: { label: "X", placeholder: "@handle", normalize: normalizeX },
+  whatsapp: { label: "WhatsApp", placeholder: "+91 98765 43210", type: "tel", normalize: normalizeWhatsapp },
+};
+
+function SortableSocialLinks({
+  card,
+  update,
+}: {
+  card: Card;
+  update: (patch: Partial<Card>) => void;
+}) {
+  const order: SocialLinkId[] =
+    card.socialOrder?.length === 4 ? card.socialOrder : ["linkedin", "instagram", "x", "whatsapp"];
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 180, tolerance: 8 } })
+  );
+
+  function onDragEnd(e: DragEndEvent) {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIdx = order.indexOf(active.id as SocialLinkId);
+    const newIdx = order.indexOf(over.id as SocialLinkId);
+    update({ socialOrder: arrayMove(order, oldIdx, newIdx) });
+  }
+
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+      <SortableContext items={order} strategy={verticalListSortingStrategy}>
+        <div className="space-y-2.5">
+          {order.map((id) => (
+            <SortableSocialRow key={id} id={id} card={card} update={update} />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function SortableSocialRow({
+  id,
+  card,
+  update,
+}: {
+  id: SocialLinkId;
+  card: Card;
+  update: (patch: Partial<Card>) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const meta = SOCIAL_META[id];
+  const value = id === "linkedin" ? card.linkedin : id === "instagram" ? card.instagram : id === "x" ? card.xHandle : card.whatsapp;
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : undefined,
+    opacity: isDragging ? 0.85 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "flex items-center gap-2 rounded-xl border bg-card p-2.5",
+        isDragging ? "border-clay shadow-lg" : "border-border"
+      )}
+    >
+      <button
+        {...attributes}
+        {...listeners}
+        className="no-tap flex h-8 w-8 flex-shrink-0 cursor-grab items-center justify-center rounded-lg text-muted-foreground/50 hover:bg-muted hover:text-foreground active:cursor-grabbing"
+        aria-label={`Drag ${meta.label} to reorder`}
+      >
+        <GripVertical className="h-4 w-4" />
+      </button>
+      <div className="flex-1">
+        <label className="block">
+          <span className="mb-1 block text-[12px] font-medium text-muted-foreground">{meta.label}</span>
+          <input
+            className="no-tap w-full rounded-lg border border-input bg-background px-3 py-2.5 text-[15px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:border-clay focus:ring-2 focus:ring-clay/15"
+            value={value}
+            type={meta.type}
+            placeholder={meta.placeholder}
+            onChange={(e) => {
+              const normalized = meta.normalize(e.target.value);
+              update(
+                id === "linkedin" ? { linkedin: normalized } :
+                id === "instagram" ? { instagram: normalized } :
+                id === "x" ? { xHandle: normalized } :
+                { whatsapp: normalized }
+              );
+            }}
+          />
+        </label>
+      </div>
     </div>
   );
 }

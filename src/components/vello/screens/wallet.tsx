@@ -33,7 +33,7 @@ export function WalletScreen() {
 
   return (
     <div className="mx-auto max-w-md">
-      <ScreenHeader title="Wallet" onBack={() => navigate("home")} />
+      <ScreenHeader title="Wallet" onBack={() => navigate("home")} helpGuideId="wallet-save" />
       <div className="px-5 pb-28 pt-4">
         <div className="rounded-3xl border border-border bg-card p-6">
           <div className="flex items-center gap-2">

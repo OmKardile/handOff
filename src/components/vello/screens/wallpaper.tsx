@@ -75,7 +75,7 @@ export function WallpaperScreen() {
 
   return (
     <div className="mx-auto max-w-md">
-      <ScreenHeader title="Wallpaper" onBack={() => navigate("home")} />
+      <ScreenHeader title="Wallpaper" onBack={() => navigate("home")} helpGuideId="wallpaper-apply" />
       <div className="px-5 pb-28 pt-4">
         <div className="rounded-3xl border border-border bg-card p-6">
           <div className="flex items-center gap-2">

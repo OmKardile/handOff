@@ -5,7 +5,7 @@ import { ArrowLeft, Search, ChevronRight, HelpCircle } from "lucide-react";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { PageFooter } from "../dev-signature";
-import { HELP_CATEGORIES, HELP_GUIDES, searchGuides, type HelpCategory, type HelpGuide, type Platform } from "@/lib/help-content";
+import { HELP_CATEGORIES, HELP_GUIDES, searchGuides, setSelectedGuide, getSelectedGuide, type HelpCategory, type HelpGuide, type Platform } from "@/lib/help-content";
 import { cn } from "@/lib/utils";
 
 const PLATFORM_LABELS: Record<Platform, string> = {
@@ -76,14 +76,7 @@ export function HelpScreen() {
 }
 
 // Store the selected guide in a module-level ref so the guide screen can read it.
-// (Avoids prop drilling through the view router.)
-const SELECTED: { current: HelpGuide | null } = { current: null };
-export function setSelectedGuide(g: HelpGuide | null) {
-  SELECTED.current = g;
-}
-export function getSelectedGuide(): HelpGuide | null {
-  return SELECTED.current;
-}
+// (Lives in @/lib/help-content so the app-shell help links can set it too.)
 
 function GuideRow({ guide, onOpen }: { guide: HelpGuide; onOpen: () => void }) {
   return (

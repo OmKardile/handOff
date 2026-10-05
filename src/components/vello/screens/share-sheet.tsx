@@ -102,7 +102,7 @@ export function ShareSheet() {
 
   return (
     <div className="mx-auto max-w-md">
-      <ScreenHeader title="Share & export" onBack={() => navigate("home")} />
+      <ScreenHeader title="Share & export" onBack={() => navigate("home")} helpGuideId="share-qr" />
       <div className="px-5 pb-28 pt-4">
         <p className="mb-4 text-[13px] leading-relaxed text-muted-foreground">
           Every export reflects your current style. Shared files leave your device

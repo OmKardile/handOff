@@ -83,12 +83,15 @@ export function buildCompactVcard(card: Card): string {
   if (inc.location && card.location) {
     lines.push(`ADR;TYPE=WORK:;;;${escapeVcardText(card.location)};;;`);
   }
-  // social links: one plain URL line each
-  if (inc.linkedin && card.linkedin) lines.push(`URL:${card.linkedin}`);
-  if (inc.instagram && card.instagram) lines.push(`URL:${card.instagram}`);
-  if (inc.xHandle && card.xHandle) lines.push(`URL:${card.xHandle}`);
-  if (inc.whatsapp && card.whatsapp) {
-    lines.push(`URL:https://wa.me/${card.whatsapp.replace(/^\+/, "")}`);
+  // social links: one plain URL line each, in the user's chosen order
+  const order = card.socialOrder?.length === 4 ? card.socialOrder : ["linkedin", "instagram", "x", "whatsapp"];
+  for (const id of order) {
+    if (id === "linkedin" && inc.linkedin && card.linkedin) lines.push(`URL:${card.linkedin}`);
+    if (id === "instagram" && inc.instagram && card.instagram) lines.push(`URL:${card.instagram}`);
+    if (id === "x" && inc.x && card.xHandle) lines.push(`URL:${card.xHandle}`);
+    if (id === "whatsapp" && inc.whatsapp && card.whatsapp) {
+      lines.push(`URL:https://wa.me/${card.whatsapp.replace(/^\+/, "")}`);
+    }
   }
 
   lines.push("END:VCARD");
@@ -114,15 +117,16 @@ export function buildFullVcard(card: Card, photoBase64?: string): string {
     lines.push(`ADR;TYPE=WORK:;;;${escapeVcardText(card.location)};;;`);
   }
 
-  // Social links as itemN.URL + itemN.X-ABLabel (numbered sequentially for existing ones)
-  let itemN = 1;
-  const socials: [string, string][] = [];
-  if (card.linkedin) socials.push(["LinkedIn", card.linkedin]);
-  if (card.instagram) socials.push(["Instagram", card.instagram]);
-  if (card.xHandle) socials.push(["X", card.xHandle]);
-  if (card.whatsapp)
-    socials.push(["WhatsApp", `https://wa.me/${card.whatsapp.replace(/^\+/, "")}`]);
+  // Social links as itemN.URL + itemN.X-ABLabel (numbered sequentially, in user's order)
+  const order = card.socialOrder?.length === 4 ? card.socialOrder : ["linkedin", "instagram", "x", "whatsapp"];
+  const socialMap: Record<string, [string, string]> = {};
+  if (card.linkedin) socialMap.linkedin = ["LinkedIn", card.linkedin];
+  if (card.instagram) socialMap.instagram = ["Instagram", card.instagram];
+  if (card.xHandle) socialMap.x = ["X", card.xHandle];
+  if (card.whatsapp) socialMap.whatsapp = ["WhatsApp", `https://wa.me/${card.whatsapp.replace(/^\+/, "")}`];
+  const socials: [string, string][] = order.map((id) => socialMap[id]).filter(Boolean) as [string, string][];
 
+  let itemN = 1;
   for (const [label, url] of socials) {
     lines.push(`item${itemN}.URL:${url}`);
     lines.push(`item${itemN}.X-ABLABEL:${escapeVcardText(label)}`);

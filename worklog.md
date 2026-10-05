@@ -186,3 +186,54 @@ Unresolved / next-phase:
 - Add CSP meta tag to layout (BACKLOG item)
 - Add automated tests (Vitest + Playwright) per TESTING.md
 - The docs subagent created all 26 doc files; verify:all confirms structural integrity
+
+---
+Task ID: CRON-2 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project is stable & functional (v1.0.0, all gates pass, 14 screens, 26 docs).
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 90 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → home → studio (Surprise me tested) → editor → social links. No console errors, no runtime errors.
+- Added Framer Motion animation system (src/components/vello/motion.tsx):
+  - ViewTransition wrapper around the SPA view router (fade + slight y translate, 220ms, easeOutQuart)
+  - QrReveal for the "QR appears" moment (opacity + scale + blur, 500ms)
+  - Reveal component with delay for staggered hero/QR/actions/details on Home
+  - tapScale() helper and staggerContainer/staggerItem variants for future list use
+- Styled the Home screen with staggered reveals: hero card (delay 0.05), primary actions (0.15), secondary actions (0.22), contact details (0.28). The QR gets a QrReveal blur-in.
+- Added designed empty state for the Home contact-details section (EmptyContactState component): dashed border card, pencil-in-circle, "No contact details yet", "Add details" button → editor. Triggered when no phone/email/website/location/socials exist.
+- NEW FEATURE: Drag-reorder social links in the Editor:
+  - Added `socialOrder: SocialLinkId[]` to the Card model (src/shared/types.ts)
+  - Updated makeEmptyCard in store.ts with default order ["linkedin","instagram","x","whatsapp"]
+  - Updated vCard builders (compact + full) to emit social URL lines in the user's chosen order
+  - Updated Home screen to display social rows in order
+  - Built SortableSocialLinks + SortableSocialRow components using @dnd-kit/core + @dnd-kit/sortable (PointerSensor distance 6, TouchSensor delay 180ms), with GripVertical handles, drag styling (clay border + shadow), and per-field inputs with live normalisation
+  - Wired into the Editor "Social links" section with a "Drag to reorder" hint
+- NEW FEATURE: Contextual "?" help links in screen headers:
+  - Extended ScreenHeader with an optional `helpGuideId` prop (app-shell.tsx)
+  - Moved setSelectedGuide/getSelectedGuide into src/lib/help-content.ts (shared module store) so the app-shell can set it; help.tsx imports from there
+  - Added helpGuideId to Studio ("style-qr"), Editor ("edit-card"), Share ("share-qr"), Wallet ("wallet-save"), Wallpaper ("wallpaper-apply"), Backup ("backup-export") headers
+  - Clicking opens the HelpGuideScreen with the relevant guide pre-selected
+- NEW FEATURE: Font recents + favourites in the Studio Caption tab:
+  - Created src/lib/font-memory.ts (useFontMemory hook, localStorage-backed, max 6 recents)
+  - Built FontPicker + FontGrid components replacing the flat font grid
+  - Shows "Favourites" (heart, clay) and "Recent" (clock) sections above "All" when non-empty
+  - Each font tile has a heart toggle (appears on hover/group-hover); selecting a font remembers it in recents
+  - Favourited fonts persist across sessions via localStorage
+
+Stage Summary:
+- 4 new features delivered: drag-reorder social links, contextual help links on 6 screens, font recents/favourites, designed empty state
+- Styling polish: Framer Motion page transitions + staggered Home reveals + QR blur-in + designed empty state
+- New files: src/components/vello/motion.tsx, src/lib/font-memory.ts
+- Modified: src/app/page.tsx, src/components/vello/{app-shell.tsx, screens/{home,studio,editor,share-sheet,wallet,wallpaper,backup}.tsx}, src/lib/{vcard.ts,store.ts}, src/shared/types.ts, src/lib/help-content.ts, src/components/vello/screens/help.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 92 files no network calls
+- Browser-verified: drag-reorder renders with grip handles, font picker shows Favourites + All sections with heart toggles, contextual "?" on Studio opens the "Style your QR" guide correctly, home empty state + staggered animations render, no console errors
+- Screenshots saved: vello-home-animated, vello-editor-drag-reorder, vello-studio-font-picker, vello-contextual-help
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- The drag-reorder uses TouchSensor with a 180ms delay to allow scrolling; consider a visible "drag mode" affordance on touch
+- Consider persisting font recents/favourites into the backup bundle (currently localStorage, not in IndexedDB backup) — small follow-up
+- The Framer Motion ViewTransition uses AnimatePresence mode="wait" — verify no fl! icker on fast nav; consider "popLayout" if issues appear
