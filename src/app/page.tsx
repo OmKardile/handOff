@@ -65,16 +65,45 @@ function renderScreen(view: string) {
 
 function LoadingScreen() {
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background">
-      <div className="flex flex-col items-center gap-3">
-        <div className="flex h-14 w-14 items-center justify-center">
-          <VelloMark />
-        </div>
-        <div className="h-1 w-24 overflow-hidden rounded-full bg-muted">
-          <div className="h-full w-1/2 animate-[slide_1.2s_ease-in-out_infinite] bg-clay" />
+    <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background paper-grain">
+      <div className="flex flex-col items-center gap-5">
+        {/* animated V mark — the check draws itself */}
+        <svg viewBox="0 0 40 40" className="h-16 w-16" fill="none" aria-hidden>
+          <rect
+            width="40"
+            height="40"
+            rx="10"
+            fill="var(--ink, #161619)"
+            className="opacity-0"
+            style={{ animation: "vello-fade 0.4s ease 0.1s forwards" }}
+          />
+          <path
+            d="M13 12.5L20 27l7-14.5"
+            stroke="var(--paper, #f6f3ee)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            pathLength={1}
+            style={{ strokeDasharray: 1, strokeDashoffset: 1, animation: "vello-draw 0.7s ease 0.3s forwards" }}
+          />
+        </svg>
+        <div className="flex flex-col items-center gap-2">
+          <span
+            className="font-display text-xl font-semibold tracking-tight opacity-0"
+            style={{ animation: "vello-fade 0.4s ease 0.6s forwards" }}
+          >
+            Vello
+          </span>
+          <div className="h-0.5 w-20 overflow-hidden rounded-full bg-muted opacity-0" style={{ animation: "vello-fade 0.4s ease 0.8s forwards" }}>
+            <div className="h-full w-1/2 animate-[vello-slide_1.2s_ease-in-out_infinite] bg-clay" />
+          </div>
         </div>
       </div>
-      <style>{`@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}`}</style>
+      <style>{`
+        @keyframes vello-draw { to { stroke-dashoffset: 0; } }
+        @keyframes vello-fade { to { opacity: 1; } }
+        @keyframes vello-slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+      `}</style>
     </div>
   );
 }

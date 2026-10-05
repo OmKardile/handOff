@@ -327,3 +327,49 @@ Unresolved / next-phase:
 - The preview modal canvas uses a fixed 60vh height; could calculate aspect ratio for perfect fit
 - Consider a "clear recents" option in the studio
 - Persist font recents/favourites + style recents into the backup bundle (currently localStorage, not in IndexedDB backup)
+
+---
+Task ID: CRON-5 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). Previous rounds added Framer Motion, drag-reorder social links, contextual help, font recents/favourites, share-card layouts, onboarding animations, QR skeleton, share-card preview modal, recent styles strip, Caveat font, animated tab bar.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 93 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → home → editor (social links drag-reorder verified) → wallpaper. No console errors, no runtime errors.
+- NEW FEATURE: Share-card layouts gallery on the Showcase page (requested in CRON-3 + CRON-4 next-phase):
+  - Added a "Share-card layouts" section between the privacy-proof and install sections
+  - Shows all 4 layouts (Hairline, Plaque, Ticket, Polaroid) in a 2×2 grid with SVG thumbnail previews (ShowcaseLayoutThumb component, larger 32-height version of the share-sheet thumbs)
+  - Each tile shows the layout name, description, and a visual preview
+  - Polaroid thumb uses Caveat font for the caption to match the actual export
+  - Browser-verified: all 4 layout names present in the DOM
+- NEW FEATURE: QR style comparison view in the Studio (new "Compare" tab):
+  - Added "Compare" as the 2nd tab in the studio (between Presets and Shape)
+  - CompareView shows two presets side-by-side (120px QR previews each) with labels "Left"/"Right"
+  - Two dropdown <select> pickers let the user choose any of the 17 presets for each side
+  - Tapping either QR card applies that preset; an "Apply <Left>" button at the bottom applies the left one
+  - Integrates with the recent-styles tracking (applying from Compare adds to recents)
+  - Active preset is highlighted with clay border
+  - Browser-verified: Ink vs Terracotta shown, dropdowns work, Apply Ink adds to recents (confirmed "Recently used" strip appears after)
+- STYLING POLISH: Refined loading screen with brand mark animation:
+  - The Vello "V" checkmark now draws itself (stroke-dashoffset animation, 0.7s, 0.3s delay)
+  - The ink background rect fades in first (0.4s, 0.1s delay)
+  - "Vello" wordmark fades in (0.6s delay)
+  - The progress bar fades in last (0.8s delay) and slides indefinitely
+  - Uses pathLength=1 for consistent dash animation across SVG renderers
+  - Added paper-grain background texture for consistency with the app
+
+Stage Summary:
+- 2 new features (showcase layouts gallery, studio Compare tab) + 1 styling polish (loading screen animation)
+- Modified: src/components/vello/screens/{showcase,studio}.tsx, src/app/page.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 93 files no network calls
+- Browser-verified: showcase layouts gallery shows all 4 layouts, Compare tab renders two presets side-by-side with dropdown pickers and Apply button, applying from Compare adds to recents, loading screen animates the V draw, no console errors
+- Screenshots saved: qa-showcase-layouts, qa-studio-compare, qa-recents-after-compare, qa-round5-loading
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- The Compare tab could show a live QR scan-check for each side
+- Consider a "clear recents" option in the studio
+- Persist font recents/favourites + style recents into the backup bundle (currently localStorage, not in IndexedDB backup)
+- The loading screen animation plays once on initial load; consider replaying on view transitions if needed

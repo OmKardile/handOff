@@ -32,7 +32,7 @@ const EYES: { id: EyeShape; label: string }[] = [
   { id: "rounded", label: "Rounded" },
 ];
 
-const TABS = ["Presets", "Shape", "Colour", "Centre", "Frame", "Caption"] as const;
+const TABS = ["Presets", "Compare", "Shape", "Colour", "Centre", "Frame", "Caption"] as const;
 type Tab = (typeof TABS)[number];
 
 export function StudioScreen() {
@@ -153,6 +153,10 @@ export function StudioScreen() {
               <PresetGroup title="Your presets" presets={presets.map((p) => ({ id: p.id, name: p.name, group: "quiet" as const, captionFontLabel: p.style.captionFont, style: p.style }))} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
             )}
           </div>
+        )}
+
+        {tab === "Compare" && (
+          <CompareView card={card} currentStyle={style} photo={photo?.full} onApply={(id) => { applyPreset(id); rememberStyle(id); }} />
         )}
 
         {tab === "Shape" && (
@@ -643,5 +647,117 @@ function RecentStylesStrip({
         })}
       </div>
     </div>
+  );
+}
+
+function CompareView({
+  card,
+  currentStyle,
+  photo,
+  onApply,
+}: {
+  card: Card;
+  currentStyle: QrStyle;
+  photo?: string;
+  onApply: (id: string) => void;
+}) {
+  const [leftId, setLeftId] = React.useState<string>(currentStyle.presetId && currentStyle.presetId !== "plain" ? currentStyle.presetId : "ink");
+  const [rightId, setRightId] = React.useState<string>("terracotta");
+
+  const left = STYLE_PRESETS.find((p) => p.id === leftId) ?? STYLE_PRESETS[0];
+  const right = STYLE_PRESETS.find((p) => p.id === rightId) ?? STYLE_PRESETS[6];
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-4">
+        <p className="text-[12px] leading-relaxed text-muted-foreground">
+          Compare two presets side-by-side. Tap either to apply it.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <CompareCard
+          label="Left"
+          preset={left}
+          card={card}
+          photo={photo}
+          active={currentStyle.presetId === left.id}
+          onSelect={setLeftId}
+          onApply={() => onApply(left.id)}
+        />
+        <CompareCard
+          label="Right"
+          preset={right}
+          card={card}
+          photo={photo}
+          active={currentStyle.presetId === right.id}
+          onSelect={setRightId}
+          onApply={() => onApply(right.id)}
+        />
+      </div>
+
+      {/* preset pickers */}
+      <ControlGroup title="Left preset">
+        <select
+          value={leftId}
+          onChange={(e) => setLeftId(e.target.value)}
+          className="no-tap w-full rounded-xl border border-input bg-background px-3 py-2.5 text-[14px] outline-none focus:border-clay"
+        >
+          {STYLE_PRESETS.map((p) => (
+            <option key={p.id} value={p.id}>{p.name} ({p.group})</option>
+          ))}
+        </select>
+      </ControlGroup>
+      <ControlGroup title="Right preset">
+        <select
+          value={rightId}
+          onChange={(e) => setRightId(e.target.value)}
+          className="no-tap w-full rounded-xl border border-input bg-background px-3 py-2.5 text-[14px] outline-none focus:border-clay"
+        >
+          {STYLE_PRESETS.map((p) => (
+            <option key={p.id} value={p.id}>{p.name} ({p.group})</option>
+          ))}
+        </select>
+      </ControlGroup>
+
+      <button
+        onClick={() => { onApply(left.id); }}
+        className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-[14px] font-medium text-background"
+      >
+        Apply {left.name}
+      </button>
+    </div>
+  );
+}
+
+function CompareCard({
+  label,
+  preset,
+  card,
+  photo,
+  active,
+  onSelect,
+  onApply,
+}: {
+  label: string;
+  preset: { id: string; name: string; style: QrStyle };
+  card: Card;
+  photo?: string;
+  active: boolean;
+  onSelect: (id: string) => void;
+  onApply: () => void;
+}) {
+  return (
+    <button
+      onClick={onApply}
+      className={cn(
+        "no-tap flex flex-col items-center overflow-hidden rounded-2xl border-2 p-3 transition-all",
+        active ? "border-clay bg-clay/5" : "border-border bg-card"
+      )}
+    >
+      <span className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+      <QrPreview card={card} style={preset.style} size={120} photoDataUrl={photo} showLoading={false} />
+      <span className="mt-1.5 text-[12px] font-medium">{preset.name}</span>
+    </button>
   );
 }
