@@ -531,3 +531,40 @@ Unresolved / next-phase:
 - Document the qr-insights module in TECHNICAL.md
 - Consider adding the field count to the fullscreen QR screen
 - The editor insights could show a live QR version estimate (e.g. "QR version 3")
+
+---
+Task ID: CRON-10 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). CRON-9 added editor live insights + field count summary. Next-phase suggested adding field count to fullscreen QR + percentage-based bar chart.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 94 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → fullscreen QR verified. No console errors.
+- NEW FEATURE: Field count + QR version estimate on the fullscreen QR screen (requested in CRON-9 next-phase):
+  - Added a metadata line below "Screen stays on while this is open": "60 bytes · QR v4 · 1 field · ECC M"
+  - Uses getQrSizeInfo() for the QR version, getFieldBytes()/getTotalBytes() for bytes + field count, style.ecc for the error-correction level
+  - Styled with tabular-nums and muted-foreground/60 so it's informative but unobtrusive
+  - Browser-verified: showed "60 bytes · QR v4 · 1 field · ECC M" for the Aarav card
+- NEW FEATURE: Percentage-based bar chart in the home insights panel (requested in CRON-9 next-phase):
+  - The bar chart now shows each field as a percentage of the total (instead of relative to the max field)
+  - Added a "%" column showing the percentage (e.g. "62%", "38%")
+  - Bars use transition-all for smooth width changes when fields are toggled
+  - Removed the now-unused maxField calculation
+  - Browser-verified: showed 62% (envelope) and 38% (name) for the minimal card
+- STYLING POLISH: The fullscreen QR footer metadata uses a subtle, restrained treatment (muted/60, tabular-nums, small 10.5px) so it informs without distracting from the QR. The insights bar chart gained a transition-all for smooth width animations.
+
+Stage Summary:
+- 2 new features (fullscreen QR metadata, percentage bar chart) + 1 styling polish (footer metadata treatment)
+- Modified: src/components/vello/screens/{fullscreen-qr,home}.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 94 files no network calls
+- Browser-verified: fullscreen shows "60 bytes · QR v4 · 1 field · ECC M", insights bar chart shows percentages (62%/38%), no console errors
+- Screenshots saved: qa-round10-fullscreen, qa-insights-percentages
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- Document the qr-insights module in TECHNICAL.md
+- The fullscreen metadata could be tappable to open the editor
+- Consider a "copy metadata" option for sharing QR specs
+- The percentage column could use a subtle color scale (green→amber→red) based on field size

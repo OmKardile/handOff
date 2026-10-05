@@ -370,7 +370,6 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useVello.get
   const [expanded, setExpanded] = React.useState(false);
   const fields = getFieldBytes(card);
   const total = getTotalBytes(fields);
-  const maxField = Math.max(...fields.map((f) => f.bytes), 1);
   const dataFieldCount = fields.filter((f) => f.id !== "envelope").length;
 
   if (total === 0) return null;
@@ -400,23 +399,29 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useVello.get
             {fields
               .slice()
               .sort((a, b) => b.bytes - a.bytes)
-              .map((f) => (
-                <div key={f.id} className="flex items-center gap-2">
-                  <span className="w-16 flex-shrink-0 text-[10.5px] text-muted-foreground">{f.label}</span>
-                  <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className={cn(
-                        "absolute inset-y-0 left-0 rounded-full",
-                        f.id === "envelope" ? "bg-muted-foreground/40" : "bg-clay"
-                      )}
-                      style={{ width: `${(f.bytes / maxField) * 100}%` }}
-                    />
+              .map((f) => {
+                const pct = total > 0 ? (f.bytes / total) * 100 : 0;
+                return (
+                  <div key={f.id} className="flex items-center gap-2">
+                    <span className="w-16 flex-shrink-0 text-[10.5px] text-muted-foreground">{f.label}</span>
+                    <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={cn(
+                          "absolute inset-y-0 left-0 rounded-full transition-all",
+                          f.id === "envelope" ? "bg-muted-foreground/40" : "bg-clay"
+                        )}
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                    <span className="w-10 flex-shrink-0 text-right font-mono text-[10px] text-muted-foreground">
+                      {f.bytes}B
+                    </span>
+                    <span className="w-9 flex-shrink-0 text-right font-mono text-[9.5px] text-muted-foreground/70">
+                      {pct.toFixed(0)}%
+                    </span>
                   </div>
-                  <span className="w-10 flex-shrink-0 text-right font-mono text-[10px] text-muted-foreground">
-                    {f.bytes}B
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             <p className="pt-1 text-[10.5px] leading-relaxed text-muted-foreground">
               The QR encodes a compact vCard. Fewer bytes = faster, more reliable scans.
               <button

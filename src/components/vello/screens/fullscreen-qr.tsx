@@ -5,6 +5,8 @@ import { X } from "lucide-react";
 import { useVello } from "@/lib/store";
 import { useView } from "../view-context";
 import { QrPreview } from "../qr-preview";
+import { getQrSizeInfo } from "@/lib/qr";
+import { getFieldBytes, getTotalBytes } from "@/lib/qr-insights";
 
 export function FullscreenQr() {
   const { card, style, photo } = useVello();
@@ -108,6 +110,17 @@ export function FullscreenQr() {
         <p className="text-[12px] text-muted-foreground">
           Screen stays on while this is open
         </p>
+        {(() => {
+          const fields = getFieldBytes(card);
+          const total = getTotalBytes(fields);
+          const dataFields = fields.filter((f) => f.id !== "envelope").length;
+          const sizeInfo = getQrSizeInfo(card);
+          return (
+            <p className="mt-1 text-[10.5px] tabular-nums text-muted-foreground/60">
+              {total} bytes · QR v{sizeInfo.version} · {dataFields} field{dataFields === 1 ? "" : "s"} · ECC {style.ecc}
+            </p>
+          );
+        })()}
       </div>
     </div>
   );
