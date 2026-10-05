@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     "offline",
     "Vello",
   ],
-  authors: [{ name: "Vello" }],
+  authors: [{ name: "Omkar Kardile", url: "https://omkardile.is-a.dev/" }],
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,

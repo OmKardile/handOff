@@ -15,6 +15,8 @@ import { ShareSheet } from "@/components/vello/screens/share-sheet";
 import { BackupScreen } from "@/components/vello/screens/backup";
 import { WalletScreen } from "@/components/vello/screens/wallet";
 import { WallpaperScreen } from "@/components/vello/screens/wallpaper";
+import { ShowcaseScreen } from "@/components/vello/screens/showcase";
+import { HelpScreen, HelpGuideScreen } from "@/components/vello/screens/help";
 
 function Screens() {
   const { view } = useView();
@@ -41,6 +43,12 @@ function Screens() {
       return <WallpaperScreen />;
     case "backup":
       return <BackupScreen />;
+    case "showcase":
+      return <ShowcaseScreen />;
+    case "help":
+      return <HelpScreen />;
+    case "help-guide":
+      return <HelpGuideScreen />;
     default:
       return <HomeScreen />;
   }

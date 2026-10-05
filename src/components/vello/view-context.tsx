@@ -14,7 +14,10 @@ export type View =
   | "settings"
   | "privacy"
   | "fonts"
-  | "backup";
+  | "backup"
+  | "showcase"
+  | "help"
+  | "help-guide";
 
 interface ViewCtx {
   view: View;
