@@ -169,7 +169,7 @@ export function ScreenHeader({
 }) {
   const { navigate } = useView();
   return (
-    <header className="glass sticky top-0 z-30 border-b border-white/10 px-2" style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
+    <header className="glass sticky top-0 z-30 px-2" style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
       <div className="relative z-10 flex h-14 items-center gap-1">
       {onBack && (
         <button

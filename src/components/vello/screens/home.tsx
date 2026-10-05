@@ -109,9 +109,9 @@ export function HomeScreen() {
         </div>
       )}
 
-      {/* hero card */}
+      {/* hero card — Figma Glassy style: frosted glass, 1px white border, soft shadow */}
       <Reveal delay={0.05}>
-      <div className="relative overflow-hidden rounded-[28px] border border-border bg-card" style={{ boxShadow: "var(--elevation-card)" }}>
+      <div className="glass-card relative overflow-hidden rounded-3xl">
         {/* name plate */}
         <div className="flex items-start justify-between gap-4 px-6 pt-6">
           <div className="min-w-0 flex-1">

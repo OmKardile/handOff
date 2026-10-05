@@ -212,13 +212,12 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** iOS 27 grouped card — borderless, elevated, slightly lighter than bg. */
+/** Figma Glassy-style grouped card — frosted glass, 1px white border, soft shadow. */
 function CardGroup({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       variants={staggerItem}
-      className="overflow-hidden rounded-2xl bg-card"
-      style={{ boxShadow: "var(--elevation-card)" }}
+      className="glass-card overflow-hidden rounded-2xl"
     >
       {children}
     </motion.div>
