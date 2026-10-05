@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useVello } from "@/lib/store";
+import { useSlate } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -43,7 +43,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 export function EditorScreen() {
-  const { card, style, photo, setCard, saveCardNow, setPhoto, startDraft, restoreDraft, hasDraft, clearDraft } = useVello();
+  const { card, style, photo, setCard, saveCardNow, setPhoto, startDraft, restoreDraft, hasDraft, clearDraft } = useSlate();
   const { navigate } = useView();
   const [open, setOpen] = React.useState<string>("identity");
 

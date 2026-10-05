@@ -49,7 +49,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ===== Vello Design System — editorial, warm, cinematic restraint ===== */
+/* ===== Slate Design System — editorial, warm, cinematic restraint ===== */
 /* Inspired by Parichay's systematic token approach + iOS 27 Liquid Glass */
 :root {
   --radius: 0.75rem;

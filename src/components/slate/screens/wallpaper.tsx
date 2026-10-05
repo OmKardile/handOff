@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Loader2, Download, Image as ImageIcon, Info } from "lucide-react";
-import { useVello } from "@/lib/store";
+import { useSlate } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -18,7 +18,7 @@ const BACKDROPS = [
 ];
 
 export function WallpaperScreen() {
-  const { card, style, photo } = useVello();
+  const { card, style, photo } = useSlate();
   const { navigate } = useView();
   const [busy, setBusy] = React.useState(false);
   const [backdrop, setBackdrop] = React.useState(BACKDROPS[0]);

@@ -15,7 +15,7 @@ const FACTS = [
   {
     icon: WifiOff,
     title: "No network",
-    body: "Vello makes zero requests. No fetch, no WebSocket, no analytics. Fonts and assets are bundled.",
+    body: "Slate makes zero requests. No fetch, no WebSocket, no analytics. Fonts and assets are bundled.",
   },
   {
     icon: Eye,
@@ -83,7 +83,7 @@ export function PrivacyScreen() {
           <p className="mt-1 text-[12px] leading-relaxed text-amber-700 dark:text-amber-400/80">
             Your QR contains your contact details directly (a vCard). If you change
             your details after sharing or printing, the old QR still shows the old
-            information. Vello warns you when this happens.
+            information. Slate warns you when this happens.
           </p>
         </div>
 

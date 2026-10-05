@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Shuffle, RotateCcw, Save, Check, ScanLine } from "lucide-react";
-import { useVello } from "@/lib/store";
+import { useSlate } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -36,7 +36,7 @@ const TABS = ["Presets", "Compare", "Shape", "Colour", "Centre", "Frame", "Capti
 type Tab = (typeof TABS)[number];
 
 export function StudioScreen() {
-  const { card, style, setStyle, applyPreset, photo, presets, saveCustomPreset } = useVello();
+  const { card, style, setStyle, applyPreset, photo, presets, saveCustomPreset } = useSlate();
   const { navigate } = useView();
   const [tab, setTab] = React.useState<Tab>("Presets");
   const [scanOk, setScanOk] = React.useState<boolean | null>(null);

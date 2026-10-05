@@ -27,9 +27,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Vello — One card. One scan. Nothing leaves your phone.",
+  title: "Slate — One card. One scan. Nothing leaves your phone.",
   description:
-    "Vello is a digital business card that lives only on your phone. Generate a scannable QR, style it beautifully, and share your contact — no app, no server, no network.",
+    "Slate is a digital business card that lives only on your phone. Generate a scannable QR, style it beautifully, and share your contact — no app, no server, no network.",
   keywords: [
     "digital business card",
     "QR code",
@@ -37,24 +37,24 @@ export const metadata: Metadata = {
     "contact sharing",
     "privacy",
     "offline",
-    "Vello",
+    "Slate",
   ],
   authors: [{ name: "Omkar Kardile", url: "https://omkardile.is-a.dev/" }],
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Vello",
+    title: "Slate",
   },
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "Vello — One card. One scan. Nothing leaves your phone.",
+    title: "Slate — One card. One scan. Nothing leaves your phone.",
     description:
       "A digital business card that lives only on your phone. No accounts, no servers, no tracking.",
-    siteName: "Vello",
+    siteName: "Slate",
     type: "website",
   },
 };

@@ -1,5 +1,5 @@
 /**
- * Vello QR payload builder + size meter.
+ * Slate QR payload builder + size meter.
  * Compact vCard → QR. Byte counting, thresholds, hard cap.
  */
 

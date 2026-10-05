@@ -1,5 +1,5 @@
 /**
- * Vello store — the single source of truth for the app's state.
+ * Slate store — the single source of truth for the app's state.
  * Zustand store backed by the storage adapter (IndexedDB).
  * Debounced persistence. Loads on mount.
  */
@@ -70,7 +70,7 @@ export function makeEmptyCard(): Card {
   };
 }
 
-interface VelloState {
+interface SlateState {
   loaded: boolean;
   onboarded: boolean;
   card: Card | null;
@@ -115,7 +115,7 @@ interface VelloState {
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
-export const useVello = create<VelloState>((set, get) => ({
+export const useSlate = create<SlateState>((set, get) => ({
   loaded: false,
   onboarded: false,
   card: null,

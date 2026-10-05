@@ -1,5 +1,5 @@
 /**
- * Vello storage adapter — web only (IndexedDB via idb-keyval).
+ * Slate storage adapter — web only (IndexedDB via idb-keyval).
  * Privacy-first: everything stays on this device.
  * Debounced writes, .bak fallback, schema-versioned, corrupted-store recovery.
  */
@@ -8,16 +8,16 @@ import { get, set, del, clear, createStore } from "idb-keyval";
 import type { Card, QrStyle, Settings, PhotoData, CustomPreset } from "@/shared/types";
 import { LIMITS } from "@/shared/limits";
 
-const store = createStore("vello-db", "vello-store");
+const store = createStore("slate-db", "slate-store");
 
 const K = {
-  card: "vello:card",
-  cardBak: "vello:card.bak",
-  style: "vello:style",
-  settings: "vello:settings",
-  photo: "vello:photo",
-  presets: "vello:presets",
-  onboarded: "vello:onboarded",
+  card: "slate:card",
+  cardBak: "slate:card.bak",
+  style: "slate:style",
+  settings: "slate:settings",
+  photo: "slate:photo",
+  presets: "slate:presets",
+  onboarded: "slate:onboarded",
 } as const;
 
 export const SCHEMA_VERSION = LIMITS.schemaVersion;
@@ -59,7 +59,7 @@ export async function saveCard(card: Card): Promise<void> {
     if (prev) await set(K.cardBak, prev);
     await set(K.card, wrap(card));
   } catch (e) {
-    console.error("Vello: failed to save card", e);
+    console.error("Slate: failed to save card", e);
   }
 }
 
@@ -177,9 +177,9 @@ function readMemories(): NonNullable<BackupBundle["memories"]> {
     }
   };
   return {
-    fontRecents: read("vello:font-recents"),
-    fontFavs: read("vello:font-favs"),
-    styleRecents: read("vello:style-recents"),
+    fontRecents: read("slate:font-recents"),
+    fontFavs: read("slate:font-favs"),
+    styleRecents: read("slate:style-recents"),
   };
 }
 
@@ -193,14 +193,14 @@ function writeMemories(m: BackupBundle["memories"]): void {
       /* ignore */
     }
   };
-  if (m.fontRecents) write("vello:font-recents", m.fontRecents);
-  if (m.fontFavs) write("vello:font-favs", m.fontFavs);
-  if (m.styleRecents) write("vello:style-recents", m.styleRecents);
+  if (m.fontRecents) write("slate:font-recents", m.fontRecents);
+  if (m.fontFavs) write("slate:font-favs", m.fontFavs);
+  if (m.styleRecents) write("slate:style-recents", m.styleRecents);
 }
 
 export async function exportBackup(): Promise<string> {
   const bundle: BackupBundle = {
-    app: "vello",
+    app: "slate",
     version: "1.0.0",
     schemaVersion: SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
@@ -224,7 +224,7 @@ export async function importBackup(json: string): Promise<BackupBundle> {
   }
   if (!parsed || typeof parsed !== "object") throw new Error("Invalid backup file.");
   const b = parsed as Partial<BackupBundle>;
-  if (b.app !== "vello") throw new Error("This is not a Vello backup.");
+  if (b.app !== "slate") throw new Error("This is not a Slate backup.");
   if (!b.schemaVersion) throw new Error("Missing schema version.");
 
   if (b.card) await saveCard(b.card);
@@ -241,7 +241,7 @@ export async function importBackup(json: string): Promise<BackupBundle> {
 export async function eraseAll(): Promise<void> {
   await clear();
   // also clear the localStorage-backed memories (font/style recents/favourites)
-  const MEMORY_KEYS = ["vello:font-recents", "vello:font-favs", "vello:style-recents"];
+  const MEMORY_KEYS = ["slate:font-recents", "slate:font-favs", "slate:style-recents"];
   for (const key of MEMORY_KEYS) {
     try {
       localStorage.removeItem(key);
@@ -253,7 +253,7 @@ export async function eraseAll(): Promise<void> {
 
 /** Clear only the localStorage-backed memories (font/style recents/favourites). */
 export function clearMemories(): void {
-  const MEMORY_KEYS = ["vello:font-recents", "vello:font-favs", "vello:style-recents"];
+  const MEMORY_KEYS = ["slate:font-recents", "slate:font-favs", "slate:style-recents"];
   for (const key of MEMORY_KEYS) {
     try {
       localStorage.removeItem(key);

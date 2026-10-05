@@ -1,5 +1,5 @@
 /**
- * Vello QR insights — per-field byte breakdown of the compact vCard payload.
+ * Slate QR insights — per-field byte breakdown of the compact vCard payload.
  * Shows how much each field contributes to the total QR size, so users can
  * make informed decisions about what to include.
  */

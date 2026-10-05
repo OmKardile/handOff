@@ -1,5 +1,5 @@
 /**
- * Vello QR rendering engine.
+ * Slate QR rendering engine.
  * Uses qr-code-styling for styled output (shapes, gradients, centre element).
  * Renders to canvas/data-url/blob for exports.
  */

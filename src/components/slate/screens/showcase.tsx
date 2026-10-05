@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 const FAQ = [
   {
     q: "Does this send my data anywhere?",
-    a: "No. Vello makes zero network requests. Your card stays in your browser. Data leaves only when you choose to share or export.",
+    a: "No. Slate makes zero network requests. Your card stays in your browser. Data leaves only when you choose to share or export.",
   },
   {
     q: "Do people need the app to scan my QR?",
@@ -23,11 +23,11 @@ const FAQ = [
   },
   {
     q: "Can I change my details later?",
-    a: "Yes, but the QR is static: a QR you already printed or shared keeps the old details. Vello warns you when a change affects the QR.",
+    a: "Yes, but the QR is static: a QR you already printed or shared keeps the old details. Slate warns you when a change affects the QR.",
   },
   {
     q: "Is it really free and open?",
-    a: "Vello is MIT licensed. No accounts, no ads, no analytics, no data sales — ever.",
+    a: "Slate is MIT licensed. No accounts, no ads, no analytics, no data sales — ever.",
   },
 ];
 
@@ -169,7 +169,7 @@ export function ShowcaseScreen() {
         <h2 className="font-display text-2xl font-medium tracking-tight">How it works, in three steps</h2>
         <div className="mt-6 space-y-3">
           {[
-            { n: "1", icon: QrCode, title: "Create your card", body: "Enter your name, contact and links. Vello builds a compact vCard." },
+            { n: "1", icon: QrCode, title: "Create your card", body: "Enter your name, contact and links. Slate builds a compact vCard." },
             { n: "2", icon: Palette, title: "Style the QR", body: "Pick from 17 presets or fine-tune shapes, colours and a centre element." },
             { n: "3", icon: Share2, title: "Share it", body: "Show fullscreen, export PNG/SVG/.vcf, or make a wallpaper. No app needed to scan." },
           ].map((s) => {
@@ -248,7 +248,7 @@ export function ShowcaseScreen() {
 
       {/* install */}
       <section className="mx-auto max-w-2xl px-6 pb-16">
-        <h2 className="font-display text-2xl font-medium tracking-tight">Get Vello</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">Get Slate</h2>
         <p className="mt-1 text-[13px] text-muted-foreground">
           Install the PWA from your browser, or wait for native apps.
         </p>

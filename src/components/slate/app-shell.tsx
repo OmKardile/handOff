@@ -207,7 +207,7 @@ export function ScreenHeader({
   );
 }
 
-/** The Vello wordmark. */
+/** The Slate wordmark. */
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={cn("font-display font-semibold tracking-tight", className)}>

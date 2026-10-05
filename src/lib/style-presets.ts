@@ -1,5 +1,5 @@
 /**
- * Vello QR style presets — 17 built-in looks.
+ * Slate QR style presets — 17 built-in looks.
  * Modules / plate / extras. Hex values are a starting palette.
  * Banned words never appear in copy.
  */

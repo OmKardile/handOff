@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { X, Copy, Check } from "lucide-react";
-import { useVello } from "@/lib/store";
+import { useSlate } from "@/lib/store";
 import { useView } from "../view-context";
 import { QrPreview } from "../qr-preview";
 import { getQrSizeInfo } from "@/lib/qr";
@@ -10,7 +10,7 @@ import { getFieldBytes, getTotalBytes } from "@/lib/qr-insights";
 import { toast } from "sonner";
 
 export function FullscreenQr() {
-  const { card, style, photo } = useVello();
+  const { card, style, photo } = useSlate();
   const { navigate } = useView();
   const [size, setSize] = React.useState(320);
   const [copiedMeta, setCopiedMeta] = React.useState(false);

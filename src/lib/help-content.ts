@@ -1,5 +1,5 @@
 /**
- * Vello help content — single source of truth.
+ * Slate help content — single source of truth.
  * Mirrors docs/USER_GUIDE.md, FAQ.md and TROUBLESHOOTING.md.
  * Built into the app at build time; fully offline; no analytics.
  */
@@ -49,11 +49,11 @@ export const HELP_GUIDES: HelpGuide[] = [
     title: "Create your card",
     summary: "Set up your digital business card in under a minute.",
     steps: [
-      { text: "Open Vello. If it's your first time, you'll see the welcome screen." },
+      { text: "Open Slate. If it's your first time, you'll see the welcome screen." },
       { text: "Tap Create your card." },
       { text: "Enter your first and last name (required), then an optional job title and company." },
       { text: "Tap Continue and add your phone, email and website. All optional." },
-      { text: "Optionally add a photo. Vello crops it square and strips location data." },
+      { text: "Optionally add a photo. Slate crops it square and strips location data." },
       { text: "Tap Finish. Your QR appears on the home screen." },
     ],
     related: ["style-qr", "show-qr"],
@@ -67,7 +67,7 @@ export const HELP_GUIDES: HelpGuide[] = [
       { text: "From the home screen, tap Edit." },
       { text: "Expand a section (Identity, Contact, Social links, QR contents) to edit it." },
       { text: "Use the QR contents toggles to choose what appears in the QR." },
-      { text: "Tap Save changes. If the QR payload changed, Vello shows a notice." },
+      { text: "Tap Save changes. If the QR payload changed, Slate shows a notice." },
     ],
     related: ["qr-changed", "qr-contents"],
   },
@@ -105,9 +105,9 @@ export const HELP_GUIDES: HelpGuide[] = [
     id: "scan-check",
     category: "QR and styling",
     title: "How the scan check works",
-    summary: "Vello verifies your styled QR stays scannable.",
+    summary: "Slate verifies your styled QR stays scannable.",
     steps: [
-      { text: "After every style change, Vello renders the QR and decodes it with a QR reader library." },
+      { text: "After every style change, Slate renders the QR and decodes it with a QR reader library." },
       { text: "It compares the decoded result to your contact payload." },
       { text: "It also checks colour contrast between modules and background." },
       { text: "If something might be hard to scan, you'll see an amber warning — never a block." },
@@ -192,7 +192,7 @@ export const HELP_GUIDES: HelpGuide[] = [
     steps: [
       { text: "The Wallet Photo option first shipped on Pixel phones and may not exist on your device." },
       { text: "If it's missing, the lock-screen wallpaper works regardless — see the Wallpaper guide." },
-      { text: "Vello does not use an official Wallet API, because that needs a server and breaks the privacy model." },
+      { text: "Slate does not use an official Wallet API, because that needs a server and breaks the privacy model." },
     ],
     related: ["wallet-save", "wallpaper-apply"],
   },
@@ -223,7 +223,7 @@ export const HELP_GUIDES: HelpGuide[] = [
     summary: "Export a single JSON file with everything, kept entirely offline.",
     steps: [
       { text: "Go to Settings → Backup & restore." },
-      { text: "Tap Export backup. A file named vello-backup-YYYYMMDD.json downloads." },
+      { text: "Tap Export backup. A file named slate-backup-YYYYMMDD.json downloads." },
       { text: "It contains your card, style, photo, settings and custom presets." },
       { text: "Keep it somewhere safe — it has your contact details in plain JSON." },
     ],
@@ -237,8 +237,8 @@ export const HELP_GUIDES: HelpGuide[] = [
     steps: [
       { text: "Go to Settings → Backup & restore." },
       { text: "Tap Restore from file and pick your backup JSON." },
-      { text: "Vello validates the file and replaces your current data after a prompt." },
-      { text: "If the file is invalid or hostile, Vello rejects it safely." },
+      { text: "Slate validates the file and replaces your current data after a prompt." },
+      { text: "If the file is invalid or hostile, Slate rejects it safely." },
     ],
     related: ["backup-export"],
   },
@@ -259,9 +259,9 @@ export const HELP_GUIDES: HelpGuide[] = [
     id: "privacy-policy",
     category: "Backup and privacy",
     title: "The privacy promise",
-    summary: "What Vello stores, and what it never does.",
+    summary: "What Slate stores, and what it never does.",
     steps: [
-      { text: "Vello stores your card, style, photo and settings in this browser's local storage (IndexedDB)." },
+      { text: "Slate stores your card, style, photo and settings in this browser's local storage (IndexedDB)." },
       { text: "It makes zero network requests. No fetch, no WebSocket, no analytics." },
       { text: "No accounts, no cookies, no tracking, no cloud sync." },
       { text: "Data leaves your phone only when you choose to share or export." },
@@ -292,7 +292,7 @@ export const HELP_GUIDES: HelpGuide[] = [
     title: "The \"QR changed\" notice",
     summary: "Why your old shared QR still shows old details.",
     steps: [
-      { text: "Vello's QR is static — it contains your contact directly." },
+      { text: "Slate's QR is static — it contains your contact directly." },
       { text: "If you edit your details, the QR changes. A banner warns you." },
       { text: "Anything you already printed or shared still shows the old details." },
       { text: "Re-export or re-share to update people." },
@@ -306,7 +306,7 @@ export const HELP_GUIDES: HelpGuide[] = [
     summary: "Some fonts don't cover all scripts.",
     steps: [
       { text: "Caption fonts are Latin-only in this build. Devanagari (Hindi, Marathi) names may not render in the chosen caption font." },
-      { text: "Vello falls back to a matching system font when characters aren't covered." },
+      { text: "Slate falls back to a matching system font when characters aren't covered." },
       { text: "For best results, use a name in the script the font supports, or pick a different caption font." },
     ],
     related: ["style-qr"],
@@ -319,7 +319,7 @@ export const HELP_GUIDES: HelpGuide[] = [
     steps: [
       { text: "Browsers may clear IndexedDB if storage is under pressure or you haven't visited in a while." },
       { text: "In Settings, check the Persistent storage status. If it says \"Not protected\", tap Enable persistence." },
-      { text: "Installing Vello as a PWA improves persistence." },
+      { text: "Installing Slate as a PWA improves persistence." },
       { text: "Export a backup regularly so you can restore if storage is cleared." },
     ],
     related: ["backup-export", "privacy-policy"],
@@ -339,12 +339,12 @@ export const HELP_GUIDES: HelpGuide[] = [
 
   // ===== About =====
   {
-    id: "about-vello",
+    id: "about-slate",
     category: "About",
-    title: "About Vello",
+    title: "About Slate",
     summary: "What it is, what it isn't, and who made it.",
     steps: [
-      { text: "Vello is a privacy-first digital business card. It lives only on your device." },
+      { text: "Slate is a privacy-first digital business card. It lives only on your device." },
       { text: "It's MIT licensed and open source." },
       { text: "No accounts, no servers, no analytics, no tracking — by design, not by setting." },
       { text: "Designed & developed by Omkar Kardile." },
@@ -354,15 +354,15 @@ export const HELP_GUIDES: HelpGuide[] = [
   {
     id: "install-pwa",
     category: "About",
-    title: "Install Vello as an app",
-    summary: "Add Vello to your home screen for a native-like experience.",
+    title: "Install Slate as an app",
+    summary: "Add Slate to your home screen for a native-like experience.",
     steps: [
       { platform: "android", text: "Android (Chrome): tap the menu → Install app / Add to Home screen." },
       { platform: "iphone", text: "iPhone (Safari): tap Share → Add to Home Screen." },
       { platform: "web", text: "Desktop (Chrome/Edge): click the install icon in the address bar." },
-      { text: "Once installed, Vello works offline and persists storage more reliably." },
+      { text: "Once installed, Slate works offline and persists storage more reliably." },
     ],
-    related: ["about-vello", "storage-cleared"],
+    related: ["about-slate", "storage-cleared"],
   },
 ];
 

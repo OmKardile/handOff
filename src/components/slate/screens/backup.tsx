@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Download, Upload, FileJson, Loader2, Check } from "lucide-react";
-import { useVello } from "@/lib/store";
+import { useSlate } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { exportBackup, importBackup } from "@/lib/storage";
@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export function BackupScreen() {
-  const { card, load } = useVello();
+  const { card, load } = useSlate();
   const { navigate } = useView();
   const [exporting, setExporting] = React.useState(false);
   const [importing, setImporting] = React.useState(false);

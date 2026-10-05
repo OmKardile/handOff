@@ -1,19 +1,19 @@
 /**
- * Vello — brand identity.
+ * Slate — brand identity.
  * Single source of truth for name, tagline, identifiers and brand voice.
  * Nothing here should ever make a network call.
  */
 
 export const BRAND = {
-  name: "Vello",
-  displayName: "Vello",
+  name: "Slate",
+  displayName: "Slate",
   tagline: "One card. One scan. Nothing leaves your phone.",
   oneLiner:
     "A digital business card that lives only on your phone — no app, no server, no network.",
-  slug: "vello",
-  appId: "com.example.vello", // placeholder — change before store submission
-  androidPackage: "com.example.vello",
-  iosBundleId: "com.example.vello",
+  slug: "slate",
+  appId: "com.example.slate", // placeholder — change before store submission
+  androidPackage: "com.example.slate",
+  iosBundleId: "com.example.slate",
   version: "1.0.0",
   /** Brand voice: confident, concise, human, specific. */
   voice: {

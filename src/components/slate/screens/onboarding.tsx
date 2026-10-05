@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import { Camera, ChevronRight, Check, Sparkles } from "lucide-react";
-import { useVello, makeEmptyCard } from "@/lib/store";
+import { useSlate, makeEmptyCard } from "@/lib/store";
 import { useView } from "../view-context";
-import { VelloMark } from "@/app/page";
+import { SlateMark } from "@/app/page";
 import { QrPreview } from "../qr-preview";
 import { processPhoto } from "@/lib/photo";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
@@ -23,7 +23,7 @@ import { toast } from "sonner";
 type Step = "welcome" | "identity" | "contact" | "photo" | "done";
 
 export function Onboarding() {
-  const { completeOnboarding, setPhoto, style, photo } = useVello();
+  const { completeOnboarding, setPhoto, style, photo } = useSlate();
   const { navigate } = useView();
   const [step, setStep] = React.useState<Step>("welcome");
   const [card, setCard] = React.useState<Card>(makeEmptyCard());
@@ -91,7 +91,7 @@ export function Onboarding() {
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="flex items-center gap-2.5"
         >
-          <VelloMark className="h-9 w-9" />
+          <SlateMark className="h-9 w-9" />
           <span className="font-display text-2xl font-semibold tracking-tight">
             {BRAND.name}
           </span>
@@ -121,7 +121,7 @@ export function Onboarding() {
             transition={{ duration: 0.5, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted-foreground"
           >
-            Create your card. Vello makes a QR anyone can scan with their phone
+            Create your card. Slate makes a QR anyone can scan with their phone
             camera to save your contact. No app, no server, no network.
           </motion.p>
         </div>
