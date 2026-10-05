@@ -139,9 +139,9 @@ export function Onboarding() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] flex-col px-6 pt-safe">
+    <div className="flex h-[100dvh] flex-col px-6 pt-safe">
       {/* progress — 7 graticule ticks along the top */}
-      <div className="flex items-center gap-3 py-5">
+      <div className="flex items-center gap-3 py-5 pb-3">
         <button
           onClick={() => setStep(stepIndex === 0 ? "welcome" : steps[stepIndex - 1])}
           className="no-tap -ml-1 text-sm text-muted-foreground"
@@ -162,78 +162,87 @@ export function Onboarding() {
         <span className="chart-label">{stepLabels[step]}</span>
       </div>
 
-      {/* live QR preview */}
-      <div className="mb-6 flex justify-center">
+      {/* Scrollable form area — content scrolls, buttons stay fixed */}
+      <div className="flex-1 overflow-y-auto overscroll-y-contain">
+        {/* live QR preview */}
+        <div className="mb-6 flex justify-center pt-2">
+          <motion.div
+            key={`qr-${step}`}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-3xl border border-border bg-card p-3 shadow-sm"
+          >
+            <QrPreview
+              card={previewCard}
+              style={style}
+              size={140}
+              photoDataUrl={photo?.full}
+            />
+          </motion.div>
+        </div>
+
         <motion.div
-          key={`qr-${step}`}
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-3xl border border-border bg-card p-3 shadow-sm"
+          key={step}
+          initial={{ opacity: 0, x: 16 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         >
-          <QrPreview
-            card={previewCard}
-            style={style}
-            size={140}
-            photoDataUrl={photo?.full}
-          />
+          {step === "identity" && (
+            <IdentityStep
+              firstName={firstName}
+              setFirstName={setFirstName}
+              lastName={lastName}
+              setLastName={setLastName}
+              jobTitle={jobTitle}
+              setJobTitle={setJobTitle}
+              company={company}
+              setCompany={setCompany}
+            />
+          )}
+
+          {step === "contact" && (
+            <ContactStep
+              phone={phone}
+              setPhone={setPhone}
+              email={email}
+              setEmail={setEmail}
+              website={website}
+              setWebsite={setWebsite}
+            />
+          )}
+
+          {step === "photo" && (
+            <PhotoStep photo={photo} onPhoto={handlePhoto} />
+          )}
         </motion.div>
+
+        {/* Scroll hint — fades in when content is scrollable */}
+        <ScrollHint />
       </div>
 
-      <motion.div
-        key={step}
-        initial={{ opacity: 0, x: 16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {step === "identity" && (
-          <IdentityStep
-            firstName={firstName}
-            setFirstName={setFirstName}
-            lastName={lastName}
-            setLastName={setLastName}
-            jobTitle={jobTitle}
-            setJobTitle={setJobTitle}
-            company={company}
-            setCompany={setCompany}
-          />
-        )}
-
-        {step === "contact" && (
-          <ContactStep
-            phone={phone}
-            setPhone={setPhone}
-            email={email}
-            setEmail={setEmail}
-            website={website}
-            setWebsite={setWebsite}
-          />
-        )}
-
-        {step === "photo" && (
-          <PhotoStep photo={photo} onPhoto={handlePhoto} />
-        )}
-      </motion.div>
-
-      <div className="mt-auto pb-8 pt-6">
+      {/* Sticky bottom bar — always visible, never scrolls away */}
+      <div className="border-t border-border bg-background/95 px-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-3 backdrop-blur-sm">
         {step === "photo" ? (
-          <button
+          <motion.button
             onClick={finish}
-            className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-4 text-[15px] font-medium text-background transition-transform active:scale-[0.98]"
+            whileTap={{ scale: 0.96, transition: { duration: 0.1 } }}
+            className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white"
           >
             <Check className="h-4 w-4" />
             Finish
-          </button>
+          </motion.button>
         ) : (
           <div className="flex gap-3">
-            <button
+            <motion.button
               onClick={() => setStep(steps[stepIndex + 1])}
               disabled={step === "identity" && !firstName.trim()}
-              className="no-tap flex flex-1 items-center justify-center gap-2 rounded-full bg-foreground py-4 text-[15px] font-medium text-background transition-transform active:scale-[0.98] disabled:opacity-40"
+              whileTap={{ scale: 0.96, transition: { duration: 0.1 } }}
+              className="no-tap flex flex-1 items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white disabled:opacity-40"
             >
               Continue
               <ChevronRight className="h-4 w-4" />
-            </button>
+            </motion.button>
             {step !== "identity" && (
               <button
                 onClick={() => setStep(steps[stepIndex + 1])}
@@ -249,7 +258,38 @@ export function Onboarding() {
   );
 }
 
-import type { Card } from "@/shared/types";
+/** A subtle scroll hint that appears at the bottom of scrollable content,
+    nudging the user that there's more below. Fades out when scrolled to bottom. */
+function ScrollHint() {
+  const [visible, setVisible] = React.useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const el = ref.current?.parentElement;
+    if (!el) return;
+    function onScroll() {
+      if (!el) return;
+      const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+      setVisible(!atBottom && el.scrollHeight > el.clientHeight + 20);
+    }
+    onScroll();
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div ref={ref} className="flex justify-center" aria-hidden="true">
+      <motion.div
+        animate={{ opacity: visible ? 1 : 0 }}
+        transition={{ duration: 0.2 }}
+        className="pointer-events-none -mt-2 mb-2 flex flex-col items-center gap-1"
+      >
+        <ChevronRight className="h-4 w-4 rotate-90 text-muted-foreground/40" />
+      </motion.div>
+    </div>
+  );
+}
+
 
 function Field({
   label,
