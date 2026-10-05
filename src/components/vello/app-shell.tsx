@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { CreditCard, Palette, Settings as SettingsIcon, HelpCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
@@ -64,12 +64,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       `}</style>
 
       {/* Scrollable content area — the ONLY thing that scrolls.
-          Header (sticky) and the floating dock stay put. Content extends
-          beneath the dock (it floats over content). */}
+          Header (sticky) and the floating dock stay put. Generous bottom
+          padding so content never slides under the floating dock. */}
       <main
         className={cn(
           "relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
-          hideBar ? "pb-0" : "pb-28"
+          hideBar ? "pb-0" : "pb-36"
         )}
       >
         {children}
@@ -86,56 +86,89 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               const active = tab === t.id;
               const Icon = t.icon;
               return (
-                <motion.button
+                <DockItem
                   key={t.id}
+                  label={t.label}
+                  active={active}
                   onClick={() => navigate(t.view)}
-                  whileHover={{ scale: 1.12 }}
-                  whileTap={{ scale: 0.92 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 22 }}
-                  className={cn(
-                    "no-tap group relative flex h-11 w-11 items-center justify-center rounded-full transition-colors",
-                    active ? "text-foreground" : "text-muted-foreground"
-                  )}
-                  aria-current={active ? "page" : undefined}
-                  aria-label={t.label}
-                >
-                  {/* active background highlight — a frosted disc behind the icon */}
-                  {active && (
-                    <motion.span
-                      layoutId="dock-active-bg"
-                      className="absolute inset-0 rounded-full bg-foreground/8"
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
-                  )}
-                  <motion.div
-                    animate={active ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
-                    transition={{ type: "spring", stiffness: 500, damping: 22 }}
-                    className="relative z-10"
-                  >
-                    <Icon
-                      className="h-[22px] w-[22px]"
-                      strokeWidth={active ? 2.4 : 1.8}
-                    />
-                  </motion.div>
-                  {/* macOS dock running indicator — a small dot beneath the active icon */}
-                  {active && (
-                    <motion.span
-                      layoutId="dock-indicator"
-                      className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-clay"
-                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                    />
-                  )}
-                  {/* tooltip label on hover */}
-                  <span className="pointer-events-none absolute -top-9 whitespace-nowrap rounded-full glass-pill px-2.5 py-1 text-[10px] font-medium text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                    {t.label}
-                  </span>
-                </motion.button>
+                  icon={Icon}
+                />
               );
             })}
           </div>
         </nav>
       )}
     </div>
+  );
+}
+
+/** A single macOS-dock-style tab item with hover magnification + tooltip.
+    Tooltip only appears on hover-capable devices (never on touch, never stuck). */
+function DockItem({
+  label,
+  active,
+  onClick,
+  icon: Icon,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+}) {
+  const [hovered, setHovered] = React.useState(false);
+  return (
+    <motion.button
+      onClick={onClick}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      whileHover={{ scale: 1.12 }}
+      whileTap={{ scale: 0.88 }}
+      transition={{ type: "spring", stiffness: 500, damping: 22 }}
+      className={cn(
+        "no-tap relative flex h-11 w-11 items-center justify-center rounded-full transition-colors",
+        active ? "text-foreground" : "text-muted-foreground"
+      )}
+      aria-current={active ? "page" : undefined}
+      aria-label={label}
+    >
+      {/* active background highlight — a frosted disc behind the icon */}
+      {active && (
+        <motion.span
+          layoutId="dock-active-bg"
+          className="absolute inset-0 rounded-full bg-foreground/8"
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        />
+      )}
+      <motion.div
+        animate={active ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
+        transition={{ type: "spring", stiffness: 500, damping: 22 }}
+        className="relative z-10"
+      >
+        <Icon className="h-[22px] w-[22px]" strokeWidth={active ? 2.4 : 1.8} />
+      </motion.div>
+      {/* macOS dock running indicator — a small dot beneath the active icon */}
+      {active && (
+        <motion.span
+          layoutId="dock-indicator"
+          className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-clay"
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        />
+      )}
+      {/* tooltip label — only on hover-capable devices, controlled state (never stuck) */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.span
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.15 }}
+            className="glass-pill pointer-events-none absolute -top-9 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium text-foreground [media:not(hover:hover)]:hidden"
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.button>
   );
 }
 

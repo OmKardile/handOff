@@ -24,6 +24,8 @@ import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
+import { staggerContainer, staggerItem } from "../motion";
 
 export function SettingsScreen() {
   const { settings, setSettings, photo, card, resetAll } = useVello();
@@ -41,7 +43,12 @@ export function SettingsScreen() {
     <div className="mx-auto max-w-md">
       <ScreenHeader title="Settings" />
 
-      <div className="px-5 pb-28 pt-4">
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="show"
+        className="px-5 pb-28 pt-4"
+      >
         {/* appearance */}
         <SectionLabel>Appearance</SectionLabel>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -169,7 +176,7 @@ export function SettingsScreen() {
             No servers. No tracking. Ever.
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -235,7 +242,7 @@ function NavRow({
   return (
     <button
       onClick={onClick}
-      className="no-tap flex w-full items-center gap-3 border-t border-border px-4 py-3.5 text-left"
+      className="no-tap flex w-full items-center gap-3 border-t border-border px-4 py-3.5 text-left transition-colors active:bg-foreground/5"
     >
       <Icon className={cn("h-4 w-4", highlight ? "text-clay" : "text-muted-foreground")} />
       <span className="flex-1 text-[14px]">{label}</span>
