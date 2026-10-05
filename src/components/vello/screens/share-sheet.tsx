@@ -377,7 +377,7 @@ function PreviewModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-sm pt-safe"
+        className="glass-strong fixed inset-0 z-50 flex flex-col pt-safe"
         role="dialog"
         aria-label={`Preview ${layoutName} layout`}
       >

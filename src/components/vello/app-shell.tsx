@@ -31,7 +31,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {!hideBar && (
         <nav
-          className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/85 backdrop-blur-xl pb-safe"
+          className="glass fixed inset-x-0 bottom-0 z-40 border-t border-border/60 pb-safe"
           aria-label="Primary"
         >
           <div className="mx-auto flex max-w-md items-stretch justify-around px-2">
@@ -99,19 +99,20 @@ export function ScreenHeader({
 }) {
   const { navigate } = useView();
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur-xl pt-safe">
+    <header className="glass sticky top-0 z-30 flex h-14 items-center gap-1 border-b border-border/60 px-2 pt-safe">
       {onBack && (
         <button
           onClick={onBack}
-          className="no-tap -ml-1 flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 hover:bg-muted"
+          className="no-tap flex h-9 items-center gap-0.5 rounded-full px-2 text-foreground/90 transition-colors hover:bg-foreground/5 active:bg-foreground/10"
           aria-label="Back"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-clay">
+            <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
+          <span className="-ml-0.5 text-[16px] font-normal">Back</span>
         </button>
       )}
-      <h1 className="flex-1 truncate font-display text-lg font-medium tracking-tight">
+      <h1 className={cn("flex-1 truncate font-display text-[17px] font-semibold tracking-tight", onBack && "text-center")}>
         {title}
       </h1>
       {helpGuideId && (
@@ -123,10 +124,10 @@ export function ScreenHeader({
               navigate("help-guide");
             }
           }}
-          className="no-tap flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="no-tap flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 active:bg-foreground/10 hover:text-foreground"
           aria-label={`Help with ${title}`}
         >
-          <HelpCircle className="h-4 w-4" strokeWidth={1.75} />
+          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </button>
       )}
       {action}

@@ -80,7 +80,7 @@ export function HomeScreen() {
         <Wordmark className="text-xl" />
         <button
           onClick={() => navigate("privacy")}
-          className="no-tap flex h-9 items-center gap-1.5 rounded-full border border-border px-3 text-[12px] font-medium text-muted-foreground"
+          className="glass no-tap flex h-9 items-center gap-1.5 rounded-full border border-border/50 px-3 text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground"
         >
           <ShieldCheck className="h-3.5 w-3.5 text-clay" />
           On device
@@ -111,7 +111,7 @@ export function HomeScreen() {
 
       {/* hero card */}
       <Reveal delay={0.05}>
-      <div className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
+      <div className="glass-card relative overflow-hidden rounded-[28px] border border-border/50">
         {/* name plate */}
         <div className="flex items-start justify-between gap-4 px-6 pt-6">
           <div className="min-w-0 flex-1">
@@ -299,10 +299,10 @@ function PrimaryAction({
     <button
       onClick={onClick}
       className={cn(
-        "no-tap flex flex-col items-center gap-2 rounded-2xl border py-4 transition-all active:scale-[0.97]",
+        "no-tap flex flex-col items-center gap-2 rounded-2xl border py-4 transition-all active:scale-[0.96]",
         highlight
-          ? "border-foreground bg-foreground text-background"
-          : "border-border bg-card text-foreground hover:border-clay/40"
+          ? "border-foreground bg-foreground text-background shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)]"
+          : "glass-card border-border/50 text-foreground hover:border-clay/40"
       )}
     >
       <Icon className="h-5 w-5" strokeWidth={2} />

@@ -64,22 +64,22 @@ export function FullscreenQr() {
   const fullName = [card.firstName, card.lastName].filter(Boolean).join(" ");
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background pt-safe">
-      <div className="flex items-center justify-between p-4">
+    <div className="fixed inset-0 z-50 flex flex-col bg-background/95 pt-safe backdrop-blur-2xl">
+      <div className="glass flex items-center justify-between border-b border-border/40 px-4 py-3">
         <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Tap to scan
         </span>
         <button
           onClick={() => navigate("home")}
-          className="no-tap flex h-10 w-10 items-center justify-center rounded-full bg-muted text-foreground"
+          className="no-tap flex h-8 w-8 items-center justify-center rounded-full bg-foreground/8 text-foreground transition-colors hover:bg-foreground/15 active:scale-95"
           aria-label="Close"
         >
-          <X className="h-5 w-5" />
+          <X className="h-[18px] w-[18px]" strokeWidth={2.2} />
         </button>
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="rounded-3xl bg-card p-5 shadow-lg">
+        <div className="glass-card rounded-[28px] p-5">
           <QrPreview
             card={card}
             style={style}
