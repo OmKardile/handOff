@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { CreditCard, Palette, Settings as SettingsIcon, HelpCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
@@ -102,8 +102,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** A single macOS-dock-style tab item with hover magnification + tooltip.
-    Tooltip only appears on hover-capable devices (never on touch, never stuck). */
+/** A single macOS-dock-style tab item with hover magnification.
+    No tooltip — on mobile they get stuck; the icons are self-explanatory. */
 function DockItem({
   label,
   active,
@@ -115,12 +115,9 @@ function DockItem({
   onClick: () => void;
   icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }) {
-  const [hovered, setHovered] = React.useState(false);
   return (
     <motion.button
       onClick={onClick}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
       whileHover={{ scale: 1.12 }}
       whileTap={{ scale: 0.88 }}
       transition={{ type: "spring", stiffness: 500, damping: 22 }}
@@ -154,20 +151,6 @@ function DockItem({
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
         />
       )}
-      {/* tooltip label — only on hover-capable devices, controlled state (never stuck) */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.span
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.15 }}
-            className="glass-pill pointer-events-none absolute -top-9 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium text-foreground [media:not(hover:hover)]:hidden"
-          >
-            {label}
-          </motion.span>
-        )}
-      </AnimatePresence>
     </motion.button>
   );
 }
@@ -186,8 +169,8 @@ export function ScreenHeader({
 }) {
   const { navigate } = useView();
   return (
-    <header className="glass sticky top-0 z-30 flex h-14 items-center gap-1 border-b border-white/10 px-2 pt-safe">
-      <div className="relative z-10 flex h-full flex-1 items-center gap-1">
+    <header className="glass sticky top-0 z-30 border-b border-white/10 px-2" style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
+      <div className="relative z-10 flex h-14 items-center gap-1">
       {onBack && (
         <button
           onClick={onBack}

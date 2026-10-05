@@ -21,6 +21,7 @@ import { useView } from "../view-context";
 import { ScreenHeader, Wordmark } from "../app-shell";
 import { DevSignature } from "../dev-signature";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
+import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
@@ -65,14 +66,11 @@ export function SettingsScreen() {
               <Vibrate className="h-4 w-4 text-muted-foreground" />
               <span className="text-[14px]">Haptics</span>
             </div>
-            <button
-              onClick={() => setSettings((s) => ({ ...s, haptics: !s.haptics }))}
-              className={cn("no-tap relative h-6 w-10 rounded-full transition-colors", settings.haptics ? "bg-clay" : "bg-muted")}
-              role="switch"
-              aria-checked={settings.haptics}
-            >
-              <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", settings.haptics ? "translate-x-[18px]" : "translate-x-0.5")} />
-            </button>
+            <Switch
+              checked={settings.haptics}
+              onCheckedChange={(v) => setSettings((s) => ({ ...s, haptics: v }))}
+              aria-label="Haptics"
+            />
           </div>
         </div>
 

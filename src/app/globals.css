@@ -175,12 +175,12 @@
     background: var(--clay);
     color: #fff;
   }
-  /* Safe-area aware */
+  /* Safe-area aware — with sensible fallbacks for non-notch environments */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   .pt-safe {
-    padding-top: env(safe-area-inset-top, 0px);
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
   }
 }
 
