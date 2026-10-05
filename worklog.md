@@ -237,3 +237,45 @@ Unresolved / next-phase:
 - The drag-reorder uses TouchSensor with a 180ms delay to allow scrolling; consider a visible "drag mode" affordance on touch
 - Consider persisting font recents/favourites into the backup bundle (currently localStorage, not in IndexedDB backup) — small follow-up
 - The Framer Motion ViewTransition uses AnimatePresence mode="wait" — verify no fl! icker on fast nav; consider "popLayout" if issues appear
+
+---
+Task ID: CRON-3 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). Previous round added Framer Motion, drag-reorder social links, contextual help, font recents/favourites, designed empty state.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 92 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → home → studio (Surprise me + scan check verified — showed "Couldn't verify" warning on a low-contrast random style, confirming the scan check works) → share → wallpaper. No console errors, no runtime errors.
+- NEW FEATURE: Share-card layout variants (4 designed layouts, 1080×1350 PNG each):
+  - Hairline: minimal editorial — light plate, top/bottom hairlines, clay eyebrow, centered QR, name in Fraunces, "Scan to save my contact" footer
+  - Plaque: dark plaque — ink background, inset white plate for QR, clay accent rule, light name
+  - Ticket: notched ticket — header band "VELLO · CONTACT", perforated dashed line with circle notches, QR top half, details bottom half
+  - Polaroid: photo-first — warm backdrop, white polaroid frame with shadow, cover-fit photo (or QR fallback), italic Fraunces caption, small QR badge top-right so it's always scannable
+  - Added `exportShareCard()`, `SHARE_CARD_LAYOUTS`, `ShareCardLayout` type to src/lib/export.ts
+  - Added a "Share-card layouts" section to the Share sheet with a 2×2 grid of selectable tiles, each with an SVG thumbnail preview (LayoutThumb component), description, and a single "Export <layout>" button
+  - Selecting a tile highlights it (clay border + check badge); double-click exports immediately
+  - Browser-verified: Hairline and Ticket both exported successfully (toast "Shared"), no errors
+- STYLING POLISH: Onboarding animations:
+  - Welcome screen: staggered fade-in for wordmark, hero headline (delay 0.08s), body copy (0.18s), privacy list (staggerContainer/staggerItem), CTA button (0.32s)
+  - Step transitions: QR preview scales in (key=step), step content slides in from the right (x: 16 → 0) on each step change
+  - All using the shared motion.tsx primitives + framer-motion directly
+- STYLING POLISH: QR preview skeleton:
+  - Replaced the plain spinner with a designed skeleton: a muted grid pattern mimicking QR modules, three finder-eye placeholder borders in the corners, and a shimmer sweep animation
+  - Uses CSS custom property `var(--muted)` so it adapts to light/dark themes
+  - Grid size scales with the preview size
+
+Stage Summary:
+- 1 new feature (4 share-card layouts) + 2 styling polish items (onboarding animations, QR skeleton)
+- New code: SHARE_CARD_LAYOUTS + exportShareCard + 4 layout renderers + LayoutThumb in share-sheet.tsx; motion wrappers in onboarding.tsx; skeleton in qr-preview.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 92 files no network calls
+- Browser-verified: share-card layouts render with SVG thumbnails, Hairline + Ticket export successfully (toast "Shared"), onboarding animations play without errors, no console errors
+- Screenshots saved: qa-onboarding-animated, qa-share-layouts
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- Consider a "preview" modal for share-card layouts before export (currently export-only)
+- The Polaroid layout uses Fraunces italic as a Caveat fallback — install @fontsource/caveat for true handwritten caption
+- Consider adding the 4 share-card layouts to the showcase page's demo
+- The QR skeleton grid uses a 45° hatched pattern; could refine to look more like actual QR modules

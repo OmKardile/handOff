@@ -14,7 +14,8 @@ import type { ModuleShape, EyeShape, QrStyle, Card } from "@/shared/types";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useFontMemory } from "@/lib/font-memory";
-import { Heart, Clock } from "lucide-react";
+import { useStyleRecents } from "@/lib/style-memory";
+import { Heart, Clock, History } from "lucide-react";
 
 const SHAPES: { id: ModuleShape; label: string }[] = [
   { id: "square", label: "Square" },
@@ -42,6 +43,7 @@ export function StudioScreen() {
   const [scanMsg, setScanMsg] = React.useState<string>("");
   const checkRef = React.useRef<HTMLCanvasElement | null>(null);
   const { remember: rememberFont } = useFontMemory();
+  const { recentStyles, remember: rememberStyle } = useStyleRecents();
 
   // scan check (debounced)
   React.useEffect(() => {
@@ -131,10 +133,22 @@ export function StudioScreen() {
 
         {tab === "Presets" && (
           <div className="space-y-5">
-            <PresetGroup title="Quiet & editorial" presets={STYLE_PRESETS.filter((p) => p.group === "quiet")} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
-            <PresetGroup title="Warm & colourful" presets={STYLE_PRESETS.filter((p) => p.group === "warm")} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
-            <PresetGroup title="Cool & fresh" presets={STYLE_PRESETS.filter((p) => p.group === "cool")} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
-            <PresetGroup title="Bolder social" presets={STYLE_PRESETS.filter((p) => p.group === "social")} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
+            {recentStyles.length > 0 && (
+              <RecentStylesStrip
+                styles={recentStyles}
+                currentId={style.presetId}
+                onApply={(id) => {
+                  applyPreset(id);
+                  rememberStyle(id);
+                }}
+                card={card}
+                photo={photo?.full}
+              />
+            )}
+            <PresetGroup title="Quiet & editorial" presets={STYLE_PRESETS.filter((p) => p.group === "quiet")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
+            <PresetGroup title="Warm & colourful" presets={STYLE_PRESETS.filter((p) => p.group === "warm")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
+            <PresetGroup title="Cool & fresh" presets={STYLE_PRESETS.filter((p) => p.group === "cool")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
+            <PresetGroup title="Bolder social" presets={STYLE_PRESETS.filter((p) => p.group === "social")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
             {presets.length > 0 && (
               <PresetGroup title="Your presets" presets={presets.map((p) => ({ id: p.id, name: p.name, group: "quiet" as const, captionFontLabel: p.style.captionFont, style: p.style }))} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
             )}

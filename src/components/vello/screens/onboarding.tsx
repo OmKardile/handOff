@@ -8,6 +8,8 @@ import { VelloMark } from "@/app/page";
 import { QrPreview } from "../qr-preview";
 import { processPhoto } from "@/lib/photo";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
+import { Reveal, staggerContainer, staggerItem } from "../motion";
+import { motion } from "framer-motion";
 import {
   normalizeName,
   normalizePhone,
@@ -83,18 +85,28 @@ export function Onboarding() {
   if (step === "welcome") {
     return (
       <div className="flex min-h-[100dvh] flex-col px-6 pt-16 pb-10">
-        <div className="flex items-center gap-2.5">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          className="flex items-center gap-2.5"
+        >
           <VelloMark className="h-9 w-9" />
           <span className="font-display text-2xl font-semibold tracking-tight">
             {BRAND.name}
           </span>
-        </div>
+        </motion.div>
 
         <div className="mt-16 flex-1">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-clay">
             Digital business card
           </p>
-          <h1 className="mt-3 font-display text-[2.6rem] font-medium leading-[1.05] tracking-tight">
+          <motion.h1
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-3 font-display text-[2.6rem] font-medium leading-[1.05] tracking-tight"
+          >
             One card.
             <br />
             One scan.
@@ -102,29 +114,46 @@ export function Onboarding() {
             <span className="text-muted-foreground">Nothing leaves</span>
             <br />
             <span className="text-muted-foreground">your phone.</span>
-          </h1>
-          <p className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted-foreground">
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted-foreground"
+          >
             Create your card. Vello makes a QR anyone can scan with their phone
             camera to save your contact. No app, no server, no network.
-          </p>
+          </motion.p>
         </div>
 
-        <ul className="mb-8 space-y-2">
+        <motion.ul
+          variants={staggerContainer}
+          initial="hidden"
+          animate="show"
+          className="mb-8 space-y-2"
+        >
           {PRIVACY_PROMISE.slice(0, 4).map((p) => (
-            <li key={p} className="flex items-center gap-2 text-[13px] text-muted-foreground">
+            <motion.li
+              key={p}
+              variants={staggerItem}
+              className="flex items-center gap-2 text-[13px] text-muted-foreground"
+            >
               <span className="h-1 w-1 rounded-full bg-clay" />
               {p}
-            </li>
+            </motion.li>
           ))}
-        </ul>
+        </motion.ul>
 
-        <button
+        <motion.button
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
           onClick={() => setStep("identity")}
           className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-4 text-[15px] font-medium text-background transition-transform active:scale-[0.98]"
         >
           Create your card
           <ChevronRight className="h-4 w-4" />
-        </button>
+        </motion.button>
         <p className="mt-3 text-center text-[11px] text-muted-foreground">
           Takes 30 seconds. Everything stays on this device.
         </p>
@@ -159,43 +188,56 @@ export function Onboarding() {
 
       {/* live QR preview */}
       <div className="mb-6 flex justify-center">
-        <div className="rounded-3xl border border-border bg-card p-3 shadow-sm">
+        <motion.div
+          key={`qr-${step}`}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="rounded-3xl border border-border bg-card p-3 shadow-sm"
+        >
           <QrPreview
             card={previewCard}
             style={style}
             size={140}
             photoDataUrl={photo?.full}
           />
-        </div>
+        </motion.div>
       </div>
 
-      {step === "identity" && (
-        <IdentityStep
-          firstName={firstName}
-          setFirstName={setFirstName}
-          lastName={lastName}
-          setLastName={setLastName}
-          jobTitle={jobTitle}
-          setJobTitle={setJobTitle}
-          company={company}
-          setCompany={setCompany}
-        />
-      )}
+      <motion.div
+        key={step}
+        initial={{ opacity: 0, x: 16 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {step === "identity" && (
+          <IdentityStep
+            firstName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            jobTitle={jobTitle}
+            setJobTitle={setJobTitle}
+            company={company}
+            setCompany={setCompany}
+          />
+        )}
 
-      {step === "contact" && (
-        <ContactStep
-          phone={phone}
-          setPhone={setPhone}
-          email={email}
-          setEmail={setEmail}
-          website={website}
-          setWebsite={setWebsite}
-        />
-      )}
+        {step === "contact" && (
+          <ContactStep
+            phone={phone}
+            setPhone={setPhone}
+            email={email}
+            setEmail={setEmail}
+            website={website}
+            setWebsite={setWebsite}
+          />
+        )}
 
-      {step === "photo" && (
-        <PhotoStep photo={photo} onPhoto={handlePhoto} />
-      )}
+        {step === "photo" && (
+          <PhotoStep photo={photo} onPhoto={handlePhoto} />
+        )}
+      </motion.div>
 
       <div className="mt-auto pb-8 pt-6">
         {step === "photo" ? (

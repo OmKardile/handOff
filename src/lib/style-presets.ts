@@ -366,6 +366,7 @@ export const QR_FONTS: { family: string; label: string; category: string }[] = [
   { family: "Instrument Sans", label: "Instrument Sans", category: "Sans" },
   { family: "Space Grotesk", label: "Space Grotesk", category: "Sans" },
   { family: "JetBrains Mono", label: "JetBrains Mono", category: "Mono" },
+  { family: "Caveat", label: "Caveat", category: "Handwritten" },
 ];
 
 /** Random but scannable "Surprise me" — pick a preset, randomise a few safe params. */
