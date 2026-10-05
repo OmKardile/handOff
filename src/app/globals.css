@@ -49,52 +49,68 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ===== HandOff Design System — Vermilion Editorial Palette =====
-   Warm-white canvas, charcoal text, navy sections, one vermilion accent.
-   WCAG AA verified. Dark mode builds depth with lighter surfaces, not shadows.
-   QR plates stay light in both themes (#FBF9F5 plate, #16161A modules). */
+/* ===== HandOff — ARCHIPELAGO Design System =====
+   The app is a calm nautical chart. Each feature is an island in a quiet sea.
+   Visual language: editorial cartography — hairlines, graticule ticks, contour
+   lines, tiny spaced-caps chart labels. Dark mode is the "night chart".
+
+   Palette: chart paper #F6F3EE, ink navy #0E1B33, vermilion beacon #B93D17,
+   brass instrument #8A6A1F. QR plates stay light in both themes.
+
+   Guardrails: no glassmorphism, no neon, no gradient buttons. AA contrast.
+   Max 3 font families: display serif (Fraunces), sans (Instrument Sans), mono labels. */
 :root {
   --radius: 0.75rem;
 
-  /* Core palette — light */
-  --paper: #F6F3EE;          /* canvas (warm white) */
-  --ink: #16161A;           /* text primary */
-  --clay: #B93D17;           /* accent (vermilion) */
+  /* Core palette — light (day chart) */
+  --paper: #F6F3EE;          /* chart paper (canvas) */
+  --ink: #16161A;           /* text primary (ink) */
+  --clay: #B93D17;           /* beacon accent (vermilion) */
   --clay-soft: #F6E3DA;     /* accent subtle fill */
-  --navy: #0E1B33;           /* strategic dark sections */
-  --brass: #8A6A1F;         /* secondary accent (rare) */
+  --navy: #0E1B33;           /* ink navy (strategic dark sections, chart ink) */
+  --brass: #8A6A1F;         /* instrument details (rare) */
 
-  /* Shadcn-compatible token mapping */
-  --background: #F6F3EE;     /* canvas */
-  --foreground: #16161A;     /* text primary */
-  --card: #FBF9F5;           /* surface */
+  /* Surface hierarchy */
+  --background: #F6F3EE;     /* chart paper */
+  --foreground: #16161A;     /* ink */
+  --card: #FBF9F5;           /* surface (island) */
   --card-foreground: #16161A;
   --popover: #FBF9F5;
   --popover-foreground: #16161A;
 
-  --primary: #16161A;        /* text primary (buttons use ink) */
+  --primary: #16161A;
   --primary-foreground: #F6F3EE;
-  --secondary: #EFEBE4;     /* surface-2 (sunken/raised) */
+  --secondary: #EFEBE4;     /* surface-2 (sunken waters) */
   --secondary-foreground: #16161A;
   --muted: #EFEBE4;
-  --muted-foreground: #6E6A62;  /* text muted */
-  --accent: #B93D17;        /* vermilion */
-  --accent-foreground: #FFFFFF; /* text on accent (light: white) */
+  --muted-foreground: #6E6A62;
+  --accent: #B93D17;        /* vermilion beacon */
+  --accent-foreground: #FFFFFF;
   --destructive: #B42318;
-  --border: #E3DED5;        /* hairline border */
+  --border: #E3DED5;        /* hairline (chart lines) */
   --input: #E3DED5;
-  --ring: #B93D17;           /* focus ring = accent */
+  --ring: #B93D17;
 
-  /* Extended palette */
-  --accent-press: #9F3212;   /* accent pressed state */
-  --accent-fill: #F6E3DA;   /* accent subtle fill */
-  --text-2: #5B5750;         /* text secondary */
-  --text-3: #6E6A62;         /* text muted */
+  /* Extended */
+  --accent-press: #9F3212;
+  --accent-fill: #F6E3DA;
+  --text-2: #5B5750;
+  --text-3: #6E6A62;
   --success: #2E6B45;
   --warning: #8F5A00;
   --danger: #B42318;
 
-  /* Elevation shadows — layered, subtle, physical */
+  /* Chart-specific tokens */
+  --graticule-color: rgba(14, 27, 51, 0.06);   /* faint navy grid lines */
+  --graticule-major: rgba(14, 27, 51, 0.1);     /* major grid lines */
+  --contour-color: rgba(14, 27, 51, 0.04);      /* contour lines */
+  --chart-label: #6E6A62;                        /* chart label text */
+  --chart-label-size: 9px;                       /* tiny spaced-caps */
+  --chart-label-tracking: 0.15em;
+  --hairline-width: 0.5px;                      /* chart hairline width */
+  --island-radius: 16px;                         /* island card radius */
+
+  /* Elevation shadows — subtle, like a paper object on a chart */
   --elevation-subtle: 0 1px 2px rgba(22, 22, 26, 0.04), 0 2px 6px rgba(22, 22, 26, 0.03);
   --elevation-card: 0 4px 12px rgba(22, 22, 26, 0.05), 0 1px 3px rgba(22, 22, 26, 0.03);
   --elevation-sheet: 0 -8px 24px rgba(22, 22, 26, 0.08), 0 -2px 6px rgba(22, 22, 26, 0.04);
@@ -129,32 +145,32 @@
   --sidebar-ring: #B93D17;
 }
 
-/* ===== Dark mode: depth from lighter surfaces, not shadows =====
+/* ===== Dark mode: "night chart" =====
    Canvas → surface → surface-2 steps UP in lightness.
-   Accent text on accent = charcoal (#111113), NOT white (white on dark accent = 2.9:1, fails). */
+   Accent text on accent = charcoal (#111113), NOT white. */
 .dark {
-  --paper: #111113;          /* canvas (deep charcoal) */
-  --ink: #F3F0EA;           /* text primary */
-  --clay: #F2704A;           /* accent (vermilion, brightened for dark) */
-  --clay-soft: #3A1F17;     /* accent subtle fill */
-  --navy: #0E1B33;           /* same navy in both themes */
-  --brass: #D2B061;         /* brass, brightened */
+  --paper: #111113;
+  --ink: #F3F0EA;
+  --clay: #F2704A;
+  --clay-soft: #3A1F17;
+  --navy: #0E1B33;
+  --brass: #D2B061;
 
   --background: #111113;
   --foreground: #F3F0EA;
-  --card: #1A1A1D;           /* surface */
+  --card: #1A1A1D;
   --card-foreground: #F3F0EA;
   --popover: #1A1A1D;
   --popover-foreground: #F3F0EA;
 
   --primary: #F3F0EA;
   --primary-foreground: #111113;
-  --secondary: #232327;     /* surface-2 (raised) */
+  --secondary: #232327;
   --secondary-foreground: #F3F0EA;
   --muted: #232327;
-  --muted-foreground: #9A958C;  /* text muted */
-  --accent: #F2704A;        /* vermilion, brightened */
-  --accent-foreground: #111113;  /* DARK text on accent (NOT white — charcoal 6.5:1) */
+  --muted-foreground: #9A958C;
+  --accent: #F2704A;
+  --accent-foreground: #111113;
   --destructive: #FF8A80;
   --border: #2E2E33;
   --input: #2E2E33;
@@ -168,7 +184,12 @@
   --warning: #E0A340;
   --danger: #FF8A80;
 
-  /* Dark mode elevation shadows */
+  /* Night chart graticule — dimmer */
+  --graticule-color: rgba(255, 255, 255, 0.04);
+  --graticule-major: rgba(255, 255, 255, 0.07);
+  --contour-color: rgba(255, 255, 255, 0.03);
+  --chart-label: #9A958C;
+
   --elevation-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
   --elevation-card: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
   --elevation-sheet: 0 -8px 24px rgba(0, 0, 0, 0.4), 0 -2px 6px rgba(0, 0, 0, 0.2);
@@ -249,144 +270,82 @@
     border-top: 1px solid var(--border);
   }
 
-  /* ===== iOS 27 Liquid Glass + Ambient Mesh + Paper Grain =====
-     Three layers working together:
-     1. Ambient mesh gradient (vibrant drifting orbs) — the BACKGROUND that glass refracts
-     2. Liquid glass surfaces (backdrop-blur + translucency + specular + borders + shadows)
-     3. Paper grain texture (subtle noise overlay on everything)
+  /* ===== ARCHIPELAGO — Nautical Chart Visual Language =====
+     No glassmorphism. Depth from hairlines, elevation shadows, and surface hierarchy.
+     Surfaces are solid cards (islands) with thin borders + elevation shadows. */
 
-     Glass = iOS 27 Liquid Glass material:
-     - Translucent white/black background (not opaque)
-     - backdrop-filter: blur + saturate (the frost)
-     - 1px semi-transparent border (edge definition)
-     - box-shadow: elevation + specular inset (depth + light-catch)
-     - ::before = top light-leak sheen
-     - ::after = bottom edge-lit rim
-
-     IMPORTANT: .solid-card has NO backdrop-filter (protects canvas compositing).
-     .glass-card HAS backdrop-filter (for non-canvas surfaces like settings cards). */
-
-  /* Shared glass base */
-  .glass, .glass-strong, .glass-pill, .glass-card {
-    position: relative;
-    isolation: isolate;
-  }
-  .glass > *, .glass-strong > *, .glass-pill > *, .glass-card > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ---- Standard glass (header, nav, sticky bars) ---- */
-  .glass {
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  }
-  .glass::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    pointer-events: none; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 40%);
-  }
-
-  /* ---- Strong glass (modals, sheets) ---- */
-  .glass-strong {
-    background: rgba(255, 255, 255, 0.12);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
-    backdrop-filter: blur(32px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-  }
-  .glass-strong::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    pointer-events: none; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 40%);
-  }
-
-  /* ---- Glass pill (floating dock, buttons, badges) ---- */
-  .glass-pill {
-    background: rgba(255, 255, 255, 0.1);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.06),
-      0 8px 24px rgba(0, 0, 0, 0.05);
-  }
-  .glass-pill::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    pointer-events: none; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
-  }
-
-  /* ---- Glass card (settings cards, list groups — NO canvas inside) ---- */
-  .glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: var(--elevation-card);
-  }
-
-  /* ---- Solid card (QR plate — canvas parent, NO backdrop-filter) ---- */
-  .solid-card {
+  /* Island card — a solid surface on the chart */
+  .glass, .glass-card, .solid-card {
     background: var(--card);
     border: 1px solid var(--border);
     box-shadow: var(--elevation-card);
   }
 
-  /* ---- Dark mode glass ----
-     In dark mode the glass is dark-frosted: uses dark translucent bg + white border */
-  .dark .glass {
-    background: rgba(28, 28, 30, 0.08);
-    -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(0.9);
-    backdrop-filter: blur(20px) saturate(160%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  /* Strong surface — modals, sheets */
+  .glass-strong {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--elevation-floating);
   }
-  .dark .glass::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%);
+
+  /* Pill — compass, buttons, badges (solid, no glass) */
+  .glass-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--elevation-subtle);
+  }
+
+  /* Dark mode — same solid approach */
+  .dark .glass, .dark .glass-card, .dark .solid-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--elevation-card);
   }
   .dark .glass-strong {
-    background: rgba(44, 44, 46, 0.12);
-    -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(0.88);
-    backdrop-filter: blur(32px) saturate(170%) brightness(0.88);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
-  }
-  .dark .glass-strong::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 40%);
-  }
-  .dark .glass-pill {
-    background: rgba(44, 44, 46, 0.1);
-    -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-  .dark .glass-pill::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 50%);
-  }
-  .dark .glass-card {
-    background: rgba(44, 44, 46, 0.08);
-    -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--elevation-card);
-  }
-  .dark .solid-card {
     background: var(--card);
     border: 1px solid var(--border);
-    box-shadow: var(--elevation-card);
+    box-shadow: var(--elevation-floating);
+  }
+  .dark .glass-pill {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--elevation-subtle);
+  }
+
+  /* ---- Chart graticule overlay ----
+     Faint navy grid lines + edge ticks, like a nautical chart.
+     Applied as a fixed background layer behind content. */
+  .graticule {
+    background-image:
+      /* major grid lines (every 80px) */
+      linear-gradient(to right, var(--graticule-major) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--graticule-major) 1px, transparent 1px),
+      /* minor grid lines (every 20px) */
+      linear-gradient(to right, var(--graticule-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+    background-position: 0 0;
+  }
+
+  /* Chart label — tiny spaced-caps mono, like "CHART 0427" */
+  .chart-label {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: var(--chart-label-size);
+    letter-spacing: var(--chart-label-tracking);
+    text-transform: uppercase;
+    color: var(--chart-label);
+    font-weight: 500;
+  }
+
+  /* Hairline — 0.5px chart line */
+  .chart-hairline {
+    border: var(--hairline-width) solid var(--border);
+  }
+  .chart-hairline-b {
+    border-bottom: var(--hairline-width) solid var(--border);
+  }
+  .chart-hairline-t {
+    border-top: var(--hairline-width) solid var(--border);
   }
 
   /* Editorial container width */

@@ -20,23 +20,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative flex h-[100dvh] flex-col overflow-hidden paper-grain">
-      {/* Vibrant mesh-gradient background — the colored orbs that glass refracts through.
-          Glass is useless without this layer — it gives the blur something to show. */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] rounded-full opacity-[0.4] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
-        <div className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] rounded-full opacity-[0.3] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
-        <div className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] rounded-full opacity-[0.22] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
-        <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.15] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2E6B45, transparent 60%)" }} />
-        <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] rounded-full opacity-[0.18] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
-      </div>
-      <style>{`
-        @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-30px,40px) scale(1.1) rotate(60deg)} 66%{transform:translate(20px,-20px) scale(0.92) rotate(120deg)} }
-        @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,-40px) scale(1.15)} }
-        @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 40%{transform:translate(-40px,-50px) scale(1.08)} 70%{transform:translate(30px,20px) scale(0.88)} }
-        @keyframes drift4 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 50%{transform:translate(40px,30px) scale(1.12) rotate(180deg)} }
-        @keyframes drift5 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(1.1)} }
-        @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"] { animation: none !important; } }
-      `}</style>
+      {/* ARCHIPELAGO: Nautical chart background.
+          Faint graticule grid lines (like a sea chart) sit behind everything.
+          No mesh gradient orbs — the chart IS the background. */}
+      <div className="graticule pointer-events-none fixed inset-0 z-0" aria-hidden="true" />
 
       {/* Scrollable content area — the ONLY thing that scrolls. */}
       <main
