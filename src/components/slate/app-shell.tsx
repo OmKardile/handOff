@@ -27,15 +27,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           shows live refraction as the user scrolls/moves. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div
-          className="absolute -top-[15%] -right-[10%] h-[60vh] w-[60vh] rounded-full opacity-[0.35] blur-[60px] animate-[drift1_18s_ease-in-out_infinite]"
+          className="absolute -top-[15%] -right-[10%] h-[60vh] w-[60vh] rounded-full opacity-[0.45] blur-[60px] animate-[drift1_18s_ease-in-out_infinite]"
           style={{ background: "radial-gradient(circle, var(--clay), transparent 65%)" }}
         />
         <div
-          className="absolute top-[35%] -left-[18%] h-[55vh] w-[55vh] rounded-full opacity-[0.22] blur-[70px] animate-[drift2_22s_ease-in-out_infinite]"
+          className="absolute top-[35%] -left-[18%] h-[55vh] w-[55vh] rounded-full opacity-[0.3] blur-[70px] animate-[drift2_22s_ease-in-out_infinite]"
           style={{ background: "radial-gradient(circle, var(--ink), transparent 65%)" }}
         />
         <div
-          className="absolute bottom-[-12%] right-[8%] h-[50vh] w-[50vh] rounded-full opacity-[0.20] blur-[80px] animate-[drift3_26s_ease-in-out_infinite]"
+          className="absolute bottom-[-12%] right-[8%] h-[50vh] w-[50vh] rounded-full opacity-[0.28] blur-[80px] animate-[drift3_26s_ease-in-out_infinite]"
           style={{ background: "radial-gradient(circle, var(--clay-soft), transparent 65%)" }}
         />
       </div>
