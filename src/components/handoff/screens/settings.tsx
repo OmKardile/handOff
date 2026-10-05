@@ -50,7 +50,7 @@ export function SettingsScreen() {
         className="px-5 pt-[max(env(safe-area-inset-top,0px),44px)] pb-2"
       >
         <h1 className="font-sans text-[34px] font-bold leading-[1.1] tracking-[-0.025em] text-foreground">
-          Settings
+          Harbour
         </h1>
       </motion.div>
 
@@ -239,9 +239,9 @@ function ThemeRow({
   onChange: (v: "light" | "dark" | "system") => void;
 }) {
   const opts: { id: "light" | "dark" | "system"; label: string; icon: typeof Sun }[] = [
-    { id: "light", label: "Light", icon: Sun },
-    { id: "dark", label: "Dark", icon: Moon },
-    { id: "system", label: "Auto", icon: Monitor },
+    { id: "light", label: "Day chart", icon: Sun },
+    { id: "dark", label: "Night chart", icon: Moon },
+    { id: "system", label: "Follow phone", icon: Monitor },
   ];
   return (
     <div className="flex items-center justify-between px-4 py-3.5">

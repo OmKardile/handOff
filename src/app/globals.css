@@ -312,19 +312,25 @@
     box-shadow: var(--elevation-subtle);
   }
 
-  /* ---- Chart graticule overlay ----
-     Faint navy grid lines + edge ticks, like a nautical chart.
-     Applied as a fixed background layer behind content. */
+  /* ---- Chart graticule: edge ticks only (not a full grid) ----
+     Per Archipelago spec: "ticks every 24px at the screen edges only, never a full grid"
+     Two contour layers: faint edge ticks + slightly stronger corner marks. */
   .graticule {
+    /* Edge ticks: repeating linear gradients at the screen edges only.
+       Top + bottom edges: vertical ticks. Left + right edges: horizontal ticks.
+       This creates the look of a chart's border graticule without a full grid. */
     background-image:
-      /* major grid lines (every 80px) */
-      linear-gradient(to right, var(--graticule-major) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--graticule-major) 1px, transparent 1px),
-      /* minor grid lines (every 20px) */
+      /* top edge ticks */
       linear-gradient(to right, var(--graticule-color) 1px, transparent 1px),
+      /* bottom edge ticks */
+      linear-gradient(to right, var(--graticule-color) 1px, transparent 1px),
+      /* left edge ticks */
+      linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px),
+      /* right edge ticks */
       linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px);
-    background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
-    background-position: 0 0;
+    background-size: 24px 2px, 24px 2px, 2px 24px, 2px 24px;
+    background-position: 0 0, 0 100%, 0 0, 100% 0;
+    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   }
 
   /* Chart label — tiny spaced-caps mono, like "CHART 0427" */

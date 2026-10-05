@@ -85,7 +85,7 @@ export function Onboarding() {
   if (step === "welcome") {
     return (
       <div className="flex min-h-[100dvh] flex-col items-center px-6 pt-[max(env(safe-area-inset-top,0px),60px)] pb-10">
-        {/* Logo + name + tagline — centered like the Knot reference */}
+        {/* ARCHIPELAGO arrival: logo + headline + sub */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -93,30 +93,19 @@ export function Onboarding() {
           className="flex flex-col items-center gap-3"
         >
           <HandOffMark className="h-16 w-16" />
-          <h1 className="font-display text-[2.2rem] font-semibold tracking-tight">
-            {BRAND.name}
+          <h1 className="mt-2 font-display text-[2rem] font-semibold leading-tight tracking-tight text-center">
+            One card. One scan.
+            <br />
+            Nothing leaves your phone.
           </h1>
           <p className="text-[14px] text-muted-foreground">
-            {BRAND.tagline}
+            No account. No signal needed.
           </p>
-        </motion.div>
-
-        {/* Privacy capsule — like the Knot reference: dark pill with shield icon */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-12 flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2.5"
-        >
-          <ShieldCheck className="h-4 w-4 text-emerald-500" />
-          <span className="text-[13px] font-medium text-foreground">
-            No accounts. No servers. Your card never leaves your phone.
-          </span>
         </motion.div>
 
         <div className="flex-1" />
 
-        {/* CTA button — accent color, bottom right aligned like Knot */}
+        {/* CTA — vermilion beacon button */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -127,11 +116,11 @@ export function Onboarding() {
             onClick={() => setStep("identity")}
             className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white transition-transform active:scale-[0.98]"
           >
-            Create your card
+            Make my card
             <ChevronRight className="h-4 w-4" />
           </button>
           <p className="mt-3 text-center text-[11px] text-muted-foreground">
-            Takes 30 seconds. Everything stays on this device.
+            Anyone can scan this with their phone's camera. They don't need an app.
           </p>
         </motion.div>
       </div>

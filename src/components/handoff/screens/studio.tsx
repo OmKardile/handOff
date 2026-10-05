@@ -69,7 +69,7 @@ export function StudioScreen() {
   return (
     <div className="mx-auto max-w-md">
       <ScreenHeader
-        title="Style studio"
+        title="Chartroom"
         onBack={() => navigate("home")}
         helpGuideId="style-qr"
         action={
@@ -121,11 +121,11 @@ export function StudioScreen() {
               <QrPreview card={card} style={style} size={200} photoDataUrl={photo?.full} />
             </div>
           </div>
-          {/* scan indicator */}
-          <div className="mt-2 flex items-center justify-center gap-1.5">
-            <ScanLine className={cn("h-3.5 w-3.5", scanOk ? "text-emerald-500" : "text-amber-500")} />
-            <span className={cn("text-[11px]", scanOk ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400")}>
-              {scanMsg || "Checking…"}
+          {/* Bearing indicator — Archipelago nautical chart language */}
+          <div className="mt-2 flex items-center justify-center gap-2">
+            <span className={cn("h-2 w-2 rounded-full", scanOk ? "bg-emerald-500" : "bg-amber-500")} />
+            <span className="chart-label">
+              {scanOk ? "Bearing: True — scans well" : scanMsg ? `Bearing: Drifting — ${scanMsg}` : "Bearing: Checking…"}
             </span>
           </div>
         </div>
