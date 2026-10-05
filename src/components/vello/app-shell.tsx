@@ -64,11 +64,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       `}</style>
 
       {/* Scrollable content area — the ONLY thing that scrolls.
-          Header (sticky) and tab bar (fixed) stay put. */}
+          Header (sticky) and the floating dock stay put. Content extends
+          beneath the dock (it floats over content). */}
       <main
         className={cn(
           "relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
-          hideBar ? "pb-0" : "pb-24"
+          hideBar ? "pb-0" : "pb-28"
         )}
       >
         {children}
@@ -76,10 +77,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {!hideBar && (
         <nav
-          className="glass fixed inset-x-0 bottom-0 z-40 border-t border-white/10 pb-safe"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),14px)]"
           aria-label="Primary"
         >
-          <div className="relative z-10 mx-auto flex max-w-md items-stretch justify-around px-2">
+          {/* macOS dock–style floating glass capsule */}
+          <div className="glass-pill pointer-events-auto flex items-center gap-1 rounded-full p-1.5 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.25),0_2px_8px_-2px_rgba(0,0,0,0.15)]">
             {TABS.map((t) => {
               const active = tab === t.id;
               const Icon = t.icon;
@@ -87,39 +89,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <motion.button
                   key={t.id}
                   onClick={() => navigate(t.view)}
+                  whileHover={{ scale: 1.12 }}
                   whileTap={{ scale: 0.92 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 22 }}
                   className={cn(
-                    "no-tap relative flex flex-1 flex-col items-center gap-1 py-3 transition-colors",
+                    "no-tap group relative flex h-11 w-11 items-center justify-center rounded-full transition-colors",
                     active ? "text-foreground" : "text-muted-foreground"
                   )}
                   aria-current={active ? "page" : undefined}
                   aria-label={t.label}
                 >
-                  <motion.div
-                    animate={active ? { y: -1 } : { y: 0 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  >
-                    <Icon
-                      className="h-5 w-5 transition-transform"
-                      strokeWidth={active ? 2.25 : 1.75}
-                    />
-                  </motion.div>
-                  <span
-                    className={cn(
-                      "text-[10px] font-medium tracking-wide",
-                      active ? "font-semibold" : ""
-                    )}
-                  >
-                    {t.label}
-                  </span>
+                  {/* active background highlight — a frosted disc behind the icon */}
                   {active && (
                     <motion.span
-                      layoutId="tab-indicator"
-                      className="absolute top-0 h-[2px] w-8 rounded-full bg-clay"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      layoutId="dock-active-bg"
+                      className="absolute inset-0 rounded-full bg-foreground/8"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
                     />
                   )}
+                  <motion.div
+                    animate={active ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 22 }}
+                    className="relative z-10"
+                  >
+                    <Icon
+                      className="h-[22px] w-[22px]"
+                      strokeWidth={active ? 2.4 : 1.8}
+                    />
+                  </motion.div>
+                  {/* macOS dock running indicator — a small dot beneath the active icon */}
+                  {active && (
+                    <motion.span
+                      layoutId="dock-indicator"
+                      className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-clay"
+                      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                    />
+                  )}
+                  {/* tooltip label on hover */}
+                  <span className="pointer-events-none absolute -top-9 whitespace-nowrap rounded-full glass-pill px-2.5 py-1 text-[10px] font-medium text-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                    {t.label}
+                  </span>
                 </motion.button>
               );
             })}
