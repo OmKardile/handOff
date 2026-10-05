@@ -470,6 +470,14 @@
   .no-tap {
     -webkit-tap-highlight-color: transparent;
   }
+  /* Smooth fast transitions for ALL interactive elements */
+  button, a, [role="button"], [role="switch"] {
+    transition: transform 0.1s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  /* Smooth fast transitions for cards/surfaces */
+  .glass, .glass-pill, .glass-card, .solid-card {
+    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.15s ease;
+  }
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,

@@ -168,7 +168,6 @@ export function StudioScreen() {
             <PresetGroup title="Warm & colourful" presets={STYLE_PRESETS.filter((p) => p.group === "warm")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
             <PresetGroup title="Cool & fresh" presets={STYLE_PRESETS.filter((p) => p.group === "cool")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
             <PresetGroup title="Bolder social" presets={STYLE_PRESETS.filter((p) => p.group === "social")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
-            <PresetGroup title="Chart" presets={STYLE_PRESETS.filter((p) => p.group === "chart")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
             {presets.length > 0 && (
               <PresetGroup title="Your presets" presets={presets.map((p) => ({ id: p.id, name: p.name, group: "quiet" as const, captionFontLabel: p.style.captionFont, style: p.style }))} currentId={style.presetId} onApply={applyPreset} card={card} style={style} photo={photo?.full} />
             )}

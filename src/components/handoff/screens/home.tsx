@@ -26,6 +26,7 @@ import { getFieldBytes, getTotalBytes, formatContactText } from "@/lib/qr-insigh
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { QrReveal, Reveal } from "../motion";
+import { motion } from "framer-motion";
 
 export function HomeScreen() {
   const { card, style, photo, qrChanged, dismissQrChanged } = useHandOff();
@@ -306,10 +307,12 @@ function PrimaryAction({
   highlight?: boolean;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
+      whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
+      whileHover={{ scale: 1.03, transition: { duration: 0.15 } }}
       className={cn(
-        "no-tap flex flex-col items-center gap-2 rounded-2xl border py-4 transition-all active:scale-[0.96]",
+        "no-tap flex flex-col items-center gap-2 rounded-2xl border py-4",
         highlight
           ? "border-foreground bg-foreground text-background shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35)]"
           : "border-border bg-card text-foreground hover:border-clay/40"
@@ -317,7 +320,7 @@ function PrimaryAction({
     >
       <Icon className="h-5 w-5" strokeWidth={2} />
       <span className="text-[13px] font-medium">{label}</span>
-    </button>
+    </motion.button>
   );
 }
 
@@ -331,13 +334,15 @@ function SecondaryAction({
   onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
-      className="no-tap flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card py-3.5 text-muted-foreground transition-colors hover:text-foreground active:scale-[0.97]"
+      whileTap={{ scale: 0.93, transition: { duration: 0.1 } }}
+      whileHover={{ scale: 1.03, transition: { duration: 0.15 } }}
+      className="no-tap flex flex-col items-center gap-1.5 rounded-2xl border border-border bg-card py-3.5 text-muted-foreground hover:text-foreground"
     >
       <Icon className="h-4 w-4" strokeWidth={1.75} />
       <span className="text-[12px] font-medium">{label}</span>
-    </button>
+    </motion.button>
   );
 }
 

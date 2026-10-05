@@ -290,13 +290,14 @@ function NavRow({
   highlight?: boolean;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
+      whileTap={{ scale: 0.98, transition: { duration: 0.08 } }}
       className="no-tap flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-foreground/5"
     >
       <Icon className={cn("h-[18px] w-[18px]", highlight ? "text-clay" : "text-muted-foreground")} />
       <span className="flex-1 text-[15px]">{label}</span>
       <ChevronRight className="h-4 w-4 text-muted-foreground" />
-    </button>
+    </motion.button>
   );
 }
