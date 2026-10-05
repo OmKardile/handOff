@@ -416,3 +416,44 @@ Unresolved / next-phase:
 - Consider a "clear recents" option in the studio
 - The backup memories field is optional (backwards-compatible with older backups); document this in DATA_MODEL.md
 - Consider adding the memories to the erase-all flow (currently eraseAll clears IndexedDB but not localStorage)
+
+---
+Task ID: CRON-7 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). Previous rounds added many features; the CRON-6 next-phase noted the erase-all flow doesn't clear localStorage memories.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 93 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarded, applied Ink preset, confirmed localStorage `vello:style-recents` = `["ink"]`. This confirmed the documented gap: eraseAll() only clears IndexedDB.
+- BUG FIX: eraseAll() now also clears localStorage memories:
+  - Updated src/lib/storage.ts: eraseAll() now removes the three localStorage keys (vello:font-recents, vello:font-favs, vello:style-recents) after clearing IndexedDB
+  - Added a separate clearMemories() function for clearing only the localStorage memories without touching the card/photo
+- NEW FEATURE: "Clear recents" option in the studio (requested in CRON-2, CRON-3, CRON-4 next-phase lists):
+  - Added a clearRecents() method to useStyleRecents hook (src/lib/style-memory.ts) that empties the recents array and removes the localStorage key
+  - Added an "onClear" prop to the RecentStylesStrip component with a small "Clear" button (X icon) in the header row, aligned right
+  - Wired into the studio: clicking Clear empties recents and shows a "Recents cleared" toast
+  - Browser-verified: after applying Ink (recents=["ink"]), clicking Clear set localStorage to null and the strip disappeared
+- NEW FEATURE: QR "Copy image" button on the Home screen:
+  - Added a copyQrImage() function that renders the styled QR to a 600px PNG via exportQrPng, then uses the Clipboard API (ClipboardItem + navigator.clipboard.write) to copy the PNG blob to the clipboard
+  - Falls back to downloadBlob if ClipboardItem isn't supported (older browsers/Safari)
+  - Added a "Copy image" button next to the existing "Copy vCard text" button, wrapped both in a flex container
+  - Browser-verified: clicking "Copy image" showed "QR image copied" toast, no errors
+- STYLING POLISH: Home copy buttons layout:
+  - Wrapped the two copy buttons (vCard text + image) in a flex-wrap container so they sit side-by-side on wider screens and stack on narrow ones
+  - Both use the same pill style for visual consistency
+
+Stage Summary:
+- 1 bug fix (eraseAll clears localStorage) + 2 new features (Clear recents, Copy QR image) + 1 styling polish (copy buttons layout)
+- Modified: src/lib/storage.ts (eraseAll + clearMemories), src/lib/style-memory.ts (clearRecents), src/components/vello/screens/{studio,home}.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 93 files no network calls
+- Browser-verified: Clear recents empties localStorage + shows toast, Copy image copies PNG to clipboard + shows toast, no console errors
+- Screenshots: (no new screenshots this round — verified via localStorage state + toast text)
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- The Compare scan-check shows "risky" for minimal cards — consider adjusting the threshold or showing a "low data" hint
+- Consider adding a "clear font favourites" option to the font picker (currently only style recents can be cleared)
+- Document the memories field in DATA_MODEL.md (it's optional/backwards-compatible)
+- Consider a "recents" indicator count badge on the studio tab

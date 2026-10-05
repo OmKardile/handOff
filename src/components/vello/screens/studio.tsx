@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useFontMemory } from "@/lib/font-memory";
 import { useStyleRecents } from "@/lib/style-memory";
-import { Heart, Clock, History } from "lucide-react";
+import { Heart, Clock, History, X } from "lucide-react";
 
 const SHAPES: { id: ModuleShape; label: string }[] = [
   { id: "square", label: "Square" },
@@ -43,7 +43,7 @@ export function StudioScreen() {
   const [scanMsg, setScanMsg] = React.useState<string>("");
   const checkRef = React.useRef<HTMLCanvasElement | null>(null);
   const { remember: rememberFont } = useFontMemory();
-  const { recentStyles, remember: rememberStyle } = useStyleRecents();
+  const { recentStyles, remember: rememberStyle, clearRecents } = useStyleRecents();
 
   // scan check (debounced)
   React.useEffect(() => {
@@ -140,6 +140,10 @@ export function StudioScreen() {
                 onApply={(id) => {
                   applyPreset(id);
                   rememberStyle(id);
+                }}
+                onClear={() => {
+                  clearRecents();
+                  toast("Recents cleared");
                 }}
                 card={card}
                 photo={photo?.full}
@@ -600,20 +604,31 @@ function RecentStylesStrip({
   styles,
   currentId,
   onApply,
+  onClear,
   card,
   photo,
 }: {
   styles: { id: string; name: string; style: QrStyle }[];
   currentId: string | null;
   onApply: (id: string) => void;
+  onClear: () => void;
   card: Card;
   photo?: string;
 }) {
   return (
     <div>
-      <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.15em] text-clay">
-        <History className="h-3 w-3" /> Recently used
-      </p>
+      <div className="mb-2 flex items-center justify-between">
+        <p className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.15em] text-clay">
+          <History className="h-3 w-3" /> Recently used
+        </p>
+        <button
+          onClick={onClear}
+          className="no-tap flex items-center gap-1 text-[10px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          aria-label="Clear recently used styles"
+        >
+          <X className="h-3 w-3" /> Clear
+        </button>
+      </div>
       <div className="flex gap-2 overflow-x-auto pb-1">
         {styles.map((s) => {
           const active = currentId === s.id;

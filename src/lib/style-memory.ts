@@ -52,5 +52,14 @@ export function useStyleRecents() {
       .filter(Boolean) as { id: string; name: string; style: QrStyle }[];
   }, [recents]);
 
-  return { recents, recentStyles, remember };
+  const clearRecents = React.useCallback(() => {
+    setRecents([]);
+    try {
+      localStorage.removeItem(KEY);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  return { recents, recentStyles, remember, clearRecents };
 }

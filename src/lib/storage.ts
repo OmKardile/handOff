@@ -237,7 +237,28 @@ export async function importBackup(json: string): Promise<BackupBundle> {
   return b as BackupBundle;
 }
 
-/** Erase all data and return to onboarding. */
+/** Erase all data and return to onboarding — clears IndexedDB + localStorage memories. */
 export async function eraseAll(): Promise<void> {
   await clear();
+  // also clear the localStorage-backed memories (font/style recents/favourites)
+  const MEMORY_KEYS = ["vello:font-recents", "vello:font-favs", "vello:style-recents"];
+  for (const key of MEMORY_KEYS) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/** Clear only the localStorage-backed memories (font/style recents/favourites). */
+export function clearMemories(): void {
+  const MEMORY_KEYS = ["vello:font-recents", "vello:font-favs", "vello:style-recents"];
+  for (const key of MEMORY_KEYS) {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  }
 }

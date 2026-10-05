@@ -50,6 +50,27 @@ export function HomeScreen() {
     }
   }
 
+  async function copyQrImage() {
+    if (!card) return;
+    try {
+      const { exportQrPng } = await import("@/lib/export");
+      const blob = await exportQrPng(card, style, 600, photo?.full);
+      const w = window as unknown as { ClipboardItem?: typeof ClipboardItem };
+      if (w.ClipboardItem && navigator.clipboard && "write" in navigator.clipboard) {
+        const item = new w.ClipboardItem({ [blob.type]: blob });
+        await navigator.clipboard.write([item]);
+        toast.success("QR image copied — paste into any app");
+      } else {
+        // fallback: download
+        const { downloadBlob } = await import("@/lib/export");
+        downloadBlob(blob, `${card.firstName || "contact"}-qr.png`);
+        toast("Image copied to downloads (clipboard not supported here)");
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Couldn't copy image");
+    }
+  }
+
   return (
     <div className="mx-auto max-w-md px-5 pt-safe">
       {/* top bar */}
@@ -222,13 +243,22 @@ export function HomeScreen() {
           The QR contains a vCard. Stock phone cameras offer{" "}
           <span className="font-medium text-foreground">Add contact</span> — no app needed.
         </p>
-        <button
-          onClick={copyVcard}
-          className="no-tap mx-auto mt-2 flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
-        >
-          {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
-          {copied ? "Copied" : "Copy vCard text"}
-        </button>
+        <div className="mx-auto mt-2 flex flex-wrap items-center justify-center gap-2">
+          <button
+            onClick={copyVcard}
+            className="no-tap flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+            {copied ? "Copied" : "Copy vCard text"}
+          </button>
+          <button
+            onClick={copyQrImage}
+            className="no-tap flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ImageIcon className="h-3 w-3" />
+            Copy image
+          </button>
+        </div>
       </div>
       </Reveal>
     </div>
