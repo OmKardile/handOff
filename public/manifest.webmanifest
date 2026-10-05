@@ -1,0 +1,18 @@
+{
+  "name": "Vello — Digital Business Card",
+  "short_name": "Vello",
+  "description": "One card. One scan. Nothing leaves your phone.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f3ee",
+  "theme_color": "#161619",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
