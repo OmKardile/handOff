@@ -65,7 +65,7 @@ function renderScreen(view: string) {
 
 function LoadingScreen() {
   return (
-    <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background paper-grain">
+    <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background">
       <div className="flex flex-col items-center gap-5">
         {/* animated Slate mark — the S slash draws itself */}
         <svg viewBox="0 0 40 40" className="h-16 w-16" fill="none" aria-hidden>

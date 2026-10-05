@@ -53,7 +53,7 @@ export function ShowcaseScreen() {
   );
 
   return (
-    <div className="min-h-[100dvh] bg-background paper-grain">
+    <div className="min-h-[100dvh] bg-background">
       {/* top bar */}
       <div className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/85 px-4 backdrop-blur-xl pt-safe">
         <button

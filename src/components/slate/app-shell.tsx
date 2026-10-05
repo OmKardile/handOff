@@ -19,70 +19,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const hideBar = view === "onboarding" || view === "fullscreen-qr";
 
   return (
-    <div className="relative flex h-[100dvh] flex-col overflow-hidden paper-grain">
-      {/* Vibrant mesh-gradient background — multiple colored orbs creating
-          a rich, atmospheric canvas that the glass surfaces refract through.
-          Inspired by Stripe/Linear gradient meshes, not boring flat fills. */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        {/* Warm clay — top right */}
-        <div
-          className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] rounded-full opacity-[0.5] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]"
-          style={{ background: "radial-gradient(circle, #b0533a, transparent 60%)" }}
-        />
-        {/* Deep navy — left center */}
-        <div
-          className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] rounded-full opacity-[0.35] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]"
-          style={{ background: "radial-gradient(circle, #1a2e4a, transparent 60%)" }}
-        />
-        {/* Amber gold — bottom right */}
-        <div
-          className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] rounded-full opacity-[0.3] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]"
-          style={{ background: "radial-gradient(circle, #c8a24a, transparent 60%)" }}
-        />
-        {/* Teal — center left */}
-        <div
-          className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.2] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]"
-          style={{ background: "radial-gradient(circle, #2a8a7a, transparent 60%)" }}
-        />
-        {/* Soft rose — top left */}
-        <div
-          className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] rounded-full opacity-[0.25] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]"
-          style={{ background: "radial-gradient(circle, #d97f6a, transparent 60%)" }}
-        />
-      </div>
-      <style>{`
-        @keyframes drift1 {
-          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-          33% { transform: translate(-30px, 40px) scale(1.1) rotate(60deg); }
-          66% { transform: translate(20px, -20px) scale(0.92) rotate(120deg); }
-        }
-        @keyframes drift2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(60px, -40px) scale(1.15); }
-        }
-        @keyframes drift3 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          40% { transform: translate(-40px, -50px) scale(1.08); }
-          70% { transform: translate(30px, 20px) scale(0.88); }
-        }
-        @keyframes drift4 {
-          0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-          50% { transform: translate(40px, 30px) scale(1.12) rotate(180deg); }
-        }
-        @keyframes drift5 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-30px, 40px) scale(1.1); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          [class*="animate-[drift"] {
-            animation: none !important;
-          }
-        }
-      `}</style>
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden bg-background">
+      {/* iOS 27: flat solid background, no gradients, no blobs, no mesh.
+          Depth comes from thin borders + subtle color hierarchy, not shadows or blur. */}
 
-      {/* Scrollable content area — the ONLY thing that scrolls.
-          Header (sticky) and the floating dock stay put. Generous bottom
-          padding so content never slides under the floating dock. */}
+      {/* Scrollable content area — the ONLY thing that scrolls. */}
       <main
         className={cn(
           "relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",

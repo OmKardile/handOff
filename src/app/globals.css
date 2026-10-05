@@ -49,36 +49,37 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ===== Slate Design System — editorial, warm, cinematic restraint ===== */
-/* Inspired by Parichay's systematic token approach + iOS 27 Liquid Glass */
+/* ===== Slate Design System — iOS 27 Refined Minimalism =====
+   Flat, matte, paper-like. Warm cream background, near-black text,
+   thin 1px borders for depth. No glass, no blur, no gradients. */
 :root {
   --radius: 0.75rem;
 
-  /* Warm paper + deep ink palette */
-  --paper: #f6f3ee;          /* warm white */
-  --ink: #161619;             /* deep charcoal, slightly warm */
-  --clay: #b0533a;            /* burnt sienna accent */
+  /* iOS 27 warm paper palette */
+  --paper: #F2F0EB;          /* warm cream (iOS 27 background) */
+  --ink: #1C1C1E;             /* near-black text */
+  --clay: #B85226;            /* burnt sienna accent */
   --clay-soft: #d9a48f;       /* soft clay for tints */
 
-  --background: #f6f3ee;
-  --foreground: #1a1a1f;
-  --card: #fffefb;
-  --card-foreground: #1a1a1f;
-  --popover: #fffefb;
-  --popover-foreground: #1a1a1f;
+  --background: #F2F0EB;
+  --foreground: #1C1C1E;
+  --card: #FFFFFF;             /* pure white cards on cream bg */
+  --card-foreground: #1C1C1E;
+  --popover: #FFFFFF;
+  --popover-foreground: #1C1C1E;
 
-  --primary: #1a1a1f;
-  --primary-foreground: #f6f3ee;
-  --secondary: #efeae1;
-  --secondary-foreground: #1a1a1f;
-  --muted: #efeae1;
-  --muted-foreground: #6b655c;
-  --accent: #b0533a;
-  --accent-foreground: #fffefb;
-  --destructive: #c0392b;
-  --border: #e0d9cd;
-  --input: #e8e2d6;
-  --ring: #b0533a;
+  --primary: #1C1C1E;
+  --primary-foreground: #F2F0EB;
+  --secondary: #E8E5E0;
+  --secondary-foreground: #1C1C1E;
+  --muted: #E8E5E0;
+  --muted-foreground: #8E8E93;
+  --accent: #B85226;
+  --accent-foreground: #FFFFFF;
+  --destructive: #FF3B30;
+  --border: #D1D1D6;           /* iOS 27 light gray border */
+  --input: #D1D1D6;
+  --ring: #B85226;
 
   /* Elevation shadows — layered, subtle, physical (from Parichay) */
   --elevation-subtle: 0 1px 2px rgba(17, 19, 23, 0.04), 0 2px 6px rgba(17, 19, 23, 0.03);
@@ -116,30 +117,30 @@
 }
 
 .dark {
-  --paper: #161619;
-  --ink: #ece7de;
-  --clay: #d17a5c;
-  --clay-soft: #8a4a35;
+  --paper: #1C1C1E;
+  --ink: #F2F0EB;
+  --clay: #D17A5C;
+  --clay-soft: #8A4A35;
 
-  --background: #141417;
-  --foreground: #ece7de;
-  --card: #1d1d21;
-  --card-foreground: #ece7de;
-  --popover: #1d1d21;
-  --popover-foreground: #ece7de;
+  --background: #1C1C1E;
+  --foreground: #F2F0EB;
+  --card: #2C2C2E;
+  --card-foreground: #F2F0EB;
+  --popover: #2C2C2E;
+  --popover-foreground: #F2F0EB;
 
-  --primary: #ece7de;
-  --primary-foreground: #141417;
-  --secondary: #26262b;
-  --secondary-foreground: #ece7de;
-  --muted: #26262b;
-  --muted-foreground: #9b958a;
-  --accent: #d17a5c;
-  --accent-foreground: #141417;
-  --destructive: #e57373;
-  --border: #2e2e34;
-  --input: #33333a;
-  --ring: #d17a5c;
+  --primary: #F2F0EB;
+  --primary-foreground: #1C1C1E;
+  --secondary: #3A3A3C;
+  --secondary-foreground: #F2F0EB;
+  --muted: #3A3A3C;
+  --muted-foreground: #8E8E93;
+  --accent: #D17A5C;
+  --accent-foreground: #1C1C1E;
+  --destructive: #FF453A;
+  --border: #48484A;           /* iOS dark mode border */
+  --input: #48484A;
+  --ring: #D17A5C;
 
   /* Dark mode elevation shadows */
   --elevation-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -222,115 +223,61 @@
     border-top: 1px solid var(--border);
   }
 
-  /* ===== Figma Glassy + Delivery App — EXACT spec match =====
-     Values extracted directly from the Figma files:
-     Glassy: rgba(255,255,255,0.08) bg, 1px rgba(255,255,255,0.15) border,
-             24px radius, 0 4px 30px rgba(0,0,0,0.1) shadow, blur(12px)
-     Delivery: 24px card radius, 12px button radius, borderless,
-               0 4px 20px rgba(0,0,0,0.08) shadow, 20px padding */
+  /* ===== iOS 27 Refined Minimalism =====
+     Flat, matte, paper-like. No glass, no blur, no shadows, no gradients.
+     Depth from thin 1px borders (#D1D1D6) and color hierarchy only.
+     Background: solid warm cream. Cards: solid surface color. */
 
-  /* Shared base */
-  .glass, .glass-strong, .glass-pill {
-    position: relative;
-    isolation: isolate;
-  }
-  .glass > *, .glass-strong > *, .glass-pill > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ---- Standard glass: EXACT Glassy spec ---- */
+  /* Standard surface — header, sticky bars, nav */
   .glass {
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
   }
 
-  /* ---- Strong glass (modals, sheets) ---- */
+  /* Strong surface — modals, sheets */
   .glass-strong {
-    background: rgba(255, 255, 255, 0.12);
-    -webkit-backdrop-filter: blur(16px) saturate(130%);
-    backdrop-filter: blur(16px) saturate(130%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
 
-  /* ---- Glass pill (floating dock, buttons, badges) ---- */
+  /* Pill — floating dock, buttons, badges */
   .glass-pill {
-    background: rgba(255, 255, 255, 0.1);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.08),
-      0 8px 30px rgba(0, 0, 0, 0.06);
-  }
-  .glass-pill::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
 
-  /* ---- Glass card (content surfaces, list groups — NO canvas) ----
-     Has backdrop-filter for true frosted glass. */
+  /* Card — content surfaces, list groups */
   .glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    -webkit-backdrop-filter: blur(12px) saturate(120%);
-    backdrop-filter: blur(12px) saturate(120%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  }
-  /* Solid card for canvas parents (backdrop-filter breaks canvas compositing) */
-  .solid-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
 
-  /* ---- Dark mode ---- */
+  /* Solid card for canvas parents */
+  .solid-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  /* Dark mode — same flat approach */
   .dark .glass {
-    background: rgba(255, 255, 255, 0.05);
-    -webkit-backdrop-filter: blur(12px) saturate(120%) brightness(0.9);
-    backdrop-filter: blur(12px) saturate(120%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    background: var(--background);
+    border-bottom: 1px solid var(--border);
   }
   .dark .glass-strong {
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(16px) saturate(130%) brightness(0.88);
-    backdrop-filter: blur(16px) saturate(130%) brightness(0.88);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
   .dark .glass-pill {
-    background: rgba(255, 255, 255, 0.07);
-    -webkit-backdrop-filter: blur(12px) saturate(120%) brightness(0.9);
-    backdrop-filter: blur(12px) saturate(120%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 8px 30px rgba(0, 0, 0, 0.15);
-  }
-  .dark .glass-pill::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
   .dark .glass-card {
-    background: rgba(255, 255, 255, 0.04);
-    -webkit-backdrop-filter: blur(12px) saturate(120%) brightness(0.9);
-    backdrop-filter: blur(12px) saturate(120%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
   .dark .solid-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    background: var(--card);
+    border: 1px solid var(--border);
   }
 
   /* Editorial container width */
