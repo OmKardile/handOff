@@ -8,16 +8,16 @@ import type { QrStyle } from "@/shared/types";
 
 /** The DEFAULT style — beautiful by default, not generic.
  *  Rounded dots + rounded eyes + warm ink-on-paper palette.
- *  This is what every new user sees before they open the Studio. */
+ *  QR plate stays light (#FBF9F5) in both themes — inverting hurts scanning. */
 export const PLAIN_STYLE: QrStyle = {
   presetId: "ink",
   moduleShape: "rounded",
   eyeShape: "rounded",
   eyeOuterColor: "#16161A",
-  eyeInnerColor: "#b0533a",
+  eyeInnerColor: "#B93D17",
   moduleColor: "#16161A",
   moduleGradient: null,
-  background: "#FBF8F1",
+  background: "#FBF9F5",
   backgroundGradient: null,
   centerType: "none",
   centerValue: "",

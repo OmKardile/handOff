@@ -67,9 +67,9 @@ export function FullscreenQr() {
     <div className="fixed inset-0 z-50 flex flex-col overflow-hidden paper-grain pt-safe">
       {/* ambient mesh — glass needs something to refract */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] rounded-full opacity-[0.4] blur-[50px]" style={{ background: "radial-gradient(circle, #b0533a, transparent 60%)" }} />
-        <div className="absolute top-[30%] -left-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.3] blur-[55px]" style={{ background: "radial-gradient(circle, #1a2e4a, transparent 60%)" }} />
-        <div className="absolute bottom-[-5%] right-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.25] blur-[60px]" style={{ background: "radial-gradient(circle, #c8a24a, transparent 60%)" }} />
+        <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] rounded-full opacity-[0.35] blur-[50px]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        <div className="absolute top-[30%] -left-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.25] blur-[55px]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
+        <div className="absolute bottom-[-5%] right-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.2] blur-[60px]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
       </div>
       <div className="glass flex items-center justify-between border-b border-border px-4 py-3">
         <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">

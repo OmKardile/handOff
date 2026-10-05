@@ -23,11 +23,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Vibrant mesh-gradient background — the colored orbs that glass refracts through.
           Glass is useless without this layer — it gives the blur something to show. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] rounded-full opacity-[0.45] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #b0533a, transparent 60%)" }} />
-        <div className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] rounded-full opacity-[0.32] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #1a2e4a, transparent 60%)" }} />
-        <div className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] rounded-full opacity-[0.28] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #c8a24a, transparent 60%)" }} />
-        <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.18] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2a8a7a, transparent 60%)" }} />
-        <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] rounded-full opacity-[0.22] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #d97f6a, transparent 60%)" }} />
+        <div className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] rounded-full opacity-[0.4] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        <div className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] rounded-full opacity-[0.3] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
+        <div className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] rounded-full opacity-[0.22] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
+        <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.15] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2E6B45, transparent 60%)" }} />
+        <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] rounded-full opacity-[0.18] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
       </div>
       <style>{`
         @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-30px,40px) scale(1.1) rotate(60deg)} 66%{transform:translate(20px,-20px) scale(0.92) rotate(120deg)} }

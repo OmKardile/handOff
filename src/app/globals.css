@@ -49,45 +49,58 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ===== HandOff Design System — iOS 27 Refined Minimalism =====
-   Flat, matte, paper-like. Warm cream background, near-black text,
-   thin 1px borders for depth. No glass, no blur, no gradients. */
+/* ===== HandOff Design System — Vermilion Editorial Palette =====
+   Warm-white canvas, charcoal text, navy sections, one vermilion accent.
+   WCAG AA verified. Dark mode builds depth with lighter surfaces, not shadows.
+   QR plates stay light in both themes (#FBF9F5 plate, #16161A modules). */
 :root {
   --radius: 0.75rem;
 
-  /* iOS 27 warm paper palette */
-  --paper: #F2F0EB;          /* warm cream (iOS 27 background) */
-  --ink: #1C1C1E;             /* near-black text */
-  --clay: #B85226;            /* burnt sienna accent */
-  --clay-soft: #d9a48f;       /* soft clay for tints */
+  /* Core palette — light */
+  --paper: #F6F3EE;          /* canvas (warm white) */
+  --ink: #16161A;           /* text primary */
+  --clay: #B93D17;           /* accent (vermilion) */
+  --clay-soft: #F6E3DA;     /* accent subtle fill */
+  --navy: #0E1B33;           /* strategic dark sections */
+  --brass: #8A6A1F;         /* secondary accent (rare) */
 
-  --background: #F2F0EB;
-  --foreground: #1C1C1E;
-  --card: #FFFFFF;             /* pure white cards on cream bg */
-  --card-foreground: #1C1C1E;
-  --popover: #FFFFFF;
-  --popover-foreground: #1C1C1E;
+  /* Shadcn-compatible token mapping */
+  --background: #F6F3EE;     /* canvas */
+  --foreground: #16161A;     /* text primary */
+  --card: #FBF9F5;           /* surface */
+  --card-foreground: #16161A;
+  --popover: #FBF9F5;
+  --popover-foreground: #16161A;
 
-  --primary: #1C1C1E;
-  --primary-foreground: #F2F0EB;
-  --secondary: #E8E5E0;
-  --secondary-foreground: #1C1C1E;
-  --muted: #E8E5E0;
-  --muted-foreground: #8E8E93;
-  --accent: #B85226;
-  --accent-foreground: #FFFFFF;
-  --destructive: #FF3B30;
-  --border: #D1D1D6;           /* iOS 27 light gray border */
-  --input: #D1D1D6;
-  --ring: #B85226;
+  --primary: #16161A;        /* text primary (buttons use ink) */
+  --primary-foreground: #F6F3EE;
+  --secondary: #EFEBE4;     /* surface-2 (sunken/raised) */
+  --secondary-foreground: #16161A;
+  --muted: #EFEBE4;
+  --muted-foreground: #6E6A62;  /* text muted */
+  --accent: #B93D17;        /* vermilion */
+  --accent-foreground: #FFFFFF; /* text on accent (light: white) */
+  --destructive: #B42318;
+  --border: #E3DED5;        /* hairline border */
+  --input: #E3DED5;
+  --ring: #B93D17;           /* focus ring = accent */
 
-  /* Elevation shadows — layered, subtle, physical (from Parichay) */
-  --elevation-subtle: 0 1px 2px rgba(17, 19, 23, 0.04), 0 2px 6px rgba(17, 19, 23, 0.03);
-  --elevation-card: 0 4px 12px rgba(17, 19, 23, 0.05), 0 1px 3px rgba(17, 19, 23, 0.03);
-  --elevation-sheet: 0 -8px 24px rgba(17, 19, 23, 0.08), 0 -2px 6px rgba(17, 19, 23, 0.04);
-  --elevation-floating: 0 12px 32px rgba(17, 19, 23, 0.12), 0 4px 8px rgba(17, 19, 23, 0.06);
+  /* Extended palette */
+  --accent-press: #9F3212;   /* accent pressed state */
+  --accent-fill: #F6E3DA;   /* accent subtle fill */
+  --text-2: #5B5750;         /* text secondary */
+  --text-3: #6E6A62;         /* text muted */
+  --success: #2E6B45;
+  --warning: #8F5A00;
+  --danger: #B42318;
 
-  /* Motion durations + easings (iOS-style physical curves) */
+  /* Elevation shadows — layered, subtle, physical */
+  --elevation-subtle: 0 1px 2px rgba(22, 22, 26, 0.04), 0 2px 6px rgba(22, 22, 26, 0.03);
+  --elevation-card: 0 4px 12px rgba(22, 22, 26, 0.05), 0 1px 3px rgba(22, 22, 26, 0.03);
+  --elevation-sheet: 0 -8px 24px rgba(22, 22, 26, 0.08), 0 -2px 6px rgba(22, 22, 26, 0.04);
+  --elevation-floating: 0 12px 32px rgba(22, 22, 26, 0.12), 0 4px 8px rgba(22, 22, 26, 0.06);
+
+  /* Motion */
   --duration-fast: 180ms;
   --duration-normal: 260ms;
   --duration-deliberate: 360ms;
@@ -100,47 +113,60 @@
   --layout-max-width: 540px;
   --min-touch-target: 44px;
 
-  --chart-1: #b0533a;
-  --chart-2: #1f3a2e;
-  --chart-3: #c8a24a;
-  --chart-4: #2b2b2b;
-  --chart-5: #8a6a1f;
+  --chart-1: #B93D17;
+  --chart-2: #0E1B33;
+  --chart-3: #8A6A1F;
+  --chart-4: #2E6B45;
+  --chart-5: #8F5A00;
 
-  --sidebar: #fffefb;
-  --sidebar-foreground: #1a1a1f;
-  --sidebar-primary: #b0533a;
-  --sidebar-primary-foreground: #fffefb;
-  --sidebar-accent: #efeae1;
-  --sidebar-accent-foreground: #1a1a1f;
-  --sidebar-border: #e0d9cd;
-  --sidebar-ring: #b0533a;
+  --sidebar: #FBF9F5;
+  --sidebar-foreground: #16161A;
+  --sidebar-primary: #B93D17;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EFEBE4;
+  --sidebar-accent-foreground: #16161A;
+  --sidebar-border: #E3DED5;
+  --sidebar-ring: #B93D17;
 }
 
+/* ===== Dark mode: depth from lighter surfaces, not shadows =====
+   Canvas → surface → surface-2 steps UP in lightness.
+   Accent text on accent = charcoal (#111113), NOT white (white on dark accent = 2.9:1, fails). */
 .dark {
-  --paper: #1C1C1E;
-  --ink: #F2F0EB;
-  --clay: #D17A5C;
-  --clay-soft: #8A4A35;
+  --paper: #111113;          /* canvas (deep charcoal) */
+  --ink: #F3F0EA;           /* text primary */
+  --clay: #F2704A;           /* accent (vermilion, brightened for dark) */
+  --clay-soft: #3A1F17;     /* accent subtle fill */
+  --navy: #0E1B33;           /* same navy in both themes */
+  --brass: #D2B061;         /* brass, brightened */
 
-  --background: #1C1C1E;
-  --foreground: #F2F0EB;
-  --card: #2C2C2E;
-  --card-foreground: #F2F0EB;
-  --popover: #2C2C2E;
-  --popover-foreground: #F2F0EB;
+  --background: #111113;
+  --foreground: #F3F0EA;
+  --card: #1A1A1D;           /* surface */
+  --card-foreground: #F3F0EA;
+  --popover: #1A1A1D;
+  --popover-foreground: #F3F0EA;
 
-  --primary: #F2F0EB;
-  --primary-foreground: #1C1C1E;
-  --secondary: #3A3A3C;
-  --secondary-foreground: #F2F0EB;
-  --muted: #3A3A3C;
-  --muted-foreground: #8E8E93;
-  --accent: #D17A5C;
-  --accent-foreground: #1C1C1E;
-  --destructive: #FF453A;
-  --border: #48484A;           /* iOS dark mode border */
-  --input: #48484A;
-  --ring: #D17A5C;
+  --primary: #F3F0EA;
+  --primary-foreground: #111113;
+  --secondary: #232327;     /* surface-2 (raised) */
+  --secondary-foreground: #F3F0EA;
+  --muted: #232327;
+  --muted-foreground: #9A958C;  /* text muted */
+  --accent: #F2704A;        /* vermilion, brightened */
+  --accent-foreground: #111113;  /* DARK text on accent (NOT white — charcoal 6.5:1) */
+  --destructive: #FF8A80;
+  --border: #2E2E33;
+  --input: #2E2E33;
+  --ring: #F2704A;
+
+  --accent-press: #D95C37;
+  --accent-fill: #3A1F17;
+  --text-2: #B3AEA5;
+  --text-3: #9A958C;
+  --success: #5FBF86;
+  --warning: #E0A340;
+  --danger: #FF8A80;
 
   /* Dark mode elevation shadows */
   --elevation-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -148,20 +174,20 @@
   --elevation-sheet: 0 -8px 24px rgba(0, 0, 0, 0.4), 0 -2px 6px rgba(0, 0, 0, 0.2);
   --elevation-floating: 0 12px 32px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
 
-  --chart-1: #d17a5c;
-  --chart-2: #4f7a5a;
-  --chart-3: #c8a24a;
-  --chart-4: #cdccca;
-  --chart-5: #b87400;
+  --chart-1: #F2704A;
+  --chart-2: #D2B061;
+  --chart-3: #5FBF86;
+  --chart-4: #E0A340;
+  --chart-5: #FF8A80;
 
-  --sidebar: #1d1d21;
-  --sidebar-foreground: #ece7de;
-  --sidebar-primary: #d17a5c;
-  --sidebar-primary-foreground: #141417;
-  --sidebar-accent: #26262b;
-  --sidebar-accent-foreground: #ece7de;
-  --sidebar-border: #2e2e34;
-  --sidebar-ring: #d17a5c;
+  --sidebar: #1A1A1D;
+  --sidebar-foreground: #F3F0EA;
+  --sidebar-primary: #F2704A;
+  --sidebar-primary-foreground: #111113;
+  --sidebar-accent: #232327;
+  --sidebar-accent-foreground: #F3F0EA;
+  --sidebar-border: #2E2E33;
+  --sidebar-ring: #F2704A;
 }
 
 @layer base {

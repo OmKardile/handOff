@@ -80,7 +80,7 @@ function LoadingScreen() {
           {/* card being handed off */}
           <rect x="18" y="16" width="20" height="14" rx="3" fill="var(--paper, #F2F0EB)" className="opacity-0" style={{ animation: "ho-fade 0.3s ease 0.4s forwards" }} />
           {/* hand-off arrow */}
-          <path d="M40 23 L48 23 M45 20 L48 23 L45 26" stroke="#B85226" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" pathLength={1}
+          <path d="M40 23 L48 23 M45 20 L48 23 L45 26" stroke="#B93D17" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" pathLength={1}
             style={{ strokeDasharray: 1, strokeDashoffset: 1, animation: "ho-draw 0.5s ease 0.7s forwards" }} />
           {/* receiving hand */}
           <path d="M16 42 Q16 36 22 36 L42 36 Q48 36 48 42 L48 48 Q48 50 46 50 L18 50 Q16 50 16 48 Z" fill="var(--paper, #F2F0EB)" opacity="0" style={{ animation: "ho-fade 0.3s ease 0.9s forwards" }} />
@@ -108,7 +108,7 @@ export function HandOffMark({ className }: { className?: string }) {
     <svg viewBox="0 0 64 64" className={className} fill="none" aria-hidden>
       <rect width="64" height="64" rx="16" fill="var(--ink, #1C1C1E)" />
       <rect x="18" y="16" width="20" height="14" rx="3" fill="var(--paper, #F2F0EB)" />
-      <path d="M40 23 L48 23 M45 20 L48 23 L45 26" stroke="#B85226" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M40 23 L48 23 M45 20 L48 23 L45 26" stroke="#B93D17" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       <path d="M16 42 Q16 36 22 36 L42 36 Q48 36 48 42 L48 48 Q48 50 46 50 L18 50 Q16 50 16 48 Z" fill="var(--paper, #F2F0EB)" opacity="0.9" />
     </svg>
   );
