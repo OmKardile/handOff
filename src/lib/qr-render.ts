@@ -114,22 +114,6 @@ export async function renderQrToCanvas(
     height: size,
   } as ConstructorParameters<typeof QRCodeStyling>[0]);
 
-  // append to a temp container so qr-code-styling can render its canvas
-  const tmp = document.createElement("div");
-  tmp.style.position = "absolute";
-  tmp.style.left = "-9999px";
-  tmp.style.top = "0";
-  document.body.appendChild(tmp);
-  await qr.append(tmp);
-  // wait for the library to actually paint the canvas (it resolves before paint in some versions)
-  await new Promise((r) => requestAnimationFrame(() => r(null)));
-  await new Promise((r) => requestAnimationFrame(() => r(null)));
-  const srcCanvas = tmp.querySelector("canvas");
-  if (!srcCanvas) {
-    document.body.removeChild(tmp);
-    return;
-  }
-
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
   canvas.width = size;
@@ -144,10 +128,36 @@ export async function renderQrToCanvas(
   ctx.fill();
   ctx.restore();
 
-  // draw the QR modules (the lib already includes its own margin)
-  ctx.drawImage(srcCanvas, 0, 0, size, size);
+  // Draw the QR modules onto the canvas.
+  // getRawData("png") returns a Blob we load into an Image and draw —
+  // this is the most reliable path (append() can race the paint in some versions).
+  let drew = false;
+  try {
+    const blob = await qr.getRawData("png");
+    if (blob && blob.size > 0) {
+      const url = URL.createObjectURL(blob);
+      const img = await loadImage(url);
+      ctx.drawImage(img, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      drew = true;
+    }
+  } catch {
+    /* fall through to DOM fallback */
+  }
 
-  document.body.removeChild(tmp);
+  if (!drew) {
+    // Fallback: append to DOM and wait for the paint to commit
+    const tmp = document.createElement("div");
+    tmp.style.position = "absolute";
+    tmp.style.left = "-9999px";
+    tmp.style.top = "0";
+    document.body.appendChild(tmp);
+    await qr.append(tmp);
+    await new Promise((res) => setTimeout(res, 80));
+    const srcCanvas = tmp.querySelector("canvas");
+    if (srcCanvas) ctx.drawImage(srcCanvas, 0, 0, size, size);
+    document.body.removeChild(tmp);
+  }
 
   // centre element overlay
   if (style.centerType !== "none" && style.centerSize > 0) {

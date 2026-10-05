@@ -19,7 +19,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const hideBar = view === "onboarding" || view === "fullscreen-qr";
 
   return (
-    <div className="relative flex min-h-[100dvh] flex-col paper-grain">
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden paper-grain">
       {/* Ambient background — gives the liquid glass something to refract.
           Soft warm radial blobs in the editorial palette; never glow/neon.
           Sits at z-0 (above the body bg, below content) so the glass surfaces
@@ -63,9 +63,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         }
       `}</style>
 
+      {/* Scrollable content area — the ONLY thing that scrolls.
+          Header (sticky) and tab bar (fixed) stay put. */}
       <main
         className={cn(
-          "relative z-10 flex-1 pb-safe",
+          "relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
           hideBar ? "pb-0" : "pb-24"
         )}
       >
