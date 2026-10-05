@@ -125,7 +125,7 @@ export function EditorScreen() {
         )}
 
         {/* Photo */}
-        <Section title="Photo" open={open === "photo"} onToggle={() => setOpen(open === "photo" ? "" : "photo")}>
+        <Section title="Photo" open={open === "photo"} onToggle={() => setOpen(open === "photo" ? "" : "photo")} filled={!!photo}>
           <div className="flex items-center gap-4">
             <button
               onClick={() => document.getElementById("photo-input")?.click()}
@@ -176,7 +176,7 @@ export function EditorScreen() {
         </Section>
 
         {/* Identity */}
-        <Section title="Identity" open={open === "identity"} onToggle={() => setOpen(open === "identity" ? "" : "identity")}>
+        <Section title="Identity" open={open === "identity"} onToggle={() => setOpen(open === "identity" ? "" : "identity")} filled={!!card.firstName || !!card.lastName || !!card.jobTitle || !!card.company}>
           <div className="grid grid-cols-2 gap-3">
             <TextField label="First name" value={card.firstName} onChange={(v) => update({ firstName: normalizeName(v) })} placeholder="Aarav" />
             <TextField label="Last name" value={card.lastName} onChange={(v) => update({ lastName: normalizeName(v) })} placeholder="Sharma" />
@@ -187,14 +187,14 @@ export function EditorScreen() {
         </Section>
 
         {/* Contact */}
-        <Section title="Contact" open={open === "contact"} onToggle={() => setOpen(open === "contact" ? "" : "contact")}>
+        <Section title="Contact" open={open === "contact"} onToggle={() => setOpen(open === "contact" ? "" : "contact")} filled={!!card.phone || !!card.email || !!card.website}>
           <TextField label="Phone" value={card.phone} onChange={(v) => update({ phone: normalizePhone(v) })} placeholder="+91 98765 43210" type="tel" normalize={normalizePhone} />
           <TextField label="Email" value={card.email} onChange={(v) => update({ email: normalizeEmail(v) })} placeholder="aarav@example.com" type="email" />
           <TextField label="Website" value={card.website} onChange={(v) => update({ website: normalizeWebsite(v) })} placeholder="aarav.studio" />
         </Section>
 
         {/* Links */}
-        <Section title="Social links" open={open === "links"} onToggle={() => setOpen(open === "links" ? "" : "links")}>
+        <Section title="Social links" open={open === "links"} onToggle={() => setOpen(open === "links" ? "" : "links")} filled={!!card.linkedin || !!card.instagram || !!card.xHandle || !!card.whatsapp}>
           <p className="mb-3 text-[11px] text-muted-foreground">
             Drag to reorder. The order is used in the QR, the .vcf file and on your card.
           </p>
@@ -249,11 +249,13 @@ function Section({
   open,
   onToggle,
   children,
+  filled,
 }: {
   title: string;
   open: boolean;
   onToggle: () => void;
   children: React.ReactNode;
+  filled?: boolean;
 }) {
   return (
     <div className="mb-2 overflow-hidden rounded-2xl border border-border bg-card">
@@ -261,7 +263,16 @@ function Section({
         onClick={onToggle}
         className="no-tap flex w-full items-center justify-between px-4 py-3.5"
       >
-        <span className="text-[14px] font-semibold tracking-tight">{title}</span>
+        <span className="flex items-center gap-2">
+          <span
+            className={cn(
+              "h-1.5 w-1.5 rounded-full transition-colors",
+              filled ? "bg-clay" : "bg-transparent ring-1 ring-inset ring-muted-foreground/30"
+            )}
+            aria-hidden="true"
+          />
+          <span className="text-[14px] font-semibold tracking-tight">{title}</span>
+        </span>
         <ChevronDown className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")} />
       </button>
       {open && <div className="space-y-3 border-t border-border px-4 py-4">{children}</div>}

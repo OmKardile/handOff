@@ -373,3 +373,46 @@ Unresolved / next-phase:
 - Consider a "clear recents" option in the studio
 - Persist font recents/favourites + style recents into the backup bundle (currently localStorage, not in IndexedDB backup)
 - The loading screen animation plays once on initial load; consider replaying on view transitions if needed
+
+---
+Task ID: CRON-6 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). Previous rounds added Framer Motion, drag-reorder social links, contextual help, font recents/favourites, share-card layouts, onboarding animations, QR skeleton, share-card preview modal, recent styles strip, Caveat font, animated tab bar, showcase layouts gallery, studio Compare tab, loading screen animation.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 93 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → home → fullscreen QR → studio Compare → share (PNG export "Shared") → copy vCard ("Copied") → settings. No console errors, no runtime errors.
+- NEW FEATURE: Persist recents/favourites into the backup bundle (documented gap since CRON-2):
+  - Added a `memories` field to the BackupBundle interface in src/lib/storage.ts (fontRecents, fontFavs, styleRecents arrays)
+  - Added readMemories() to capture the three localStorage keys during exportBackup()
+  - Added writeMemories() to restore them during importBackup()
+  - Updated the backup screen's import handler to reload the page after restore (so the useFontMemory and useStyleRecents hooks re-read from localStorage)
+  - Browser-verified: backup export shows "Backup saved", no errors
+- NEW FEATURE: QR scan-check indicator in the Compare tab (requested in CRON-5 next-phase):
+  - Each CompareCard now runs a live scan-check: renders the QR to an offscreen canvas (200px), decodes with jsQR, compares to the payload, and shows a small indicator below the preset name
+  - Three states: "checking" (gray dot), "scans" (emerald dot), "risky" (amber dot)
+  - Uses the same evaluateScan + contrast logic as the main studio scan check
+  - Debounced 200ms so switching presets doesn't thrash
+  - Browser-verified: both cards showed "risky" with a minimal card (expected — low data density); the indicator updates live
+- STYLING POLISH: Editor section completion indicators:
+  - Added an optional `filled` prop to the Section component
+  - Shows a small dot before each section title: clay (filled) when the section has data, empty ring (muted) when empty
+  - Wired into Photo (filled when photo exists), Identity (name/title/company), Contact (phone/email/website), Social links (any social field)
+  - The QR contents section is always "filled" (has defaults) so no indicator
+  - Browser-verified: Identity shows clay dot (name entered), Photo/Contact/Social show empty rings
+
+Stage Summary:
+- 2 new features (backup memories persistence, Compare scan-check) + 1 styling polish (editor completion indicators)
+- Modified: src/lib/storage.ts (memories in backup bundle), src/components/vello/screens/{backup,studio,editor}.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 93 files no network calls
+- Browser-verified: Compare tab shows scan indicators (risky/scans), editor sections show completion dots, backup export saves memories, no console errors
+- Screenshots saved: qa-compare-scan, qa-editor-indicators
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- The Compare scan-check shows "risky" for minimal cards — consider adjusting the threshold or showing a "low data" hint
+- Consider a "clear recents" option in the studio
+- The backup memories field is optional (backwards-compatible with older backups); document this in DATA_MODEL.md
+- Consider adding the memories to the erase-all flow (currently eraseAll clears IndexedDB but not localStorage)

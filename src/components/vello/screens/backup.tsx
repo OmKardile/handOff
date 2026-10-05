@@ -46,7 +46,8 @@ export function BackupScreen() {
       const bundle = await importBackup(text);
       await load();
       toast.success(`Restored ${bundle.card?.firstName || "card"}`);
-      navigate("home");
+      // reload to refresh localStorage-backed hooks (font/style recents)
+      setTimeout(() => window.location.reload(), 600);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Invalid backup file");
     } finally {

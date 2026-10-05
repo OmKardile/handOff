@@ -747,6 +747,27 @@ function CompareCard({
   onSelect: (id: string) => void;
   onApply: () => void;
 }) {
+  const [scanOk, setScanOk] = React.useState<boolean | null>(null);
+  const checkRef = React.useRef<HTMLCanvasElement | null>(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const canvas = checkRef.current ?? document.createElement("canvas");
+      checkRef.current = canvas;
+      try {
+        await renderQrToCanvas(canvas, card, preset.style, 200, photo);
+        if (cancelled) return;
+        const payload = getQrPayload(card);
+        const res = evaluateScan(canvas, payload, preset.style.moduleColor, preset.style.background);
+        setScanOk(res.ok);
+      } catch {
+        if (!cancelled) setScanOk(null);
+      }
+    }, 200);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [card, preset.style, preset.id, photo]);
+
   return (
     <button
       onClick={onApply}
@@ -758,6 +779,13 @@ function CompareCard({
       <span className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
       <QrPreview card={card} style={preset.style} size={120} photoDataUrl={photo} showLoading={false} />
       <span className="mt-1.5 text-[12px] font-medium">{preset.name}</span>
+      <span className={cn(
+        "mt-1 flex items-center gap-1 text-[10px] font-medium",
+        scanOk === null ? "text-muted-foreground/60" : scanOk ? "text-emerald-500" : "text-amber-500"
+      )}>
+        <span className={cn("h-1.5 w-1.5 rounded-full", scanOk === null ? "bg-muted-foreground/40" : scanOk ? "bg-emerald-500" : "bg-amber-500")} />
+        {scanOk === null ? "checking" : scanOk ? "scans" : "risky"}
+      </span>
     </button>
   );
 }

@@ -147,7 +147,7 @@ export async function checkPersistence(): Promise<boolean> {
   }
 }
 
-/** Backup export: card + style + settings + photo + presets as base64 JSON. */
+/** Backup export: card + style + settings + photo + presets + memories as base64 JSON. */
 export interface BackupBundle {
   app: string;
   version: string;
@@ -158,6 +158,44 @@ export interface BackupBundle {
   settings: Settings | null;
   photo: PhotoData | null;
   presets: CustomPreset[];
+  /** localStorage-backed memories: font recents/favourites + style recents. */
+  memories?: {
+    fontRecents: string[];
+    fontFavs: string[];
+    styleRecents: string[];
+  };
+}
+
+/** Read the localStorage-backed memories (font + style recents/favourites). */
+function readMemories(): NonNullable<BackupBundle["memories"]> {
+  const read = (key: string): string[] => {
+    try {
+      const v = localStorage.getItem(key);
+      return v ? (JSON.parse(v) as string[]) : [];
+    } catch {
+      return [];
+    }
+  };
+  return {
+    fontRecents: read("vello:font-recents"),
+    fontFavs: read("vello:font-favs"),
+    styleRecents: read("vello:style-recents"),
+  };
+}
+
+/** Write memories back to localStorage (used during backup restore). */
+function writeMemories(m: BackupBundle["memories"]): void {
+  if (!m) return;
+  const write = (key: string, val: string[]) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(val));
+    } catch {
+      /* ignore */
+    }
+  };
+  if (m.fontRecents) write("vello:font-recents", m.fontRecents);
+  if (m.fontFavs) write("vello:font-favs", m.fontFavs);
+  if (m.styleRecents) write("vello:style-recents", m.styleRecents);
 }
 
 export async function exportBackup(): Promise<string> {
@@ -171,6 +209,7 @@ export async function exportBackup(): Promise<string> {
     settings: await getSettings(),
     photo: await getPhoto(),
     presets: await getCustomPresets(),
+    memories: readMemories(),
   };
   return JSON.stringify(bundle, null, 2);
 }
@@ -193,6 +232,7 @@ export async function importBackup(json: string): Promise<BackupBundle> {
   if (b.settings) await saveSettings(b.settings);
   if (b.photo) await savePhoto(b.photo);
   if (b.presets) await saveCustomPresets(b.presets);
+  if (b.memories) writeMemories(b.memories);
 
   return b as BackupBundle;
 }
