@@ -128,7 +128,9 @@ function DockItem({
   );
 }
 
-/** A small header used on sub-screens. */
+/** A large title header — iOS 27 style. No glass bar, no back button.
+ *  Just a large bold title at the top, with action buttons inline to the right.
+ *  Back navigation is handled by the floating dock + Android back gesture. */
 export function ScreenHeader({
   title,
   onBack,
@@ -142,41 +144,32 @@ export function ScreenHeader({
 }) {
   const { navigate } = useView();
   return (
-    <header className="glass sticky top-0 z-30 px-2" style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
-      <div className="relative z-10 flex h-14 items-center gap-1">
-      {onBack && (
-        <button
-          onClick={onBack}
-          className="no-tap flex h-9 items-center gap-0.5 rounded-full px-2 text-foreground/90 transition-colors hover:bg-foreground/5 active:bg-foreground/10"
-          aria-label="Back"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-clay">
-            <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-          <span className="-ml-0.5 text-[16px] font-normal">Back</span>
-        </button>
-      )}
-      <h1 className={cn("flex-1 truncate font-display text-[17px] font-semibold tracking-tight", onBack && "text-center")}>
-        {title}
-      </h1>
-      {helpGuideId && (
-        <button
-          onClick={() => {
-            const g = HELP_GUIDES.find((x) => x.id === helpGuideId);
-            if (g) {
-              setSelectedGuide(g);
-              navigate("help-guide");
-            }
-          }}
-          className="no-tap flex h-9 w-9 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-foreground/5 active:bg-foreground/10 hover:text-foreground"
-          aria-label={`Help with ${title}`}
-        >
-          <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.75} />
-        </button>
-      )}
-      {action}
+    <div
+      className="relative z-30 px-5 pb-2"
+      style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 44px)" }}
+    >
+      <div className="flex items-center gap-2">
+        <h1 className="flex-1 font-sans text-[28px] font-bold leading-[1.1] tracking-[-0.025em] text-foreground">
+          {title}
+        </h1>
+        {helpGuideId && (
+          <button
+            onClick={() => {
+              const g = HELP_GUIDES.find((x) => x.id === helpGuideId);
+              if (g) {
+                setSelectedGuide(g);
+                navigate("help-guide");
+              }
+            }}
+            className="no-tap flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:text-foreground active:scale-95"
+            aria-label={`Help with ${title}`}
+          >
+            <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.75} />
+          </button>
+        )}
+        {action}
       </div>
-    </header>
+    </div>
   );
 }
 
