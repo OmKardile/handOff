@@ -42,13 +42,23 @@ export function SettingsScreen() {
 
   return (
     <div className="mx-auto max-w-md">
-      <ScreenHeader title="Settings" />
+      {/* iOS 27 large title — standalone, no nav bar, left-aligned, bold sans */}
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 35 }}
+        className="px-5 pt-[max(env(safe-area-inset-top,0px),44px)] pb-2"
+      >
+        <h1 className="font-sans text-[34px] font-bold leading-[1.1] tracking-[-0.025em] text-foreground">
+          Settings
+        </h1>
+      </motion.div>
 
       <motion.div
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="px-5 pb-36 pt-6"
+        className="px-5 pb-36 pt-4"
       >
         {/* appearance */}
         <SectionLabel>Appearance</SectionLabel>
@@ -195,19 +205,19 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <motion.p
       variants={staggerItem}
-      className="mb-2 mt-7 px-4 text-[12px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+      className="mb-2.5 mt-8 text-[12px] font-normal uppercase tracking-[0.06em] text-muted-foreground"
     >
       {children}
     </motion.p>
   );
 }
 
-/** iOS 27 grouped card — translucent, continuous radius, subtle inner highlight. */
+/** iOS 27 grouped card — borderless, elevated, slightly lighter than bg. */
 function CardGroup({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       variants={staggerItem}
-      className="overflow-hidden rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm"
+      className="overflow-hidden rounded-2xl bg-card"
       style={{ boxShadow: "var(--elevation-card)" }}
     >
       {children}
