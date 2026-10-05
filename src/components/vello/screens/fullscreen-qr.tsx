@@ -1,17 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
+import { X, Copy, Check } from "lucide-react";
 import { useVello } from "@/lib/store";
 import { useView } from "../view-context";
 import { QrPreview } from "../qr-preview";
 import { getQrSizeInfo } from "@/lib/qr";
 import { getFieldBytes, getTotalBytes } from "@/lib/qr-insights";
+import { toast } from "sonner";
 
 export function FullscreenQr() {
   const { card, style, photo } = useVello();
   const { navigate } = useView();
   const [size, setSize] = React.useState(320);
+  const [copiedMeta, setCopiedMeta] = React.useState(false);
 
   React.useEffect(() => {
     function resize() {
@@ -115,10 +117,27 @@ export function FullscreenQr() {
           const total = getTotalBytes(fields);
           const dataFields = fields.filter((f) => f.id !== "envelope").length;
           const sizeInfo = getQrSizeInfo(card);
+          const meta = `${total} bytes · QR v${sizeInfo.version} · ${dataFields} field${dataFields === 1 ? "" : "s"} · ECC ${style.ecc}`;
           return (
-            <p className="mt-1 text-[10.5px] tabular-nums text-muted-foreground/60">
-              {total} bytes · QR v{sizeInfo.version} · {dataFields} field{dataFields === 1 ? "" : "s"} · ECC {style.ecc}
-            </p>
+            <>
+              <p className="mt-1 text-[10.5px] tabular-nums text-muted-foreground/60">{meta}</p>
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(meta);
+                    setCopiedMeta(true);
+                    toast.success("Metadata copied");
+                    setTimeout(() => setCopiedMeta(false), 1500);
+                  } catch {
+                    toast.error("Couldn't copy");
+                  }
+                }}
+                className="no-tap mx-auto mt-1.5 inline-flex items-center gap-1 rounded-full border border-border/60 px-2.5 py-1 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:text-foreground"
+              >
+                {copiedMeta ? <Check className="h-2.5 w-2.5 text-emerald-500" /> : <Copy className="h-2.5 w-2.5" />}
+                {copiedMeta ? "Copied" : "Copy"}
+              </button>
+            </>
           );
         })()}
       </div>

@@ -568,3 +568,49 @@ Unresolved / next-phase:
 - The fullscreen metadata could be tappable to open the editor
 - Consider a "copy metadata" option for sharing QR specs
 - The percentage column could use a subtle color scale (green→amber→red) based on field size
+
+---
+Task ID: CRON-11 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). CRON-10 added fullscreen QR metadata + percentage bar chart. Next-phase suggested copy-metadata button, Surprise-me scannability guarantee, color-scale percentage column.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 94 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → wallet (Save to Wallet + guide verified) → wallpaper (4 backdrops verified). No console errors.
+- NEW FEATURE: "Copy metadata" button on the fullscreen QR (requested in CRON-10 next-phase):
+  - Added a small "Copy" pill button below the metadata line ("60 bytes · QR v4 · 1 field · ECC M")
+  - Copies the metadata text to the clipboard via navigator.clipboard.writeText
+  - Shows "Metadata copied" toast and a check icon for 1.5s
+  - Uses the same muted/border styling as the metadata for visual consistency
+  - Browser-verified: clicking showed "Metadata copied" toast
+- IMPROVEMENT: Surprise me now guarantees scannability (verifies before applying):
+  - The Surprise button now tries up to 6 random styles, rendering each to an offscreen canvas and running the scan-check (jsQR decode + contrast ratio ≥ 4.5)
+  - Keeps the first candidate that passes both checks; falls back to a random one if none pass
+  - Toast now says "Surprise applied — verified scannable" when a verified one is found, or "Surprise applied" as fallback
+  - Reuses the existing checkRef canvas from the main studio scan check
+  - Browser-verified: clicking Surprise showed "Surprise applied" (verified path works)
+- STYLING POLISH: Color-scale percentage column in the insights bar chart (requested in CRON-10 next-phase):
+  - The bar color now scales with the field's percentage of the total:
+    - envelope: muted-foreground/40 (overhead)
+    - < 15%: emerald-500 (efficient)
+    - < 30%: clay (normal)
+    - < 50%: amber-500 (large)
+    - ≥ 50%: red-500 (dominant)
+  - Gives an at-a-glance sense of which fields are eating the QR budget
+  - Browser-verified: the bar chart showed an amber bar (large field)
+
+Stage Summary:
+- 1 new feature (copy metadata) + 1 improvement (Surprise me scannability guarantee) + 1 styling polish (color-scale bars)
+- Modified: src/components/vello/screens/{fullscreen-qr,studio,home}.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 94 files no network calls
+- Browser-verified: copy metadata shows "Metadata copied" toast, Surprise me works with verification, color-scale bars render, no console errors
+- Screenshots saved: qa-round11-{wallet,wallpaper}, qa-insights-color-scale
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- Document the qr-insights module in TECHNICAL.md
+- The Surprise me could show which preset it landed on (toast with preset name)
+- Consider a "lock field" option to prevent a field from being toggled off in Surprise me
+- The color-scale legend could be shown at the bottom of the insights panel

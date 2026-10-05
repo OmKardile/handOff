@@ -401,15 +401,19 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useVello.get
               .sort((a, b) => b.bytes - a.bytes)
               .map((f) => {
                 const pct = total > 0 ? (f.bytes / total) * 100 : 0;
+                // color scale: envelope = muted, small fields = emerald, large = amber, dominant = red
+                const barColor =
+                  f.id === "envelope" ? "bg-muted-foreground/40" :
+                  pct < 15 ? "bg-emerald-500" :
+                  pct < 30 ? "bg-clay" :
+                  pct < 50 ? "bg-amber-500" :
+                  "bg-red-500";
                 return (
                   <div key={f.id} className="flex items-center gap-2">
                     <span className="w-16 flex-shrink-0 text-[10.5px] text-muted-foreground">{f.label}</span>
                     <div className="relative h-2 flex-1 overflow-hidden rounded-full bg-muted">
                       <div
-                        className={cn(
-                          "absolute inset-y-0 left-0 rounded-full transition-all",
-                          f.id === "envelope" ? "bg-muted-foreground/40" : "bg-clay"
-                        )}
+                        className={cn("absolute inset-y-0 left-0 rounded-full transition-all", barColor)}
                         style={{ width: `${pct}%` }}
                       />
                     </div>

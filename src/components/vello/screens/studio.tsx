@@ -85,9 +85,24 @@ export function StudioScreen() {
               <RotateCcw className="h-4 w-4" />
             </button>
             <button
-              onClick={() => {
-                setStyle(surpriseMe());
-                toast("Surprise applied — stays scannable");
+              onClick={async () => {
+                // Try up to 6 random styles, keep the first that passes the scan-check
+                let chosen: QrStyle | null = null;
+                for (let attempt = 0; attempt < 6 && !chosen; attempt++) {
+                  const candidate = surpriseMe();
+                  try {
+                    const canvas = checkRef.current ?? document.createElement("canvas");
+                    checkRef.current = canvas;
+                    await renderQrToCanvas(canvas, card, candidate, 250, photo?.full);
+                    const payload = getQrPayload(card);
+                    const res = evaluateScan(canvas, payload, candidate.moduleColor, candidate.background);
+                    if (res.ok && res.contrast >= 4.5) chosen = candidate;
+                  } catch {
+                    /* try again */
+                  }
+                }
+                setStyle(chosen ?? surpriseMe());
+                toast(chosen ? "Surprise applied — verified scannable" : "Surprise applied");
               }}
               className="no-tap flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground"
               aria-label="Surprise me"
