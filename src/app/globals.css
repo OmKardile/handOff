@@ -101,8 +101,8 @@
   --danger: #B42318;
 
   /* Chart-specific tokens */
-  --graticule-color: rgba(14, 27, 51, 0.06);   /* faint navy grid lines */
-  --graticule-major: rgba(14, 27, 51, 0.1);     /* major grid lines */
+  --graticule-color: rgba(14, 27, 51, 0.12);   /* faint navy edge ticks */
+  --graticule-major: rgba(14, 27, 51, 0.18);     /* major edge ticks */
   --contour-color: rgba(14, 27, 51, 0.04);      /* contour lines */
   --chart-label: #6E6A62;                        /* chart label text */
   --chart-label-size: 9px;                       /* tiny spaced-caps */
@@ -415,7 +415,7 @@
       linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px),
       /* right edge ticks */
       linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px);
-    background-size: 24px 2px, 24px 2px, 2px 24px, 2px 24px;
+    background-size: 24px 3px, 24px 3px, 3px 24px, 3px 24px;
     background-position: 0 0, 0 100%, 0 0, 100% 0;
     background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
   }

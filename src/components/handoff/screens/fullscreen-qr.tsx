@@ -65,12 +65,13 @@ export function FullscreenQr() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-hidden paper-grain pt-safe">
-      {/* Vibrant mesh gradient — glass needs something to refract */}
+      {/* Vibrant mesh gradient + chart graticule edge ticks */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] rounded-full opacity-[0.35] blur-[50px]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
         <div className="absolute top-[30%] -left-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.25] blur-[55px]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
         <div className="absolute bottom-[-5%] right-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.2] blur-[60px]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
       </div>
+      <div className="graticule pointer-events-none absolute inset-0 z-[0]" aria-hidden="true" />
       <div className="glass flex items-center justify-between border-b border-border px-4 py-3">
         <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Tap to scan
