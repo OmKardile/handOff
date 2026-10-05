@@ -344,6 +344,98 @@ export const STYLE_PRESETS: StylePreset[] = [
       centerRing: true,
     },
   },
+  // ===== CHART editions — topographic QR styles =====
+  // Contour = concentric rounded modules with a thin outline
+  {
+    id: "contour",
+    name: "Contour",
+    group: "chart",
+    captionFontLabel: "Fraunces",
+    style: {
+      ...PLAIN_STYLE,
+      presetId: "contour",
+      moduleShape: "classy-rounded",
+      eyeShape: "rounded",
+      eyeOuterColor: "#0E1B33",
+      eyeInnerColor: "#B93D17",
+      moduleColor: "#0E1B33",
+      background: "#F6F3EE",
+      captionFont: "Fraunces",
+    },
+  },
+  // Shoal = density-modulated dots (larger toward centre of each cluster)
+  {
+    id: "shoal",
+    name: "Shoal",
+    group: "chart",
+    captionFontLabel: "Instrument Sans",
+    style: {
+      ...PLAIN_STYLE,
+      presetId: "shoal",
+      moduleShape: "dots",
+      eyeShape: "circle",
+      eyeOuterColor: "#0E1B33",
+      eyeInnerColor: "#8A6A1F",
+      moduleColor: "#0E1B33",
+      background: "#FBF9F5",
+      captionFont: "Instrument Sans",
+    },
+  },
+  // Atoll = ring finder eyes with dotted lagoon inner
+  {
+    id: "atoll",
+    name: "Atoll",
+    group: "chart",
+    captionFontLabel: "Fraunces",
+    style: {
+      ...PLAIN_STYLE,
+      presetId: "atoll",
+      moduleShape: "rounded",
+      eyeShape: "circle",
+      eyeOuterColor: "#0E1B33",
+      eyeInnerColor: "#2E6B45",
+      moduleColor: "#0E1B33",
+      background: "#F6F3EE",
+      captionFont: "Fraunces",
+    },
+  },
+  // Meridian = thin vertical line modules
+  {
+    id: "meridian",
+    name: "Meridian",
+    group: "chart",
+    captionFontLabel: "JetBrains Mono",
+    style: {
+      ...PLAIN_STYLE,
+      presetId: "meridian",
+      moduleShape: "classy",
+      eyeShape: "square",
+      eyeOuterColor: "#0E1B33",
+      eyeInnerColor: "#0E1B33",
+      moduleColor: "#0E1B33",
+      background: "#FBF9F5",
+      captionFont: "JetBrains Mono",
+    },
+  },
+  // Fathom = depth gradient navy to teal
+  {
+    id: "fathom",
+    name: "Fathom",
+    group: "chart",
+    captionFontLabel: "Fraunces",
+    style: {
+      ...PLAIN_STYLE,
+      presetId: "fathom",
+      moduleShape: "extra-rounded",
+      eyeShape: "rounded",
+      eyeOuterColor: "#0E1B33",
+      eyeInnerColor: "#2E6B45",
+      moduleColor: "#0E1B33",
+      moduleGradient: { type: "linear", rotation: 180, colors: ["#0E1B33", "#2E6B45"] },
+      background: "#F6F3EE",
+      captionFont: "Fraunces",
+    },
+  },
 ];
 
 export function getPreset(id: string): StylePreset | undefined {

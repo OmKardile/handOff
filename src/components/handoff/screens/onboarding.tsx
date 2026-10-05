@@ -130,10 +130,17 @@ export function Onboarding() {
   const steps: Step[] = ["identity", "contact", "photo"];
   const stepIndex = steps.indexOf(step);
   const progress = ((stepIndex + 1) / steps.length) * 100;
+  const stepLabels: Record<Step, string> = {
+    identity: "Name",
+    contact: "Reach",
+    photo: "Face",
+    welcome: "",
+    done: "",
+  };
 
   return (
     <div className="flex min-h-[100dvh] flex-col px-6 pt-safe">
-      {/* progress */}
+      {/* progress — 7 graticule ticks along the top */}
       <div className="flex items-center gap-3 py-5">
         <button
           onClick={() => setStep(stepIndex === 0 ? "welcome" : steps[stepIndex - 1])}
@@ -141,15 +148,18 @@ export function Onboarding() {
         >
           Back
         </button>
-        <div className="flex h-1 flex-1 overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-clay transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
+        <div className="flex flex-1 gap-1">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <div
+              key={i}
+              className={cn(
+                "h-1 flex-1 rounded-full transition-colors",
+                i <= stepIndex ? "bg-clay" : "bg-muted"
+              )}
+            />
+          ))}
         </div>
-        <span className="text-xs tabular-nums text-muted-foreground">
-          {stepIndex + 1}/{steps.length}
-        </span>
+        <span className="chart-label">{stepLabels[step]}</span>
       </div>
 
       {/* live QR preview */}
@@ -286,9 +296,9 @@ function IdentityStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">Your identity</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">What should people call you?</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          This is what people see first.
+          This is what shows up when someone adds you.
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -352,12 +362,12 @@ function ContactStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">How to reach you</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">How do people reach you?</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          All optional — add what you want to share.
+          You decide later what goes into the QR.
         </p>
       </div>
-      <Field label="Phone" hint="We format and validate it automatically.">
+      <Field label="Phone">
         <input
           className={inputCls}
           value={phone}
@@ -402,9 +412,9 @@ function PhotoStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">Add a photo</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">Add a face?</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Optional. We crop it square and strip all location data.
+          It stays on this phone. It won't be inside the QR, but it appears on your card and exports.
         </p>
       </div>
       <button

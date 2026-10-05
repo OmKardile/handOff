@@ -54,7 +54,7 @@ export function ShowcaseScreen() {
 
   return (
     <div className="min-h-[100dvh] bg-background paper-grain">
-      {/* top bar */}
+      {/* top bar — Archipelago chart label */}
       <div className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b border-border bg-background/85 px-4 backdrop-blur-xl pt-safe">
         <button
           onClick={() => navigate("settings")}
@@ -63,9 +63,7 @@ export function ShowcaseScreen() {
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          Showcase
-        </span>
+        <span className="chart-label">ATLAS · SHOWCASE</span>
       </div>
 
       {/* hero */}
