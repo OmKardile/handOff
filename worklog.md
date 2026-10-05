@@ -642,3 +642,77 @@ Stage Summary:
 - iOS 26 Liquid Glass system: `.glass` (chrome), `.glass-strong` (modals), `.glass-pill` (floating controls) with specular edges + brightness/saturation tuning
 - verify:all passes: lint clean, docs:check 26/26, check:privacy 94 files
 - Browser-verified via VLM: QR renders with black modules in both light and dark mode; glass effects visible on nav bar, badges, and buttons with "subtle light edges/borders"
+
+---
+CHECKPOINT: Pre-Archipelago State
+Date: 2026-10-06
+Agent: main
+
+## Current State: STABLE & FUNCTIONAL
+
+**Brand**: HandOff
+**Tagline**: "Hand your card off. Nothing leaves your phone."
+**Version**: 1.0.0
+**Developer**: Omkar Kardile (https://omkardile.is-a.dev/)
+
+### What's working right now (all verified via agent-browser + verify:all)
+- **Onboarding**: Centered HandOff logo, tagline, privacy capsule pill, vermilion CTA
+- **Home**: QR hero card (rounded dots, vermilion inner eye, cream plate), QR insights panel, 3 copy buttons, primary/secondary actions
+- **Editor**: Grouped collapsible sections, drag-reorder social links, live QR insights, photo upload
+- **Studio**: 17 presets, Compare tab, scan-check, recent styles, font recents/favourites, surprise-me with scannability guarantee
+- **Settings**: iOS 27 large title, grouped glass cards, segmented control, Switch, backup/restore, erase, privacy
+- **Fullscreen QR**: Ambient mesh, glass header, wake lock, metadata + copy button
+- **Share**: 7 export formats + 4 share-card layouts with preview modal
+- **Wallet**: 1080×1350 clean pass image + guide
+- **Wallpaper**: Phone preview + 4 backdrops + safe zones
+- **Showcase**: Layout gallery, live demo, FAQ
+- **Help**: 22 guides, 8 categories, search, platform tabs
+- **Backup**: Export/import JSON with memories persistence
+- **Privacy**: 6 fact cards + promise
+- **Loading**: Animated HandOff logo (card + arrow + hand)
+
+### Design System
+- **Palette**: Vermilion editorial (canvas #F6F3EE, ink #16161A, accent #B93D17, navy #0E1B33, brass #8A6A1F)
+- **Dark mode**: Deep charcoal (#111113), brightened vermilion (#F2704A), charcoal text on accent (not white)
+- **Glass**: Translucent white (light) / dark (dark) + backdrop-blur + 1px border + ::before sheen + elevation shadows
+- **Background**: 5-orb drifting mesh gradient (vermilion, navy, brass, green, rose) + paper grain
+- **Typography**: Fraunces (display serif), Instrument Sans (UI sans), JetBrains Mono (mono), Caveat (handwritten)
+- **Layout**: Fixed 100dvh shell, single scroll container, floating macOS dock, iOS 27 large titles
+- **QR**: Rounded dots + rounded eyes + vermilion inner eye by default, cream plate #FBF9F5
+
+### Architecture
+```
+src/
+  shared/      brand.ts, types.ts, limits.ts
+  lib/         normalizers, vcard, qr, qr-render, qr-insights, scan-check, photo,
+               export, storage, style-presets, store (zustand), font-memory,
+               style-memory, help-content, haptics
+  components/
+    handoff/
+      view-context.tsx, app-shell.tsx, motion.tsx, qr-preview.tsx, dev-signature.tsx
+      screens/
+        onboarding, home, editor, fullscreen-qr, studio, settings, privacy,
+        share-sheet, wallet, wallpaper, backup, showcase, help
+  app/
+    layout.tsx, globals.css, page.tsx
+```
+
+### Verification: ALL GATES PASS
+- lint: 0 errors
+- docs:check: 26/26 docs
+- check:privacy: 94 files, 0 network calls
+- CSP enforced in <head>
+- QR renders correctly (getRawData png → Image → drawImage)
+- Glass works in both light + dark mode
+- Mesh gradient drifts behind glass
+
+### Next: ARCHIPELAGO REDESIGN
+The user wants a complete visual + interaction redesign based on the "Archipelago" concept:
+- Nautical chart visual language (graticule, hairlines, contour lines, chart labels)
+- No tab bar → pannable sea with islands
+- "Raise the beacon" press-and-hold QR interaction
+- Tilt-responsive foil QR
+- Chart-style QR presets
+- Editions-based Chartroom
+- Island of No Signal (real network ledger)
+- All existing features + privacy model preserved
