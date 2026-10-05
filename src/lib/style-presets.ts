@@ -6,15 +6,18 @@
 
 import type { QrStyle } from "@/shared/types";
 
+/** The DEFAULT style — beautiful by default, not generic.
+ *  Rounded dots + rounded eyes + warm ink-on-paper palette.
+ *  This is what every new user sees before they open the Studio. */
 export const PLAIN_STYLE: QrStyle = {
-  presetId: "plain",
-  moduleShape: "square",
-  eyeShape: "square",
-  eyeOuterColor: "#161619",
-  eyeInnerColor: "#161619",
-  moduleColor: "#161619",
+  presetId: "ink",
+  moduleShape: "rounded",
+  eyeShape: "rounded",
+  eyeOuterColor: "#16161A",
+  eyeInnerColor: "#b0533a",
+  moduleColor: "#16161A",
   moduleGradient: null,
-  background: "#F6F3EE",
+  background: "#FBF8F1",
   backgroundGradient: null,
   centerType: "none",
   centerValue: "",
@@ -24,8 +27,8 @@ export const PLAIN_STYLE: QrStyle = {
   captionEnabled: false,
   captionText: "",
   captionFont: "Fraunces",
-  plateRadius: 16,
-  platePadding: 1,
+  plateRadius: 20,
+  platePadding: 1.5,
   ecc: "M",
 };
 

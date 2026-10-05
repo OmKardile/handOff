@@ -76,7 +76,7 @@ export function StudioScreen() {
           <div className="flex gap-1.5">
             <button
               onClick={() => {
-                setStyle({ ...PLAIN_STYLE, presetId: "plain" });
+                setStyle(PLAIN_STYLE);
                 toast("Reset to plain");
               }}
               className="no-tap flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground"

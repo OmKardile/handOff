@@ -65,15 +65,19 @@ export function FullscreenQr() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background pt-safe">
-      {/* ambient blobs so the glass header has something to refract */}
+      {/* vibrant mesh gradient — so the glass header refracts rich colors */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         <div
-          className="absolute -top-[20%] -right-[15%] h-[55vh] w-[55vh] rounded-full opacity-[0.20] blur-[80px]"
-          style={{ background: "radial-gradient(circle, var(--clay), transparent 70%)" }}
+          className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] rounded-full opacity-[0.4] blur-[50px]"
+          style={{ background: "radial-gradient(circle, #b0533a, transparent 60%)" }}
         />
         <div
-          className="absolute bottom-[-15%] -left-[15%] h-[50vh] w-[50vh] rounded-full opacity-[0.14] blur-[90px]"
-          style={{ background: "radial-gradient(circle, var(--ink), transparent 70%)" }}
+          className="absolute top-[30%] -left-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.3] blur-[55px]"
+          style={{ background: "radial-gradient(circle, #1a2e4a, transparent 60%)" }}
+        />
+        <div
+          className="absolute bottom-[-5%] right-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.25] blur-[60px]"
+          style={{ background: "radial-gradient(circle, #c8a24a, transparent 60%)" }}
         />
       </div>
       <div className="glass flex items-center justify-between border-b border-border/40 px-4 py-3">
