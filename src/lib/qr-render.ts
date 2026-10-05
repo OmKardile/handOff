@@ -118,8 +118,12 @@ export async function renderQrToCanvas(
   const tmp = document.createElement("div");
   tmp.style.position = "absolute";
   tmp.style.left = "-9999px";
+  tmp.style.top = "0";
   document.body.appendChild(tmp);
   await qr.append(tmp);
+  // wait for the library to actually paint the canvas (it resolves before paint in some versions)
+  await new Promise((r) => requestAnimationFrame(() => r(null)));
+  await new Promise((r) => requestAnimationFrame(() => r(null)));
   const srcCanvas = tmp.querySelector("canvas");
   if (!srcCanvas) {
     document.body.removeChild(tmp);

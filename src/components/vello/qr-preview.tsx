@@ -43,7 +43,7 @@ export function QrPreview({
         console.error("QR render failed", e);
         if (!cancelled) setLoading(false);
       }
-    }, 120);
+    }, 60);
     return () => {
       cancelled = true;
       clearTimeout(t);
@@ -65,26 +65,12 @@ export function QrPreview({
       />
       {showLoading && loading && (
         <div
-          className="absolute inset-0 flex items-center justify-center bg-card"
+          className="pointer-events-none absolute inset-0 flex items-center justify-center bg-card"
           aria-hidden="true"
         >
           <div className="relative h-full w-full overflow-hidden">
-            {/* skeleton grid pattern mimicking a QR */}
-            <div
-              className="absolute inset-0 opacity-40"
-              style={{
-                backgroundImage:
-                  "linear-gradient(45deg, var(--muted) 25%, transparent 25%), linear-gradient(-45deg, var(--muted) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--muted) 75%), linear-gradient(-45deg, transparent 75%, var(--muted) 75%)",
-                backgroundSize: `${Math.max(8, size / 16)}px ${Math.max(8, size / 16)}px`,
-                backgroundPosition: `0 0, 0 ${Math.max(4, size / 32)}px, ${Math.max(4, size / 32)}px ${-Math.max(4, size / 32)}px, ${-Math.max(4, size / 32)}px 0`,
-              }}
-            />
             {/* shimmer sweep */}
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-background/60 to-transparent" />
-            {/* finder-eye placeholders */}
-            <div className="absolute left-[8%] top-[8%] h-[18%] w-[18%] rounded-md border-2 border-muted-foreground/30" />
-            <div className="absolute right-[8%] top-[8%] h-[18%] w-[18%] rounded-md border-2 border-muted-foreground/30" />
-            <div className="absolute left-[8%] bottom-[8%] h-[18%] w-[18%] rounded-md border-2 border-muted-foreground/30" />
+            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-background/70 to-transparent" />
           </div>
         </div>
       )}

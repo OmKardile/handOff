@@ -614,3 +614,31 @@ Unresolved / next-phase:
 - The Surprise me could show which preset it landed on (toast with preset name)
 - Consider a "lock field" option to prevent a field from being toggled off in Surprise me
 - The color-scale legend could be shown at the bottom of the insights panel
+
+---
+Task ID: GLASS-FIX + LIQUID-GLASS
+Agent: main
+Task: Fix critical QR rendering failure (caused by backdrop-filter on parent), then upgrade to iOS 26 Liquid Glass.
+
+Work Log:
+- CRITICAL BUG FIX: QR code was rendering as a blank white box. Root cause: the `glass-card` class (which uses `backdrop-filter`) was applied to the home hero card containing the QR canvas. `backdrop-filter` on a parent element breaks canvas compositing in many browsers — the canvas exists but its drawn content doesn't composite to the filtered layer.
+  - Removed `glass-card` from the home hero card (reverted to solid `bg-card` + shadow)
+  - Removed `glass-card` from the fullscreen QR plate (reverted to solid `bg-card` + shadow)
+  - Removed `glass-card` from the primary action buttons (reverted to solid `bg-card`)
+  - Lesson: NEVER apply `backdrop-filter` to a parent of a `<canvas>` element
+- QR RENDER TIMING FIX: The `qr-code-styling` library's `append()` promise resolves before the canvas is actually painted in some browser/version combinations. Added two `requestAnimationFrame` waits after `append()` to ensure the canvas content is committed before drawing it onto the target canvas.
+- SKELETON FIX: Simplified the QR preview loading skeleton — removed the complex grid pattern (which could interfere with canvas visibility) and replaced with a simple shimmer sweep overlay with `pointer-events-none` so it never blocks the canvas.
+- Reduced render debounce from 120ms to 60ms for faster QR appearance.
+- iOS 26 LIQUID GLASS UPGRADE: Replaced the old glassmorphism with iOS 26/27 Liquid Glass characteristics:
+  - `.glass`: brightness(1.08) boost + saturate(180%) for refractive look; dual inset shadows (bright 1px white top edge + soft 1px dark bottom) for the specular edge-lighting that defines Liquid Glass
+  - `.glass-strong`: heavier blur (36px) + brightness(1.06) for modals
+  - NEW `.glass-pill`: for floating buttons/badges — adds a specular highlight gradient (180deg white top → transparent → dark bottom) that simulates light hitting curved glass, plus a subtle drop shadow
+  - Dark mode variants: lower brightness (0.88-0.92), dimmer specular edges, but still present
+- Applied `glass-pill` to: home "On device" badge, all three copy buttons (vCard text, image, as text), fullscreen QR close button, fullscreen QR copy-metadata button
+
+Stage Summary:
+- Critical QR rendering bug FIXED (backdrop-filter on canvas parent)
+- QR render timing hardened (requestAnimationFrame waits)
+- iOS 26 Liquid Glass system: `.glass` (chrome), `.glass-strong` (modals), `.glass-pill` (floating controls) with specular edges + brightness/saturation tuning
+- verify:all passes: lint clean, docs:check 26/26, check:privacy 94 files
+- Browser-verified via VLM: QR renders with black modules in both light and dark mode; glass effects visible on nav bar, badges, and buttons with "subtle light edges/borders"

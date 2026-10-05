@@ -71,7 +71,7 @@ export function FullscreenQr() {
         </span>
         <button
           onClick={() => navigate("home")}
-          className="no-tap flex h-8 w-8 items-center justify-center rounded-full bg-foreground/8 text-foreground transition-colors hover:bg-foreground/15 active:scale-95"
+          className="glass-pill no-tap flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-foreground transition-all hover:bg-foreground/5 active:scale-95"
           aria-label="Close"
         >
           <X className="h-[18px] w-[18px]" strokeWidth={2.2} />
@@ -79,7 +79,7 @@ export function FullscreenQr() {
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="glass-card rounded-[28px] p-5">
+        <div className="rounded-[28px] bg-card p-5 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]">
           <QrPreview
             card={card}
             style={style}
@@ -132,7 +132,7 @@ export function FullscreenQr() {
                     toast.error("Couldn't copy");
                   }
                 }}
-                className="no-tap mx-auto mt-1.5 inline-flex items-center gap-1 rounded-full border border-border/60 px-2.5 py-1 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:text-foreground"
+                className="glass-pill no-tap mx-auto mt-1.5 inline-flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:text-foreground"
               >
                 {copiedMeta ? <Check className="h-2.5 w-2.5 text-emerald-500" /> : <Copy className="h-2.5 w-2.5" />}
                 {copiedMeta ? "Copied" : "Copy"}
