@@ -63,7 +63,7 @@ export function ShowcaseScreen() {
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <span className="chart-label">ATLAS · SHOWCASE</span>
+        <span className="chart-label">Showcase</span>
       </div>
 
       {/* hero */}

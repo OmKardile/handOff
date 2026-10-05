@@ -27,7 +27,7 @@ export function HelpScreen() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <ScreenHeader title="Chart Index" onBack={() => navigate("settings")} />
+      <ScreenHeader title="Help centre" onBack={() => navigate("settings")} />
 
       <div className="px-5 pb-16 pt-4">
         {/* search */}
@@ -37,7 +37,7 @@ export function HelpScreen() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search the chart…"
+            placeholder="Search guides…"
             className="no-tap w-full rounded-xl border border-input bg-background py-3 pl-10 pr-3 text-[15px] outline-none focus:border-clay focus:ring-2 focus:ring-clay/15"
             aria-label="Search help guides"
           />

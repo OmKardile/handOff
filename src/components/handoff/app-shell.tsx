@@ -30,8 +30,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.15] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2E6B45, transparent 60%)" }} />
         <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] rounded-full opacity-[0.18] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
       </div>
-      {/* Chart graticule — edge ticks every 24px on all 4 screen edges */}
-      <div className="graticule pointer-events-none fixed inset-0 z-[1]" aria-hidden="true" />
       <style>{`
         @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-30px,40px) scale(1.1) rotate(60deg)} 66%{transform:translate(20px,-20px) scale(0.92) rotate(120deg)} }
         @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,-40px) scale(1.15)} }

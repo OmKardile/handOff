@@ -66,20 +66,14 @@ function renderScreen(view: string) {
 function LoadingScreen() {
   return (
     <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background paper-grain">
-      <div className="graticule pointer-events-none fixed inset-0 z-0" aria-hidden="true" />
       <div className="relative z-10 flex flex-col items-center gap-4">
-        {/* HandOff mark */}
         <HandOffMark className="h-14 w-14" />
-        {/* Chart label */}
-        <span className="chart-label">CHART · HANDOFF</span>
-        {/* Hairline route drawing — a thin line that grows */}
-        <div className="h-px w-32 overflow-hidden bg-muted">
-          <div className="h-full w-full origin-left animate-[route-draw_1.2s_ease-out_forwards] bg-clay" style={{ transform: "scaleX(0)" }} />
+        <span className="font-display text-xl font-semibold tracking-tight">HandOff</span>
+        <div className="h-0.5 w-20 overflow-hidden rounded-full bg-muted">
+          <div className="h-full w-1/2 animate-[ho-slide_1.2s_ease-in-out_infinite] bg-clay" />
         </div>
       </div>
-      <style>{`
-        @keyframes route-draw { to { transform: scaleX(1); } }
-      `}</style>
+      <style>{`@keyframes ho-slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }`}</style>
     </div>
   );
 }

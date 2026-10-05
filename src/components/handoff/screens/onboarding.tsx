@@ -93,13 +93,11 @@ export function Onboarding() {
           className="flex flex-col items-center gap-3"
         >
           <HandOffMark className="h-16 w-16" />
-          <h1 className="mt-2 font-display text-[2rem] font-semibold leading-tight tracking-tight text-center">
-            One card. One scan.
-            <br />
-            Nothing leaves your phone.
+          <h1 className="font-display text-[2.2rem] font-semibold tracking-tight">
+            HandOff
           </h1>
           <p className="text-[14px] text-muted-foreground">
-            No account. No signal needed.
+            Hand your card off. Nothing leaves your phone.
           </p>
         </motion.div>
 
@@ -116,11 +114,11 @@ export function Onboarding() {
             onClick={() => setStep("identity")}
             className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white transition-transform active:scale-[0.98]"
           >
-            Make my card
+            Create your card
             <ChevronRight className="h-4 w-4" />
           </button>
           <p className="mt-3 text-center text-[11px] text-muted-foreground">
-            Anyone can scan this with their phone's camera. They don't need an app.
+            Takes 30 seconds. Everything stays on this device.
           </p>
         </motion.div>
       </div>
@@ -159,7 +157,7 @@ export function Onboarding() {
             />
           ))}
         </div>
-        <span className="chart-label">{stepLabels[step]}</span>
+        <span className="text-xs tabular-nums text-muted-foreground">{stepIndex + 1}/{steps.length}</span>
       </div>
 
       {/* Scrollable form area — content scrolls, buttons stay fixed */}
@@ -336,9 +334,9 @@ function IdentityStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">What should people call you?</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">Your identity</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          This is what shows up when someone adds you.
+          This is what people see first.
         </p>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -402,9 +400,9 @@ function ContactStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">How do people reach you?</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">How to reach you</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          You decide later what goes into the QR.
+          All optional — add what you want to share.
         </p>
       </div>
       <Field label="Phone">
@@ -452,9 +450,9 @@ function PhotoStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">Add a face?</h2>
+        <h2 className="font-display text-2xl font-medium tracking-tight">Add a photo</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          It stays on this phone. It won't be inside the QR, but it appears on your card and exports.
+          Optional. We crop it square and strip all location data.
         </p>
       </div>
       <button
