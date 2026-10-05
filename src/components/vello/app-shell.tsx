@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { CreditCard, Palette, Settings as SettingsIcon, HelpCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
@@ -38,9 +39,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               const active = tab === t.id;
               const Icon = t.icon;
               return (
-                <button
+                <motion.button
                   key={t.id}
                   onClick={() => navigate(t.view)}
+                  whileTap={{ scale: 0.92 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   className={cn(
                     "no-tap relative flex flex-1 flex-col items-center gap-1 py-3 transition-colors",
                     active ? "text-foreground" : "text-muted-foreground"
@@ -48,10 +51,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   aria-current={active ? "page" : undefined}
                   aria-label={t.label}
                 >
-                  <Icon
-                    className="h-5 w-5 transition-transform"
-                    strokeWidth={active ? 2.25 : 1.75}
-                  />
+                  <motion.div
+                    animate={active ? { y: -1 } : { y: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                  >
+                    <Icon
+                      className="h-5 w-5 transition-transform"
+                      strokeWidth={active ? 2.25 : 1.75}
+                    />
+                  </motion.div>
                   <span
                     className={cn(
                       "text-[10px] font-medium tracking-wide",
@@ -61,9 +69,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     {t.label}
                   </span>
                   {active && (
-                    <span className="absolute top-0 h-[2px] w-8 rounded-full bg-clay" />
+                    <motion.span
+                      layoutId="tab-indicator"
+                      className="absolute top-0 h-[2px] w-8 rounded-full bg-clay"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    />
                   )}
-                </button>
+                </motion.button>
               );
             })}
           </div>

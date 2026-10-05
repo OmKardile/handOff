@@ -279,3 +279,51 @@ Unresolved / next-phase:
 - The Polaroid layout uses Fraunces italic as a Caveat fallback — install @fontsource/caveat for true handwritten caption
 - Consider adding the 4 share-card layouts to the showcase page's demo
 - The QR skeleton grid uses a 45° hatched pattern; could refine to look more like actual QR modules
+
+---
+Task ID: CRON-4 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). Previous rounds added Framer Motion, drag-reorder social links, contextual help, font recents/favourites, share-card layouts, onboarding animations, QR skeleton.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 92 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → home → studio (Surprise me + scan check) → settings → showcase. No console errors, no runtime errors.
+- NEW FEATURE: Share-card preview modal:
+  - Added a "Preview" button next to each layout's Export button in the Share sheet
+  - PreviewModal renders the actual 1080×1350 layout to a canvas via exportShareCard, shows it fullscreen with Close + Export buttons
+  - Loading state shows a spinner overlay while rendering; canvas stays mounted (hidden) so the ref is ready when the image loads (fixed an initial bug where the canvas was conditionally rendered, causing the ref to be null at onload time)
+  - Escape key closes; AnimatePresence for fade in/out
+  - Browser-verified: canvas renders at 1080×1350, Close + Export buttons present, no errors
+- NEW FEATURE: Recent styles quick-apply strip in the Studio:
+  - Created src/lib/style-memory.ts (useStyleRecents hook, localStorage-backed, max 8)
+  - Added a "Recently used" strip at the top of the Presets tab showing recently-applied presets as small QR thumbnails (72px) with the preset name
+  - Appears only after applying a preset; updates live as presets are applied
+  - Selecting one re-applies it instantly
+  - Browser-verified: after applying Terracotta + Noir Gold, both appear in the strip
+- STYLING POLISH: Caveat handwritten font:
+  - Installed @fontsource/caveat (400, 500, 700 weights) and imported in layout.tsx
+  - Added Caveat to QR_FONTS as the "Handwritten" category
+  - Updated the Polaroid share-card layout to use real Caveat (was Fraunces italic fallback) for the caption — much more authentic handwritten feel
+- STYLING POLISH: Animated tab bar:
+  - Replaced the static tab bar with motion.button (whileTap scale 0.92, spring transition)
+  - Active tab indicator now animates between tabs using layoutId="tab-indicator" (shared layout animation)
+  - Active icon does a subtle y: -1 lift via motion.div
+  - All using framer-motion with spring physics (stiffness 400, damping 25-30)
+- Fixed a build error: duplicate import of Download/Loader2 in share-sheet.tsx (moved all imports to the top, removed the duplicate block at the bottom)
+
+Stage Summary:
+- 2 new features (share-card preview modal, recent styles strip) + 2 styling polish items (Caveat font, animated tab bar)
+- New files: src/lib/style-memory.ts
+- Modified: src/app/layout.tsx (Caveat imports), src/lib/style-presets.ts (Caveat in QR_FONTS), src/lib/export.ts (Polaroid uses Caveat), src/components/vello/screens/{share-sheet,studio}.tsx, src/components/vello/app-shell.tsx (animated tab bar)
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 93 files no network calls
+- Browser-verified: preview modal renders 1080×1350 canvas with Close/Export, recent styles strip appears after applying presets, tab bar animates between tabs, no console errors
+- Screenshots saved: qa-preview-modal-fixed, qa-recent-styles
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- Consider adding the 4 share-card layouts to the showcase page's demo
+- The preview modal canvas uses a fixed 60vh height; could calculate aspect ratio for perfect fit
+- Consider a "clear recents" option in the studio
+- Persist font recents/favourites + style recents into the backup bundle (currently localStorage, not in IndexedDB backup)

@@ -591,3 +591,57 @@ function FontGrid({
     </div>
   );
 }
+
+function RecentStylesStrip({
+  styles,
+  currentId,
+  onApply,
+  card,
+  photo,
+}: {
+  styles: { id: string; name: string; style: QrStyle }[];
+  currentId: string | null;
+  onApply: (id: string) => void;
+  card: Card;
+  photo?: string;
+}) {
+  return (
+    <div>
+      <p className="mb-2 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.15em] text-clay">
+        <History className="h-3 w-3" /> Recently used
+      </p>
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        {styles.map((s) => {
+          const active = currentId === s.id;
+          return (
+            <button
+              key={s.id}
+              onClick={() => onApply(s.id)}
+              className={cn(
+                "no-tap flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all",
+                active ? "border-clay" : "border-border"
+              )}
+              aria-label={`Apply ${s.name}`}
+            >
+              <div className="relative">
+                <QrPreview
+                  card={card}
+                  style={s.style}
+                  size={72}
+                  photoDataUrl={photo}
+                  showLoading={false}
+                />
+                {active && (
+                  <div className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-clay text-white">
+                    <Check className="h-2.5 w-2.5" />
+                  </div>
+                )}
+              </div>
+              <p className="px-2 py-1 text-center text-[10px] font-medium">{s.name}</p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

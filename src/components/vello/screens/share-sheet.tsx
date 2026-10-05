@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FileImage, FileText, Image as ImageIcon, Square, Share2, Download, Loader2, Wallet, Monitor, LayoutGrid, Check } from "lucide-react";
+import { FileImage, FileText, Image as ImageIcon, Square, Share2, Download, Loader2, Wallet, Monitor, LayoutGrid, Check, X } from "lucide-react";
 import { useVello } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
@@ -20,6 +20,7 @@ import {
 } from "@/lib/export";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
 
 type ExportId = "png" | "svg" | "vcf" | "story" | "square" | "print" | "wallet";
 const LABELS: Record<ExportId, string> = {
@@ -38,6 +39,7 @@ export function ShareSheet() {
   const [busy, setBusy] = React.useState<ExportId | null>(null);
   const [layoutBusy, setLayoutBusy] = React.useState<ShareCardLayout | null>(null);
   const [selectedLayout, setSelectedLayout] = React.useState<ShareCardLayout>("hairline");
+  const [previewing, setPreviewing] = React.useState<ShareCardLayout | null>(null);
 
   if (!card) return null;
 
@@ -194,15 +196,40 @@ export function ShareSheet() {
               );
             })}
           </div>
-          <button
-            onClick={() => runLayout(selectedLayout)}
-            disabled={layoutBusy !== null}
-            className="no-tap mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-[14px] font-medium text-background disabled:opacity-50"
-          >
-            {layoutBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            {layoutBusy ? "Rendering…" : `Export ${SHARE_CARD_LAYOUTS.find((l) => l.id === selectedLayout)?.name}`}
-          </button>
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={() => setPreviewing(selectedLayout)}
+              className="no-tap flex flex-1 items-center justify-center gap-2 rounded-full border border-border py-3.5 text-[14px] font-medium text-foreground"
+            >
+              <ImageIcon className="h-4 w-4" />
+              Preview
+            </button>
+            <button
+              onClick={() => runLayout(selectedLayout)}
+              disabled={layoutBusy !== null}
+              className="no-tap flex flex-[2] items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-[14px] font-medium text-background disabled:opacity-50"
+            >
+              {layoutBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+              {layoutBusy ? "Rendering…" : `Export ${SHARE_CARD_LAYOUTS.find((l) => l.id === selectedLayout)?.name}`}
+            </button>
+          </div>
         </div>
+
+        {/* Preview modal */}
+        {previewing && (
+          <PreviewModal
+            layout={previewing}
+            card={card}
+            style={style}
+            photoDataUrl={photo?.full}
+            onClose={() => setPreviewing(null)}
+            onExport={async () => {
+              const layout = previewing;
+              setPreviewing(null);
+              await runLayout(layout);
+            }}
+          />
+        )}
 
         <div className="mt-6 rounded-2xl border border-border bg-card p-4">
           <div className="flex items-center gap-2">
@@ -278,4 +305,126 @@ function LayoutThumb({ layout }: { layout: ShareCardLayout }) {
         </div>
       );
   }
+}
+
+function PreviewModal({
+  layout,
+  card,
+  style,
+  photoDataUrl,
+  onClose,
+  onExport,
+}: {
+  layout: ShareCardLayout;
+  card: NonNullable<ReturnType<typeof useVello.getState>["card"]>;
+  style: ReturnType<typeof useVello.getState>["style"];
+  photoDataUrl?: string;
+  onClose: () => void;
+  onExport: () => Promise<void>;
+}) {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const [loading, setLoading] = React.useState(true);
+  const layoutName = SHARE_CARD_LAYOUTS.find((l) => l.id === layout)?.name ?? layout;
+
+  React.useEffect(() => {
+    let cancelled = false;
+    async function render() {
+      setLoading(true);
+      try {
+        const blob = await exportShareCard(card, style, layout, photoDataUrl);
+        if (cancelled) return;
+        const url = URL.createObjectURL(blob);
+        const img = new Image();
+        img.onload = () => {
+          if (cancelled) return;
+          // wait for canvas to be mounted, then draw
+          requestAnimationFrame(() => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx?.drawImage(img, 0, 0);
+            setLoading(false);
+            URL.revokeObjectURL(url);
+          });
+        };
+        img.onerror = () => {
+          if (!cancelled) setLoading(false);
+        };
+        img.src = url;
+      } catch {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    void render();
+    return () => { cancelled = true; };
+  }, [layout, card, style, photoDataUrl]);
+
+  // close on Escape
+  React.useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-sm pt-safe"
+        role="dialog"
+        aria-label={`Preview ${layoutName} layout`}
+      >
+        <div className="flex items-center justify-between p-4">
+          <div>
+            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-clay">Preview</p>
+            <h2 className="font-display text-lg font-medium tracking-tight">{layoutName}</h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="no-tap flex h-10 w-10 items-center justify-center rounded-full bg-muted text-foreground"
+            aria-label="Close preview"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="relative flex flex-1 items-center justify-center px-6 pb-6">
+          <canvas
+            ref={canvasRef}
+            className="max-h-full max-w-full rounded-xl shadow-2xl"
+            style={{ height: "60vh", width: "auto", display: loading ? "none" : "block" }}
+          />
+          {loading && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+              <Loader2 className="h-6 w-6 animate-spin text-clay" />
+              <p className="text-[12px] text-muted-foreground">Rendering {layoutName}…</p>
+            </div>
+          )}
+        </div>
+        <div className="border-t border-border p-4 pb-safe">
+          <div className="mx-auto flex max-w-md gap-2">
+            <button
+              onClick={onClose}
+              className="no-tap flex-1 rounded-full border border-border py-3.5 text-[14px] font-medium text-foreground"
+            >
+              Back
+            </button>
+            <button
+              onClick={onExport}
+              className="no-tap flex-[2] flex items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-[14px] font-medium text-background"
+            >
+              <Download className="h-4 w-4" />
+              Export {layoutName}
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
 }
