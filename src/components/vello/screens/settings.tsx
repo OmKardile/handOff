@@ -48,11 +48,11 @@ export function SettingsScreen() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="px-5 pb-28 pt-4"
+        className="px-5 pb-36 pt-6"
       >
         {/* appearance */}
         <SectionLabel>Appearance</SectionLabel>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <CardGroup>
           <ThemeRow
             label="Theme"
             value={settings.theme}
@@ -61,10 +61,11 @@ export function SettingsScreen() {
               setTheme(v);
             }}
           />
-          <div className="flex items-center justify-between border-t border-border px-4 py-3.5">
+          <RowDivider />
+          <div className="flex items-center justify-between px-4 py-3.5">
             <div className="flex items-center gap-3">
-              <Vibrate className="h-4 w-4 text-muted-foreground" />
-              <span className="text-[14px]">Haptics</span>
+              <Vibrate className="h-[18px] w-[18px] text-muted-foreground" />
+              <span className="text-[15px]">Haptics</span>
             </div>
             <Switch
               checked={settings.haptics}
@@ -72,101 +73,112 @@ export function SettingsScreen() {
               aria-label="Haptics"
             />
           </div>
-        </div>
+        </CardGroup>
 
         {/* storage */}
         <SectionLabel>Storage</SectionLabel>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <CardGroup>
           <div className="flex items-center justify-between px-4 py-3.5">
             <div className="flex items-center gap-3">
-              <HardDrive className="h-4 w-4 text-muted-foreground" />
+              <HardDrive className="h-[18px] w-[18px] text-muted-foreground" />
               <div>
-                <p className="text-[14px]">Persistent storage</p>
-                <p className="text-[11px] text-muted-foreground">Keeps your card from being cleared</p>
+                <p className="text-[15px]">Persistent storage</p>
+                <p className="text-[12px] text-muted-foreground">Keeps your card from being cleared</p>
               </div>
             </div>
-            <span className={cn("text-[12px] font-medium", persisted ? "text-emerald-500" : "text-amber-500")}>
+            <span className={cn("text-[13px] font-medium", persisted ? "text-emerald-500" : "text-amber-500")}>
               {persisted === null ? "Checking…" : persisted ? "Protected" : "Not protected"}
             </span>
           </div>
           {!persisted && (
-            <div className="border-t border-border px-4 py-3">
-              <button
-                onClick={async () => {
-                  const { requestPersistence, checkPersistence } = await import("@/lib/storage");
-                  const ok = await requestPersistence();
-                  setPersisted(await checkPersistence());
-                  setSettings((s) => ({ ...s, storagePersisted: ok }));
-                  toast(ok ? "Storage protected" : "Couldn't enable — your browser may not support it");
-                }}
-                className="no-tap w-full rounded-lg bg-foreground py-2.5 text-[13px] font-medium text-background"
-              >
-                Enable persistence
-              </button>
-            </div>
+            <>
+              <RowDivider />
+              <div className="px-4 py-3">
+                <button
+                  onClick={async () => {
+                    const { requestPersistence, checkPersistence } = await import("@/lib/storage");
+                    const ok = await requestPersistence();
+                    setPersisted(await checkPersistence());
+                    setSettings((s) => ({ ...s, storagePersisted: ok }));
+                    toast(ok ? "Storage protected" : "Couldn't enable — your browser may not support it");
+                  }}
+                  className="no-tap w-full rounded-xl bg-foreground py-2.5 text-[14px] font-medium text-background active:scale-[0.98] transition-transform"
+                >
+                  Enable persistence
+                </button>
+              </div>
+            </>
           )}
+          <RowDivider />
           <NavRow icon={Download} label="Backup & restore" onClick={() => navigate("backup")} />
-        </div>
+        </CardGroup>
 
         {/* privacy */}
         <SectionLabel>Privacy</SectionLabel>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <CardGroup>
           <NavRow icon={ShieldCheck} label="Privacy" onClick={() => navigate("privacy")} highlight />
-        </div>
-        <p className="mt-2 px-1 text-[11px] leading-relaxed text-muted-foreground">
+        </CardGroup>
+        <p className="mt-2 px-4 text-[12px] leading-relaxed text-muted-foreground">
           {PRIVACY_PROMISE[5]}
         </p>
 
         {/* danger */}
         <SectionLabel>Danger zone</SectionLabel>
-        <button
-          onClick={async () => {
-            if (window.confirm("Erase all data? This cannot be undone. Your card, photo and settings will be removed from this device.")) {
-              await resetAll();
-              toast.success("All data erased");
-            }
-          }}
-          className="no-tap flex w-full items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3.5 text-left dark:border-red-900/40 dark:bg-red-950/20"
-        >
-          <Trash2 className="h-4 w-4 text-red-500" />
-          <div>
-            <p className="text-[14px] font-medium text-red-600 dark:text-red-400">Erase all data</p>
-            <p className="text-[11px] text-red-500/80">Removes everything from this device</p>
-          </div>
-        </button>
+        <CardGroup>
+          <button
+            onClick={async () => {
+              if (window.confirm("Erase all data? This cannot be undone. Your card, photo and settings will be removed from this device.")) {
+                await resetAll();
+                toast.success("All data erased");
+              }
+            }}
+            className="no-tap flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-red-500/10"
+          >
+            <Trash2 className="h-[18px] w-[18px] text-red-500" />
+            <div>
+              <p className="text-[15px] font-medium text-red-500 dark:text-red-400">Erase all data</p>
+              <p className="text-[12px] text-muted-foreground">Removes everything from this device</p>
+            </div>
+          </button>
+        </CardGroup>
 
         {/* about */}
         <SectionLabel>About</SectionLabel>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <CardGroup>
           <div className="flex items-center gap-3 px-4 py-3.5">
             <Wordmark className="text-lg" />
-            <span className="ml-auto text-[12px] text-muted-foreground">v{BRAND.version}</span>
+            <span className="ml-auto text-[13px] text-muted-foreground">v{BRAND.version}</span>
           </div>
-          <div className="border-t border-border px-4 py-3.5">
+          <RowDivider />
+          <div className="px-4 py-3.5">
             <p className="text-[13px] leading-relaxed text-muted-foreground">
               {BRAND.oneLiner}
             </p>
           </div>
-          <div className="border-t border-border px-4 py-3.5">
+          <RowDivider />
+          <div className="px-4 py-3.5">
             <p className="text-[12px] font-medium text-muted-foreground">Tagline</p>
             <p className="mt-0.5 font-display text-[15px] tracking-tight">{BRAND.tagline}</p>
           </div>
+          <RowDivider />
           <NavRow icon={Sparkles} label="Showcase" onClick={() => navigate("showcase")} />
+          <RowDivider />
           <NavRow icon={HelpCircle} label="Help centre" onClick={() => navigate("help")} />
+          <RowDivider />
           <a
             href="https://omkardile.is-a.dev/"
             target="_blank"
             rel="noopener noreferrer"
-            className="no-tap flex w-full items-center gap-3 border-t border-border px-4 py-3.5 text-left"
+            className="no-tap flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-foreground/5"
           >
-            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+            <ExternalLink className="h-[18px] w-[18px] text-muted-foreground" />
             <div className="flex-1">
-              <p className="text-[14px]">Developer</p>
-              <p className="text-[11px] text-muted-foreground">Omkar Kardile</p>
+              <p className="text-[15px]">Developer</p>
+              <p className="text-[12px] text-muted-foreground">Omkar Kardile</p>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </a>
-        </div>
+        </CardGroup>
 
         <div className="mt-6 flex flex-col items-center gap-2">
           <DevSignature />
@@ -181,10 +193,31 @@ export function SettingsScreen() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-2 mt-6 px-1 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+    <motion.p
+      variants={staggerItem}
+      className="mb-2 mt-7 px-4 text-[12px] font-semibold uppercase tracking-[0.08em] text-muted-foreground"
+    >
       {children}
-    </p>
+    </motion.p>
   );
+}
+
+/** iOS 27 grouped card — translucent, continuous radius, subtle inner highlight. */
+function CardGroup({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      variants={staggerItem}
+      className="overflow-hidden rounded-2xl border border-border/60 bg-card/80 backdrop-blur-sm"
+      style={{ boxShadow: "var(--elevation-card)" }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+/** iOS-style row separator — barely visible, inset from the left. */
+function RowDivider() {
+  return <div className="ml-4 h-px bg-border/50" />;
 }
 
 function ThemeRow({
@@ -203,21 +236,31 @@ function ThemeRow({
   ];
   return (
     <div className="flex items-center justify-between px-4 py-3.5">
-      <span className="text-[14px]">{label}</span>
-      <div className="flex gap-1 rounded-full bg-muted p-0.5">
+      <span className="text-[15px]">{label}</span>
+      {/* iOS 27 segmented control — capsule with sliding active indicator */}
+      <div className="relative flex gap-0.5 rounded-full bg-muted p-0.5">
         {opts.map((o) => {
           const Icon = o.icon;
+          const active = value === o.id;
           return (
             <button
               key={o.id}
               onClick={() => onChange(o.id)}
               className={cn(
-                "no-tap flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
-                value === o.id ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"
+                "no-tap relative flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[12px] font-medium transition-colors",
+                active ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              <Icon className="h-3.5 w-3.5" />
-              {o.label}
+              {active && (
+                <motion.span
+                  layoutId="theme-segment"
+                  className="absolute inset-0 rounded-full bg-background"
+                  style={{ boxShadow: "var(--elevation-subtle)" }}
+                  transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                />
+              )}
+              <Icon className="relative h-3.5 w-3.5" />
+              <span className="relative">{o.label}</span>
             </button>
           );
         })}
@@ -240,10 +283,10 @@ function NavRow({
   return (
     <button
       onClick={onClick}
-      className="no-tap flex w-full items-center gap-3 border-t border-border px-4 py-3.5 text-left transition-colors active:bg-foreground/5"
+      className="no-tap flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-foreground/5"
     >
-      <Icon className={cn("h-4 w-4", highlight ? "text-clay" : "text-muted-foreground")} />
-      <span className="flex-1 text-[14px]">{label}</span>
+      <Icon className={cn("h-[18px] w-[18px]", highlight ? "text-clay" : "text-muted-foreground")} />
+      <span className="flex-1 text-[15px]">{label}</span>
       <ChevronRight className="h-4 w-4 text-muted-foreground" />
     </button>
   );
