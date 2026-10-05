@@ -497,3 +497,37 @@ Unresolved / next-phase:
 - Consider adding the insights panel to the editor (live update as toggles change)
 - Document the qr-insights module in TECHNICAL.md
 - Consider a "field count" summary (e.g. "6 fields included")
+
+---
+Task ID: CRON-9 (15-min webDevReview)
+Agent: main (webDevReview)
+Task: QA the app, then improve styling with more details and add more features/functionality.
+
+Work Log:
+- Reviewed worklog.md — project stable (v1.0.0, all gates pass, 14 screens, 26 docs). CRON-8 added QR insights panel on home + Copy as text. Next-phase suggested adding insights to the editor + a field count summary.
+- Ran `bun run verify:all` — lint clean, docs:check 26/26, check:privacy 94 files. Baseline confirmed.
+- QA via agent-browser (iPhone 14): onboarding → home → editor QR contents section (toggles verified). No console errors.
+- NEW FEATURE: Live QR insights in the editor QR contents section (requested in CRON-8 next-phase):
+  - Added EditorQrInsights component to editor.tsx — a compact mini-panel showing the live byte total + status (Compact/Fine/Large/Too large with colored dot) + field count
+  - Updates instantly as toggles are flipped (uses the same getFieldBytes/getTotalBytes from qr-insights.ts)
+  - Browser-verified: toggling Name off dropped total from 60→37 bytes, field count updated; toggling back on restored it
+- NEW FEATURE: Field count summary in the home insights panel (requested in CRON-8 next-phase):
+  - The QrInsights panel header now shows a small badge "N fields" next to "QR breakdown" (e.g. "1 field", "6 fields")
+  - Counts data fields only (excludes the vCard envelope overhead)
+  - The editor's EditorQrInsights also shows "N field(s) included"
+- STYLING POLISH: The editor QR contents Section now uses the `filled` prop (always has defaults), and the live insights panel uses a subtle bordered background card with a status dot. The home insights badge uses a small rounded muted pill for visual hierarchy.
+
+Stage Summary:
+- 2 new features (editor live insights, field count summary) + 1 styling polish (insights visual hierarchy)
+- Modified: src/components/vello/screens/{editor,home}.tsx
+- verify:all passes: lint clean, docs:check 26/26 + links valid, check:privacy 94 files no network calls
+- Browser-verified: editor live insights update on toggle (60→37 bytes), home shows "1 field 60 bytes" badge, no console errors
+- Screenshots saved: qa-editor-live-insights, qa-round9-editor-qr
+
+Unresolved / next-phase:
+- Add automated tests (Vitest + Playwright) per TESTING.md — still the largest documented gap
+- Add CSP meta tag (BACKLOG B-19) for the privacy guarantee
+- The QR insights bar chart could show percentage of total instead of raw bytes
+- Document the qr-insights module in TECHNICAL.md
+- Consider adding the field count to the fullscreen QR screen
+- The editor insights could show a live QR version estimate (e.g. "QR version 3")

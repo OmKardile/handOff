@@ -371,6 +371,7 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useVello.get
   const fields = getFieldBytes(card);
   const total = getTotalBytes(fields);
   const maxField = Math.max(...fields.map((f) => f.bytes), 1);
+  const dataFieldCount = fields.filter((f) => f.id !== "envelope").length;
 
   if (total === 0) return null;
 
@@ -385,6 +386,9 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useVello.get
           <span className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-clay" />
             <span className="text-[12px] font-semibold tracking-tight">QR breakdown</span>
+            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
+              {dataFieldCount} field{dataFieldCount === 1 ? "" : "s"}
+            </span>
           </span>
           <span className="flex items-center gap-2 text-[11px] text-muted-foreground">
             {total} bytes

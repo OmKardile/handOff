@@ -24,6 +24,7 @@ import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
 import { processPhoto } from "@/lib/photo";
 import { getQrSizeInfo, isQrOverflow } from "@/lib/qr";
+import { getFieldBytes, getTotalBytes } from "@/lib/qr-insights";
 import {
   normalizeName,
   normalizePhone,
@@ -202,10 +203,12 @@ export function EditorScreen() {
         </Section>
 
         {/* QR contents */}
-        <Section title="QR contents" open={open === "qr"} onToggle={() => setOpen(open === "qr" ? "" : "qr")}>
+        <Section title="QR contents" open={open === "qr"} onToggle={() => setOpen(open === "qr" ? "" : "qr")} filled>
           <p className="mb-3 text-[12px] text-muted-foreground">
             Choose what appears in the QR. Fewer fields scan faster.
           </p>
+          {/* live insights mini-panel */}
+          <EditorQrInsights card={card} />
           <div className="space-y-1">
             <ToggleRow label="Name" on={card.qrInclude.name} onToggle={() => toggleQr("name")} />
             <ToggleRow label="Job title" on={card.qrInclude.title} onToggle={() => toggleQr("title")} />
@@ -478,6 +481,32 @@ function SortableSocialRow({
           />
         </label>
       </div>
+    </div>
+  );
+}
+
+/** Compact live QR insights for the editor — updates as toggles change. */
+function EditorQrInsights({ card }: { card: Card }) {
+  const fields = getFieldBytes(card);
+  const total = getTotalBytes(fields);
+  const dataFieldCount = fields.filter((f) => f.id !== "envelope").length;
+
+  const status =
+    total > 700 ? { color: "bg-red-600", label: "Too large" } :
+    total > 450 ? { color: "bg-red-500", label: "Large" } :
+    total > 250 ? { color: "bg-amber-500", label: "Fine" } :
+    { color: "bg-emerald-500", label: "Compact" };
+
+  return (
+    <div className="mb-3 flex items-center justify-between rounded-xl border border-border bg-background px-3 py-2.5">
+      <div className="flex items-center gap-2">
+        <span className={cn("h-2 w-2 rounded-full", status.color)} />
+        <span className="text-[12px] font-medium">{total} bytes</span>
+        <span className="text-[11px] text-muted-foreground">· {status.label}</span>
+      </div>
+      <span className="text-[11px] text-muted-foreground">
+        {dataFieldCount} field{dataFieldCount === 1 ? "" : "s"} included
+      </span>
     </div>
   );
 }
