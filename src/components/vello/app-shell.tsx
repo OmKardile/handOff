@@ -19,10 +19,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const hideBar = view === "onboarding" || view === "fullscreen-qr";
 
   return (
-    <div className="relative flex min-h-[100dvh] flex-col bg-background paper-grain">
+    <div className="relative flex min-h-[100dvh] flex-col paper-grain">
+      {/* Ambient background — gives the liquid glass something to refract.
+          Soft warm radial blobs in the editorial palette; never glow/neon.
+          Sits at z-0 (above the body bg, below content) so the glass surfaces
+          can actually blur these colors through. */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div
+          className="absolute -top-[20%] -right-[15%] h-[55vh] w-[55vh] rounded-full opacity-[0.28] blur-[70px]"
+          style={{ background: "radial-gradient(circle, var(--clay), transparent 70%)" }}
+        />
+        <div
+          className="absolute top-[40%] -left-[20%] h-[50vh] w-[50vh] rounded-full opacity-[0.16] blur-[80px]"
+          style={{ background: "radial-gradient(circle, var(--ink), transparent 70%)" }}
+        />
+        <div
+          className="absolute bottom-[-15%] right-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.14] blur-[90px]"
+          style={{ background: "radial-gradient(circle, var(--clay-soft), transparent 70%)" }}
+        />
+      </div>
+
       <main
         className={cn(
-          "flex-1 pb-safe",
+          "relative z-10 flex-1 pb-safe",
           hideBar ? "pb-0" : "pb-24"
         )}
       >

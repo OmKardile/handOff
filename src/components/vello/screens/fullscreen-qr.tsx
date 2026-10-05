@@ -64,7 +64,18 @@ export function FullscreenQr() {
   const fullName = [card.firstName, card.lastName].filter(Boolean).join(" ");
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background/95 pt-safe backdrop-blur-2xl">
+    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background pt-safe">
+      {/* ambient blobs so the glass header has something to refract */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div
+          className="absolute -top-[20%] -right-[15%] h-[55vh] w-[55vh] rounded-full opacity-[0.20] blur-[80px]"
+          style={{ background: "radial-gradient(circle, var(--clay), transparent 70%)" }}
+        />
+        <div
+          className="absolute bottom-[-15%] -left-[15%] h-[50vh] w-[50vh] rounded-full opacity-[0.14] blur-[90px]"
+          style={{ background: "radial-gradient(circle, var(--ink), transparent 70%)" }}
+        />
+      </div>
       <div className="glass flex items-center justify-between border-b border-border/40 px-4 py-3">
         <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Tap to scan
