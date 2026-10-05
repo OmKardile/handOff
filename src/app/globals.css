@@ -270,46 +270,133 @@
     border-top: 1px solid var(--border);
   }
 
-  /* ===== ARCHIPELAGO — Nautical Chart Visual Language =====
-     No glassmorphism. Depth from hairlines, elevation shadows, and surface hierarchy.
-     Surfaces are solid cards (islands) with thin borders + elevation shadows. */
+  /* ===== ARCHIPELAGO + Glass + Mesh Gradient =====
+     Three layers working together:
+     1. Vibrant mesh gradient (drifting orbs) — the BACKGROUND that glass refracts
+     2. Liquid glass surfaces (backdrop-blur + translucency + borders + shadows)
+     3. Paper grain texture (subtle noise overlay)
+     Archipelago chart labels (ISL-XXXX, CARD, BEARING) sit on top. */
 
-  /* Island card — a solid surface on the chart */
-  .glass, .glass-card, .solid-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: var(--elevation-card);
+  /* Shared glass base */
+  .glass, .glass-strong, .glass-pill, .glass-card {
+    position: relative;
+    isolation: isolate;
+  }
+  .glass > *, .glass-strong > *, .glass-pill > *, .glass-card > * {
+    position: relative;
+    z-index: 1;
   }
 
-  /* Strong surface — modals, sheets */
+  /* ---- Standard glass (header, sticky bars) ---- */
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+  .glass::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none; z-index: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 40%);
+  }
+
+  /* ---- Strong glass (modals, sheets) ---- */
   .glass-strong {
-    background: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: var(--elevation-floating);
+    background: rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  }
+  .glass-strong::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none; z-index: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 40%);
   }
 
-  /* Pill — compass, buttons, badges (solid, no glass) */
+  /* ---- Glass pill (floating dock, buttons, badges) ---- */
   .glass-pill {
-    background: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: var(--elevation-subtle);
+    background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 8px 24px rgba(0, 0, 0, 0.05);
+  }
+  .glass-pill::before {
+    content: "";
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    pointer-events: none; z-index: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
   }
 
-  /* Dark mode — same solid approach */
-  .dark .glass, .dark .glass-card, .dark .solid-card {
+  /* ---- Glass card (settings cards — NO canvas inside) ---- */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: var(--elevation-card);
+  }
+
+  /* ---- Solid card (QR plate — canvas parent, NO backdrop-filter) ---- */
+  .solid-card {
     background: var(--card);
     border: 1px solid var(--border);
     box-shadow: var(--elevation-card);
+  }
+
+  /* ---- Dark mode glass ---- */
+  .dark .glass {
+    background: rgba(28, 28, 30, 0.08);
+    -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(0.9);
+    backdrop-filter: blur(20px) saturate(160%) brightness(0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+  .dark .glass::before {
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%);
   }
   .dark .glass-strong {
-    background: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: var(--elevation-floating);
+    background: rgba(44, 44, 46, 0.12);
+    -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(0.88);
+    backdrop-filter: blur(32px) saturate(170%) brightness(0.88);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+  }
+  .dark .glass-strong::before {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 40%);
   }
   .dark .glass-pill {
+    background: rgba(44, 44, 46, 0.1);
+    -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
+    backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+  .dark .glass-pill::before {
+    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 50%);
+  }
+  .dark .glass-card {
+    background: rgba(44, 44, 46, 0.08);
+    -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
+    backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--elevation-card);
+  }
+  .dark .solid-card {
     background: var(--card);
     border: 1px solid var(--border);
-    box-shadow: var(--elevation-subtle);
+    box-shadow: var(--elevation-card);
   }
 
   /* ---- Chart graticule: edge ticks only (not a full grid) ----
