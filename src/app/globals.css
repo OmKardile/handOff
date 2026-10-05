@@ -196,66 +196,146 @@
     border-top: 1px solid var(--border);
   }
 
-  /* ===== iOS 26 Liquid Glass =====
-     Refractive, specular, with dynamic edge-lighting.
-     Not flat blur — this simulates light bending through the material. */
+  /* ===== Apple iOS 26 Liquid Glass =====
+     The real thing: a lensing layer with refractive tint + specular sheen.
+     Implemented as TWO layers — the base blurs+refracts, the ::before overlay
+     paints a bright top-sheen that reads as light hitting curved glass. */
+
+  /* Base refractive layer (shared) */
+  .glass, .glass-strong, .glass-pill {
+    position: relative;
+    -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(1.1);
+    backdrop-filter: blur(30px) saturate(180%) brightness(1.1);
+  }
+  .glass > *, .glass-strong > * {
+    position: relative;
+    z-index: 1;
+  }
+  .glass::before, .glass-strong::before, .glass-pill::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    /* The specular sheen: bright at the top, fading to nothing, then a faint
+       dark compression at the bottom edge — this is what makes it look like
+       light bending through a piece of glass. */
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.15) 18%,
+      transparent 40%,
+      transparent 65%,
+      rgba(0, 0, 0, 0.06) 100%
+    );
+    /* The bright top rim — the strongest part of the sheen */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  }
+
   .glass {
-    background-color: color-mix(in srgb, var(--background) 64%, transparent);
-    backdrop-filter: blur(24px) saturate(180%) brightness(1.08);
-    -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.08);
-    /* Liquid Glass specular edge: bright top + soft bottom shadow */
-    box-shadow:
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.35),
-      inset 0 -1px 1px 0 rgba(0, 0, 0, 0.04);
+    background-color: color-mix(in srgb, var(--background) 50%, transparent);
   }
-  .dark .glass {
-    background-color: color-mix(in srgb, var(--background) 56%, transparent);
-    backdrop-filter: blur(24px) saturate(160%) brightness(0.9);
-    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(0.9);
-    box-shadow:
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.08),
-      inset 0 -1px 1px 0 rgba(0, 0, 0, 0.2);
-  }
-  /* Heavier liquid glass for modals / sheets */
   .glass-strong {
-    background-color: color-mix(in srgb, var(--background) 76%, transparent);
-    backdrop-filter: blur(36px) saturate(200%) brightness(1.06);
-    -webkit-backdrop-filter: blur(36px) saturate(200%) brightness(1.06);
+    background-color: color-mix(in srgb, var(--background) 60%, transparent);
+    -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.12);
+    backdrop-filter: blur(40px) saturate(200%) brightness(1.12);
+  }
+  .glass-strong::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.18) 18%,
+      transparent 42%,
+      transparent 62%,
+      rgba(0, 0, 0, 0.07) 100%
+    );
     box-shadow:
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.4),
-      inset 0 -1px 1px 0 rgba(0, 0, 0, 0.05);
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  }
+  /* Liquid glass pill — curved specular (full 180° sheen + outer drop shadow) */
+  .glass-pill {
+    background-color: color-mix(in srgb, var(--background) 55%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(1.08);
+    backdrop-filter: blur(24px) saturate(180%) brightness(1.08);
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  .glass-pill > * {
+    position: relative;
+    z-index: 1;
+  }
+  .glass-pill::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0.12) 30%,
+      transparent 50%,
+      transparent 70%,
+      rgba(0, 0, 0, 0.04) 100%
+    );
+    box-shadow:
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -0.5px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Dark mode: dimmer sheen, darker tint, still refractive */
+  .dark .glass {
+    background-color: color-mix(in srgb, var(--background) 44%, transparent);
+    -webkit-backdrop-filter: blur(30px) saturate(160%) brightness(0.85);
+    backdrop-filter: blur(30px) saturate(160%) brightness(0.85);
+  }
+  .dark .glass::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 18%,
+      transparent 40%,
+      transparent 65%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
   }
   .dark .glass-strong {
-    background-color: color-mix(in srgb, var(--background) 66%, transparent);
-    backdrop-filter: blur(36px) saturate(170%) brightness(0.88);
-    -webkit-backdrop-filter: blur(36px) saturate(170%) brightness(0.88);
-    box-shadow:
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.1),
-      inset 0 -1px 1px 0 rgba(0, 0, 0, 0.25);
+    background-color: color-mix(in srgb, var(--background) 54%, transparent);
+    -webkit-backdrop-filter: blur(40px) saturate(170%) brightness(0.82);
+    backdrop-filter: blur(40px) saturate(170%) brightness(0.82);
   }
-  /* Liquid Glass pill — for floating buttons, badges, toggles.
-     Has a subtle specular highlight gradient that simulates light hitting curved glass. */
-  .glass-pill {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, transparent 50%, rgba(0, 0, 0, 0.03) 100%),
-      color-mix(in srgb, var(--background) 70%, transparent);
-    backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
-    -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(1.05);
+  .dark .glass-strong::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.05) 18%,
+      transparent 42%,
+      transparent 62%,
+      rgba(0, 0, 0, 0.25) 100%
+    );
     box-shadow:
-      inset 0 0.5px 0.5px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -0.5px 0.5px 0 rgba(0, 0, 0, 0.03),
-      0 1px 3px rgba(0, 0, 0, 0.08);
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.35);
   }
   .dark .glass-pill {
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 50%, rgba(0, 0, 0, 0.1) 100%),
-      color-mix(in srgb, var(--background) 60%, transparent);
-    backdrop-filter: blur(20px) saturate(160%) brightness(0.92);
-    -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(0.92);
+    background-color: color-mix(in srgb, var(--background) 48%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(160%) brightness(0.88);
+    backdrop-filter: blur(24px) saturate(160%) brightness(0.88);
+  }
+  .dark .glass-pill::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.03) 30%,
+      transparent 50%,
+      transparent 70%,
+      rgba(0, 0, 0, 0.15) 100%
+    );
     box-shadow:
-      inset 0 0.5px 0.5px 0 rgba(255, 255, 255, 0.08),
-      inset 0 -0.5px 0.5px 0 rgba(0, 0, 0, 0.2),
-      0 1px 3px rgba(0, 0, 0, 0.3);
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.12),
+      inset 0 -0.5px 0 rgba(0, 0, 0, 0.2);
   }
 
   /* Editorial container width */

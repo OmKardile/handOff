@@ -23,21 +23,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Ambient background — gives the liquid glass something to refract.
           Soft warm radial blobs in the editorial palette; never glow/neon.
           Sits at z-0 (above the body bg, below content) so the glass surfaces
-          can actually blur these colors through. */}
+          can actually blur these colors through. Slowly drifts so the glass
+          shows live refraction as the user scrolls/moves. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div
-          className="absolute -top-[20%] -right-[15%] h-[55vh] w-[55vh] rounded-full opacity-[0.28] blur-[70px]"
-          style={{ background: "radial-gradient(circle, var(--clay), transparent 70%)" }}
+          className="absolute -top-[15%] -right-[10%] h-[60vh] w-[60vh] rounded-full opacity-[0.35] blur-[60px] animate-[drift1_18s_ease-in-out_infinite]"
+          style={{ background: "radial-gradient(circle, var(--clay), transparent 65%)" }}
         />
         <div
-          className="absolute top-[40%] -left-[20%] h-[50vh] w-[50vh] rounded-full opacity-[0.16] blur-[80px]"
-          style={{ background: "radial-gradient(circle, var(--ink), transparent 70%)" }}
+          className="absolute top-[35%] -left-[18%] h-[55vh] w-[55vh] rounded-full opacity-[0.22] blur-[70px] animate-[drift2_22s_ease-in-out_infinite]"
+          style={{ background: "radial-gradient(circle, var(--ink), transparent 65%)" }}
         />
         <div
-          className="absolute bottom-[-15%] right-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.14] blur-[90px]"
-          style={{ background: "radial-gradient(circle, var(--clay-soft), transparent 70%)" }}
+          className="absolute bottom-[-12%] right-[8%] h-[50vh] w-[50vh] rounded-full opacity-[0.20] blur-[80px] animate-[drift3_26s_ease-in-out_infinite]"
+          style={{ background: "radial-gradient(circle, var(--clay-soft), transparent 65%)" }}
         />
       </div>
+      <style>{`
+        @keyframes drift1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(-40px, 30px) scale(1.08); }
+          66% { transform: translate(20px, -20px) scale(0.95); }
+        }
+        @keyframes drift2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(50px, -30px) scale(1.1); }
+        }
+        @keyframes drift3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          40% { transform: translate(-30px, -40px) scale(1.05); }
+          70% { transform: translate(30px, 20px) scale(0.92); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .animate-\\[drift1_18s_ease-in-out_infinite\\],
+          .animate-\\[drift2_22s_ease-in-out_infinite\\],
+          .animate-\\[drift3_26s_ease-in-out_infinite\\] {
+            animation: none !important;
+          }
+        }
+      `}</style>
 
       <main
         className={cn(
@@ -50,10 +74,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {!hideBar && (
         <nav
-          className="glass fixed inset-x-0 bottom-0 z-40 border-t border-border/60 pb-safe"
+          className="glass fixed inset-x-0 bottom-0 z-40 border-t border-white/10 pb-safe"
           aria-label="Primary"
         >
-          <div className="mx-auto flex max-w-md items-stretch justify-around px-2">
+          <div className="relative z-10 mx-auto flex max-w-md items-stretch justify-around px-2">
             {TABS.map((t) => {
               const active = tab === t.id;
               const Icon = t.icon;
@@ -118,7 +142,8 @@ export function ScreenHeader({
 }) {
   const { navigate } = useView();
   return (
-    <header className="glass sticky top-0 z-30 flex h-14 items-center gap-1 border-b border-border/60 px-2 pt-safe">
+    <header className="glass sticky top-0 z-30 flex h-14 items-center gap-1 border-b border-white/10 px-2 pt-safe">
+      <div className="relative z-10 flex h-full flex-1 items-center gap-1">
       {onBack && (
         <button
           onClick={onBack}
@@ -150,6 +175,7 @@ export function ScreenHeader({
         </button>
       )}
       {action}
+      </div>
     </header>
   );
 }
