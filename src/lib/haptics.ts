@@ -12,7 +12,7 @@ export function useHaptics() {
     () => {
       // read from zustand via a module-level flag to avoid circular deps
       try {
-        return localStorage.getItem("slate:haptics") !== "off";
+        return localStorage.getItem("handoff:haptics") !== "off";
       } catch {
         return true;
       }

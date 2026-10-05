@@ -4,7 +4,7 @@ import * as React from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 
 /**
- * Slate motion primitives — iOS/macOS-style physical animation.
+ * HandOff motion primitives — iOS/macOS-style physical animation.
  * Spring-based, natural easing, full prefers-reduced-motion support.
  * Never blocks interaction.
  */

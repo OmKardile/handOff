@@ -1,23 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { useSlate } from "@/lib/store";
-import { ViewProvider, useView } from "@/components/slate/view-context";
-import { AppShell } from "@/components/slate/app-shell";
-import { Onboarding } from "@/components/slate/screens/onboarding";
-import { HomeScreen } from "@/components/slate/screens/home";
-import { EditorScreen } from "@/components/slate/screens/editor";
-import { FullscreenQr } from "@/components/slate/screens/fullscreen-qr";
-import { StudioScreen } from "@/components/slate/screens/studio";
-import { SettingsScreen } from "@/components/slate/screens/settings";
-import { PrivacyScreen } from "@/components/slate/screens/privacy";
-import { ShareSheet } from "@/components/slate/screens/share-sheet";
-import { BackupScreen } from "@/components/slate/screens/backup";
-import { WalletScreen } from "@/components/slate/screens/wallet";
-import { WallpaperScreen } from "@/components/slate/screens/wallpaper";
-import { ShowcaseScreen } from "@/components/slate/screens/showcase";
-import { HelpScreen, HelpGuideScreen } from "@/components/slate/screens/help";
-import { ViewTransition } from "@/components/slate/motion";
+import { useHandOff } from "@/lib/store";
+import { ViewProvider, useView } from "@/components/handoff/view-context";
+import { AppShell } from "@/components/handoff/app-shell";
+import { Onboarding } from "@/components/handoff/screens/onboarding";
+import { HomeScreen } from "@/components/handoff/screens/home";
+import { EditorScreen } from "@/components/handoff/screens/editor";
+import { FullscreenQr } from "@/components/handoff/screens/fullscreen-qr";
+import { StudioScreen } from "@/components/handoff/screens/studio";
+import { SettingsScreen } from "@/components/handoff/screens/settings";
+import { PrivacyScreen } from "@/components/handoff/screens/privacy";
+import { ShareSheet } from "@/components/handoff/screens/share-sheet";
+import { BackupScreen } from "@/components/handoff/screens/backup";
+import { WalletScreen } from "@/components/handoff/screens/wallet";
+import { WallpaperScreen } from "@/components/handoff/screens/wallpaper";
+import { ShowcaseScreen } from "@/components/handoff/screens/showcase";
+import { HelpScreen, HelpGuideScreen } from "@/components/handoff/screens/help";
+import { ViewTransition } from "@/components/handoff/motion";
 
 function Screens() {
   const { view } = useView();
@@ -67,66 +67,55 @@ function LoadingScreen() {
   return (
     <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-6 bg-background">
       <div className="flex flex-col items-center gap-5">
-        {/* animated Slate mark — the S slash draws itself */}
-        <svg viewBox="0 0 40 40" className="h-16 w-16" fill="none" aria-hidden>
+        {/* HandOff mark — a card being handed off */}
+        <svg viewBox="0 0 64 64" className="h-16 w-16" fill="none" aria-hidden>
           <rect
-            width="40"
-            height="40"
-            rx="10"
-            fill="var(--ink, #161619)"
+            width="64"
+            height="64"
+            rx="16"
+            fill="var(--ink, #1C1C1E)"
             className="opacity-0"
-            style={{ animation: "slate-fade 0.4s ease 0.1s forwards" }}
+            style={{ animation: "ho-fade 0.4s ease 0.1s forwards" }}
           />
-          <path
-            d="M12 14 Q12 11 15 11 L25 11 Q28 11 28 14 Q28 17 25 17 L15 23 Q12 23 12 26 Q12 29 15 29 L25 29 Q28 29 28 26"
-            stroke="var(--paper, #f6f3ee)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-            pathLength={1}
-            style={{ strokeDasharray: 1, strokeDashoffset: 1, animation: "slate-draw 0.9s ease 0.3s forwards" }}
-          />
+          {/* card being handed off */}
+          <rect x="18" y="16" width="20" height="14" rx="3" fill="var(--paper, #F2F0EB)" className="opacity-0" style={{ animation: "ho-fade 0.3s ease 0.4s forwards" }} />
+          {/* hand-off arrow */}
+          <path d="M40 23 L48 23 M45 20 L48 23 L45 26" stroke="#B85226" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" pathLength={1}
+            style={{ strokeDasharray: 1, strokeDashoffset: 1, animation: "ho-draw 0.5s ease 0.7s forwards" }} />
+          {/* receiving hand */}
+          <path d="M16 42 Q16 36 22 36 L42 36 Q48 36 48 42 L48 48 Q48 50 46 50 L18 50 Q16 50 16 48 Z" fill="var(--paper, #F2F0EB)" opacity="0" style={{ animation: "ho-fade 0.3s ease 0.9s forwards" }} />
         </svg>
         <div className="flex flex-col items-center gap-2">
-          <span
-            className="font-display text-xl font-semibold tracking-tight opacity-0"
-            style={{ animation: "slate-fade 0.4s ease 0.6s forwards" }}
-          >
-            Slate
+          <span className="font-display text-xl font-semibold tracking-tight opacity-0" style={{ animation: "ho-fade 0.4s ease 0.6s forwards" }}>
+            HandOff
           </span>
-          <div className="h-0.5 w-20 overflow-hidden rounded-full bg-muted opacity-0" style={{ animation: "slate-fade 0.4s ease 0.8s forwards" }}>
-            <div className="h-full w-1/2 animate-[slate-slide_1.2s_ease-in-out_infinite] bg-clay" />
+          <div className="h-0.5 w-20 overflow-hidden rounded-full bg-muted opacity-0" style={{ animation: "ho-fade 0.4s ease 0.8s forwards" }}>
+            <div className="h-full w-1/2 animate-[ho-slide_1.2s_ease-in-out_infinite] bg-clay" />
           </div>
         </div>
       </div>
       <style>{`
-        @keyframes slate-draw { to { stroke-dashoffset: 0; } }
-        @keyframes slate-fade { to { opacity: 1; } }
-        @keyframes slate-slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+        @keyframes ho-draw { to { stroke-dashoffset: 0; } }
+        @keyframes ho-fade { to { opacity: 1; } }
+        @keyframes ho-slide { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
       `}</style>
     </div>
   );
 }
 
-export function SlateMark({ className }: { className?: string }) {
+export function HandOffMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 40 40" className={className} fill="none" aria-hidden>
-      <rect width="40" height="40" rx="10" fill="var(--ink, #161619)" />
-      <path
-        d="M12 14 Q12 11 15 11 L25 11 Q28 11 28 14 Q28 17 25 17 L15 23 Q12 23 12 26 Q12 29 15 29 L25 29 Q28 29 28 26"
-        stroke="var(--paper, #f6f3ee)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
+    <svg viewBox="0 0 64 64" className={className} fill="none" aria-hidden>
+      <rect width="64" height="64" rx="16" fill="var(--ink, #1C1C1E)" />
+      <rect x="18" y="16" width="20" height="14" rx="3" fill="var(--paper, #F2F0EB)" />
+      <path d="M40 23 L48 23 M45 20 L48 23 L45 26" stroke="#B85226" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M16 42 Q16 36 22 36 L42 36 Q48 36 48 42 L48 48 Q48 50 46 50 L18 50 Q16 50 16 48 Z" fill="var(--paper, #F2F0EB)" opacity="0.9" />
     </svg>
   );
 }
 
 export default function Home() {
-  const { loaded, load, onboarded } = useSlate();
+  const { loaded, load, onboarded } = useHandOff();
 
   React.useEffect(() => {
     void load();

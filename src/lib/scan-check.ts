@@ -1,5 +1,5 @@
 /**
- * Slate scan-check.
+ * HandOff scan-check.
  * After every style change / before export, render QR → decode with jsQR.
  * Compare decoded payload to the source. Warn, never block.
  */

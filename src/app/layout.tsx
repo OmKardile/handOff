@@ -27,9 +27,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Slate — One card. One scan. Nothing leaves your phone.",
+  title: "HandOff — One card. One scan. Nothing leaves your phone.",
   description:
-    "Slate is a digital business card that lives only on your phone. Generate a scannable QR, style it beautifully, and share your contact — no app, no server, no network.",
+    "HandOff is a digital business card that lives only on your phone. Generate a scannable QR, style it beautifully, and share your contact — no app, no server, no network.",
   keywords: [
     "digital business card",
     "QR code",
@@ -37,24 +37,24 @@ export const metadata: Metadata = {
     "contact sharing",
     "privacy",
     "offline",
-    "Slate",
+    "HandOff",
   ],
   authors: [{ name: "Omkar Kardile", url: "https://omkardile.is-a.dev/" }],
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Slate",
+    title: "HandOff",
   },
   icons: {
     icon: "/icon.svg",
     apple: "/icon.svg",
   },
   openGraph: {
-    title: "Slate — One card. One scan. Nothing leaves your phone.",
+    title: "HandOff — One card. One scan. Nothing leaves your phone.",
     description:
       "A digital business card that lives only on your phone. No accounts, no servers, no tracking.",
-    siteName: "Slate",
+    siteName: "HandOff",
     type: "website",
   },
 };

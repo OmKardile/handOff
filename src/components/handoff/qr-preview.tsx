@@ -70,11 +70,11 @@ export function QrPreview({
         >
           <div className="relative h-full w-full overflow-hidden">
             {/* shimmer sweep */}
-            <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.4s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-background/70 to-transparent" />
+            <div className="absolute inset-0 -tranhandoff-x-full animate-[shimmer_1.4s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-background/70 to-transparent" />
           </div>
         </div>
       )}
-      <style>{`@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}`}</style>
+      <style>{`@keyframes shimmer{0%{transform:tranhandoffX(-100%)}100%{transform:tranhandoffX(200%)}}`}</style>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 /**
- * Slate store — the single source of truth for the app's state.
+ * HandOff store — the single source of truth for the app's state.
  * Zustand store backed by the storage adapter (IndexedDB).
  * Debounced persistence. Loads on mount.
  */
@@ -70,7 +70,7 @@ export function makeEmptyCard(): Card {
   };
 }
 
-interface SlateState {
+interface HandOffState {
   loaded: boolean;
   onboarded: boolean;
   card: Card | null;
@@ -115,7 +115,7 @@ interface SlateState {
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
-export const useSlate = create<SlateState>((set, get) => ({
+export const useHandOff = create<HandOffState>((set, get) => ({
   loaded: false,
   onboarded: false,
   card: null,

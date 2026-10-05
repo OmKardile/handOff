@@ -1,5 +1,5 @@
 /**
- * Slate QR payload builder + size meter.
+ * HandOff QR payload builder + size meter.
  * Compact vCard → QR. Byte counting, thresholds, hard cap.
  */
 

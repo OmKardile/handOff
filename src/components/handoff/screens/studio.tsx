@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Shuffle, RotateCcw, Save, Check, ScanLine } from "lucide-react";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -36,7 +36,7 @@ const TABS = ["Presets", "Compare", "Shape", "Colour", "Centre", "Frame", "Capti
 type Tab = (typeof TABS)[number];
 
 export function StudioScreen() {
-  const { card, style, setStyle, applyPreset, photo, presets, saveCustomPreset } = useSlate();
+  const { card, style, setStyle, applyPreset, photo, presets, saveCustomPreset } = useHandOff();
   const { navigate } = useView();
   const [tab, setTab] = React.useState<Tab>("Presets");
   const [scanOk, setScanOk] = React.useState<boolean | null>(null);
@@ -292,7 +292,7 @@ export function StudioScreen() {
                       role="switch"
                       aria-checked={style.centerRing}
                     >
-                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.centerRing ? "translate-x-[18px]" : "translate-x-0.5")} />
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.centerRing ? "tranhandoff-x-[18px]" : "tranhandoff-x-0.5")} />
                     </button>
                   </div>
                 </ControlGroup>
@@ -361,7 +361,7 @@ export function StudioScreen() {
                   role="switch"
                   aria-checked={style.captionEnabled}
                 >
-                  <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.captionEnabled ? "translate-x-[18px]" : "translate-x-0.5")} />
+                  <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.captionEnabled ? "tranhandoff-x-[18px]" : "tranhandoff-x-0.5")} />
                 </button>
               </div>
             </ControlGroup>

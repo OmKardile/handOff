@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Loader2, Download, Image as ImageIcon, Info } from "lucide-react";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -18,7 +18,7 @@ const BACKDROPS = [
 ];
 
 export function WallpaperScreen() {
-  const { card, style, photo } = useSlate();
+  const { card, style, photo } = useHandOff();
   const { navigate } = useView();
   const [busy, setBusy] = React.useState(false);
   const [backdrop, setBackdrop] = React.useState(BACKDROPS[0]);
@@ -100,11 +100,11 @@ export function WallpaperScreen() {
               </span>
             </div>
             {/* QR */}
-            <div className="absolute left-1/2 top-[36%] -translate-x-1/2 rounded-xl bg-white p-1.5">
+            <div className="absolute left-1/2 top-[36%] -tranhandoff-x-1/2 rounded-xl bg-white p-1.5">
               <QrPreview card={card} style={style} size={120} photoDataUrl={photo?.full} showLoading={false} />
             </div>
             {/* name */}
-            <div className="absolute left-1/2 top-[72%] -translate-x-1/2 text-center" style={{ color: backdrop.fg }}>
+            <div className="absolute left-1/2 top-[72%] -tranhandoff-x-1/2 text-center" style={{ color: backdrop.fg }}>
               <p className="font-display text-sm font-medium">
                 {[card.firstName, card.lastName].filter(Boolean).join(" ")}
               </p>

@@ -1,5 +1,5 @@
 /**
- * Slate storage adapter — web only (IndexedDB via idb-keyval).
+ * HandOff storage adapter — web only (IndexedDB via idb-keyval).
  * Privacy-first: everything stays on this device.
  * Debounced writes, .bak fallback, schema-versioned, corrupted-store recovery.
  */
@@ -8,16 +8,16 @@ import { get, set, del, clear, createStore } from "idb-keyval";
 import type { Card, QrStyle, Settings, PhotoData, CustomPreset } from "@/shared/types";
 import { LIMITS } from "@/shared/limits";
 
-const store = createStore("slate-db", "slate-store");
+const store = createStore("handoff-db", "handoff-store");
 
 const K = {
-  card: "slate:card",
-  cardBak: "slate:card.bak",
-  style: "slate:style",
-  settings: "slate:settings",
-  photo: "slate:photo",
-  presets: "slate:presets",
-  onboarded: "slate:onboarded",
+  card: "handoff:card",
+  cardBak: "handoff:card.bak",
+  style: "handoff:style",
+  settings: "handoff:settings",
+  photo: "handoff:photo",
+  presets: "handoff:presets",
+  onboarded: "handoff:onboarded",
 } as const;
 
 export const SCHEMA_VERSION = LIMITS.schemaVersion;
@@ -59,7 +59,7 @@ export async function saveCard(card: Card): Promise<void> {
     if (prev) await set(K.cardBak, prev);
     await set(K.card, wrap(card));
   } catch (e) {
-    console.error("Slate: failed to save card", e);
+    console.error("HandOff: failed to save card", e);
   }
 }
 
@@ -177,9 +177,9 @@ function readMemories(): NonNullable<BackupBundle["memories"]> {
     }
   };
   return {
-    fontRecents: read("slate:font-recents"),
-    fontFavs: read("slate:font-favs"),
-    styleRecents: read("slate:style-recents"),
+    fontRecents: read("handoff:font-recents"),
+    fontFavs: read("handoff:font-favs"),
+    styleRecents: read("handoff:style-recents"),
   };
 }
 
@@ -193,14 +193,14 @@ function writeMemories(m: BackupBundle["memories"]): void {
       /* ignore */
     }
   };
-  if (m.fontRecents) write("slate:font-recents", m.fontRecents);
-  if (m.fontFavs) write("slate:font-favs", m.fontFavs);
-  if (m.styleRecents) write("slate:style-recents", m.styleRecents);
+  if (m.fontRecents) write("handoff:font-recents", m.fontRecents);
+  if (m.fontFavs) write("handoff:font-favs", m.fontFavs);
+  if (m.styleRecents) write("handoff:style-recents", m.styleRecents);
 }
 
 export async function exportBackup(): Promise<string> {
   const bundle: BackupBundle = {
-    app: "slate",
+    app: "handoff",
     version: "1.0.0",
     schemaVersion: SCHEMA_VERSION,
     exportedAt: new Date().toISOString(),
@@ -224,7 +224,7 @@ export async function importBackup(json: string): Promise<BackupBundle> {
   }
   if (!parsed || typeof parsed !== "object") throw new Error("Invalid backup file.");
   const b = parsed as Partial<BackupBundle>;
-  if (b.app !== "slate") throw new Error("This is not a Slate backup.");
+  if (b.app !== "handoff") throw new Error("This is not a HandOff backup.");
   if (!b.schemaVersion) throw new Error("Missing schema version.");
 
   if (b.card) await saveCard(b.card);
@@ -241,7 +241,7 @@ export async function importBackup(json: string): Promise<BackupBundle> {
 export async function eraseAll(): Promise<void> {
   await clear();
   // also clear the localStorage-backed memories (font/style recents/favourites)
-  const MEMORY_KEYS = ["slate:font-recents", "slate:font-favs", "slate:style-recents"];
+  const MEMORY_KEYS = ["handoff:font-recents", "handoff:font-favs", "handoff:style-recents"];
   for (const key of MEMORY_KEYS) {
     try {
       localStorage.removeItem(key);
@@ -253,7 +253,7 @@ export async function eraseAll(): Promise<void> {
 
 /** Clear only the localStorage-backed memories (font/style recents/favourites). */
 export function clearMemories(): void {
-  const MEMORY_KEYS = ["slate:font-recents", "slate:font-favs", "slate:style-recents"];
+  const MEMORY_KEYS = ["handoff:font-recents", "handoff:font-favs", "handoff:style-recents"];
   for (const key of MEMORY_KEYS) {
     try {
       localStorage.removeItem(key);

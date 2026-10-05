@@ -1,6 +1,6 @@
 {
-  "name": "Slate — Digital Business Card",
-  "short_name": "Slate",
+  "name": "HandOff — Digital Business Card",
+  "short_name": "HandOff",
   "description": "One card. One scan. Nothing leaves your phone.",
   "start_url": "/",
   "display": "standalone",

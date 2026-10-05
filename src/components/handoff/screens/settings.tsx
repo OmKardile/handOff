@@ -16,7 +16,7 @@ import {
   HelpCircle,
   ExternalLink,
 } from "lucide-react";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader, Wordmark } from "../app-shell";
 import { DevSignature } from "../dev-signature";
@@ -29,7 +29,7 @@ import { motion } from "framer-motion";
 import { staggerContainer, staggerItem } from "../motion";
 
 export function SettingsScreen() {
-  const { settings, setSettings, photo, card, resetAll } = useSlate();
+  const { settings, setSettings, photo, card, resetAll } = useHandOff();
   const { navigate } = useView();
   const { setTheme } = useTheme();
   const [persisted, setPersisted] = React.useState<boolean | null>(settings.storagePersisted);

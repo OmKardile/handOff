@@ -1,5 +1,5 @@
 /**
- * Slate field normalizers.
+ * HandOff field normalizers.
  * Trim, validate, canonicalise. Reject malicious input.
  * Social URLs are built from validated handles, never stored as arbitrary URLs.
  */

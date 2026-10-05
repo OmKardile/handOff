@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Slate docs:check — documentation quality gate.
+ * HandOff docs:check — documentation quality gate.
  * Fails when:
  *  - a required doc is missing or empty
  *  - a relative markdown link or image is broken
@@ -134,7 +134,7 @@ if (!changelog.includes(`## [${pkg.version}]`)) {
 }
 
 // ---- Report ----
-console.log("Slate docs:check\n");
+console.log("HandOff docs:check\n");
 if (warnings.length > 0) {
   console.log(`Warnings (${warnings.length}):`);
   for (const w of warnings) console.log(`  ⚠  ${w}`);

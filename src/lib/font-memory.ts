@@ -7,8 +7,8 @@ import * as React from "react";
  * Stored in localStorage (small, non-sensitive). No network.
  */
 
-const RECENTS_KEY = "slate:font-recents";
-const FAVS_KEY = "slate:font-favs";
+const RECENTS_KEY = "handoff:font-recents";
+const FAVS_KEY = "handoff:font-favs";
 const MAX_RECENTS = 6;
 
 function read<T>(key: string, fallback: T): T {

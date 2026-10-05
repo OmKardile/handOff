@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Camera, ChevronRight, Check, Sparkles } from "lucide-react";
-import { useSlate, makeEmptyCard } from "@/lib/store";
+import { Camera, ChevronRight, Check, Sparkles, ShieldCheck } from "lucide-react";
+import { useHandOff, makeEmptyCard } from "@/lib/store";
 import { useView } from "../view-context";
-import { SlateMark } from "@/app/page";
+import { HandOffMark } from "@/app/page";
 import { QrPreview } from "../qr-preview";
 import { processPhoto } from "@/lib/photo";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
@@ -23,7 +23,7 @@ import { toast } from "sonner";
 type Step = "welcome" | "identity" | "contact" | "photo" | "done";
 
 export function Onboarding() {
-  const { completeOnboarding, setPhoto, style, photo } = useSlate();
+  const { completeOnboarding, setPhoto, style, photo } = useHandOff();
   const { navigate } = useView();
   const [step, setStep] = React.useState<Step>("welcome");
   const [card, setCard] = React.useState<Card>(makeEmptyCard());
@@ -84,79 +84,56 @@ export function Onboarding() {
 
   if (step === "welcome") {
     return (
-      <div className="flex min-h-[100dvh] flex-col px-6 pt-16 pb-10">
+      <div className="flex min-h-[100dvh] flex-col items-center px-6 pt-[max(env(safe-area-inset-top,0px),60px)] pb-10">
+        {/* Logo + name + tagline — centered like the Knot reference */}
         <motion.div
-          initial={{ opacity: 0, y: -8 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="flex items-center gap-2.5"
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center gap-3"
         >
-          <SlateMark className="h-9 w-9" />
-          <span className="font-display text-2xl font-semibold tracking-tight">
+          <HandOffMark className="h-16 w-16" />
+          <h1 className="font-display text-[2.2rem] font-semibold tracking-tight">
             {BRAND.name}
+          </h1>
+          <p className="text-[14px] text-muted-foreground">
+            {BRAND.tagline}
+          </p>
+        </motion.div>
+
+        {/* Privacy capsule — like the Knot reference: dark pill with shield icon */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-12 flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2.5"
+        >
+          <ShieldCheck className="h-4 w-4 text-emerald-500" />
+          <span className="text-[13px] font-medium text-foreground">
+            No accounts. No servers. Your card never leaves your phone.
           </span>
         </motion.div>
 
-        <div className="mt-16 flex-1">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-clay">
-            Digital business card
-          </p>
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-3 font-display text-[2.6rem] font-medium leading-[1.05] tracking-tight"
-          >
-            One card.
-            <br />
-            One scan.
-            <br />
-            <span className="text-muted-foreground">Nothing leaves</span>
-            <br />
-            <span className="text-muted-foreground">your phone.</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-6 max-w-xs text-[15px] leading-relaxed text-muted-foreground"
-          >
-            Create your card. Slate makes a QR anyone can scan with their phone
-            camera to save your contact. No app, no server, no network.
-          </motion.p>
-        </div>
+        <div className="flex-1" />
 
-        <motion.ul
-          variants={staggerContainer}
-          initial="hidden"
-          animate="show"
-          className="mb-8 space-y-2"
-        >
-          {PRIVACY_PROMISE.slice(0, 4).map((p) => (
-            <motion.li
-              key={p}
-              variants={staggerItem}
-              className="flex items-center gap-2 text-[13px] text-muted-foreground"
-            >
-              <span className="h-1 w-1 rounded-full bg-clay" />
-              {p}
-            </motion.li>
-          ))}
-        </motion.ul>
-
-        <motion.button
+        {/* CTA button — accent color, bottom right aligned like Knot */}
+        <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.32, ease: [0.22, 1, 0.36, 1] }}
-          onClick={() => setStep("identity")}
-          className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-4 text-[15px] font-medium text-background transition-transform active:scale-[0.98]"
+          transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full"
         >
-          Create your card
-          <ChevronRight className="h-4 w-4" />
-        </motion.button>
-        <p className="mt-3 text-center text-[11px] text-muted-foreground">
-          Takes 30 seconds. Everything stays on this device.
-        </p>
+          <button
+            onClick={() => setStep("identity")}
+            className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white transition-transform active:scale-[0.98]"
+          >
+            Create your card
+            <ChevronRight className="h-4 w-4" />
+          </button>
+          <p className="mt-3 text-center text-[11px] text-muted-foreground">
+            Takes 30 seconds. Everything stays on this device.
+          </p>
+        </motion.div>
       </div>
     );
   }

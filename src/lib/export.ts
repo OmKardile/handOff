@@ -1,5 +1,5 @@
 /**
- * Slate export utilities.
+ * HandOff export utilities.
  * PNG (≥1200px), SVG, print card (1050x600), story (9:16), square (1:1), .vcf.
  * All reflect the current style. QR always dark-on-light.
  */

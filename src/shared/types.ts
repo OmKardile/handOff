@@ -1,5 +1,5 @@
 /**
- * Slate core types.
+ * HandOff core types.
  * The card is the user's identity. The QR style makes it beautiful.
  * Everything is local — no server types here.
  */

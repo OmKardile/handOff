@@ -1,19 +1,19 @@
 /**
- * Slate — brand identity.
+ * HandOff — brand identity.
  * Single source of truth for name, tagline, identifiers and brand voice.
  * Nothing here should ever make a network call.
  */
 
 export const BRAND = {
-  name: "Slate",
-  displayName: "Slate",
-  tagline: "One card. One scan. Nothing leaves your phone.",
+  name: "HandOff",
+  displayName: "HandOff",
+  tagline: "Hand your card off. Nothing leaves your phone.",
   oneLiner:
     "A digital business card that lives only on your phone — no app, no server, no network.",
-  slug: "slate",
-  appId: "com.example.slate", // placeholder — change before store submission
-  androidPackage: "com.example.slate",
-  iosBundleId: "com.example.slate",
+  slug: "handoff",
+  appId: "com.example.handoff", // placeholder — change before store submission
+  androidPackage: "com.example.handoff",
+  iosBundleId: "com.example.handoff",
   version: "1.0.0",
   /** Brand voice: confident, concise, human, specific. */
   voice: {

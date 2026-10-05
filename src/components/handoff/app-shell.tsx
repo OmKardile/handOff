@@ -165,7 +165,7 @@ export function ScreenHeader({
   );
 }
 
-/** The Slate wordmark. */
+/** The HandOff wordmark. */
 export function Wordmark({ className }: { className?: string }) {
   return (
     <span className={cn("font-display font-semibold tracking-tight", className)}>

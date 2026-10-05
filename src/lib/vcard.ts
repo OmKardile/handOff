@@ -1,5 +1,5 @@
 /**
- * Slate vCard builder.
+ * HandOff vCard builder.
  * One module, two modes: compact (for QR, byte-efficient) and full (for .vcf).
  * Shared escaping + line-folding core. CRLF, UTF-8.
  */
@@ -140,7 +140,7 @@ export function buildFullVcard(card: Card, photoBase64?: string): string {
   }
 
   lines.push(`UID:urn:uuid:${card.id}`);
-  lines.push(`PRODID:-//Slate//Digital Business Card//EN`);
+  lines.push(`PRODID:-//HandOff//Digital Business Card//EN`);
   lines.push(`REV:${new Date().toISOString()}`);
   lines.push("END:VCARD");
 

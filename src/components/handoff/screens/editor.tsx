@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -43,7 +43,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 export function EditorScreen() {
-  const { card, style, photo, setCard, saveCardNow, setPhoto, startDraft, restoreDraft, hasDraft, clearDraft } = useSlate();
+  const { card, style, photo, setCard, saveCardNow, setPhoto, startDraft, restoreDraft, hasDraft, clearDraft } = useHandOff();
   const { navigate } = useView();
   const [open, setOpen] = React.useState<string>("identity");
 
@@ -343,7 +343,7 @@ function ToggleRow({
         <span
           className={cn(
             "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
-            on ? "translate-x-[18px]" : "translate-x-0.5"
+            on ? "tranhandoff-x-[18px]" : "tranhandoff-x-0.5"
           )}
         />
       </button>

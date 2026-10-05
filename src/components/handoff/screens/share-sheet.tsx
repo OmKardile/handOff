@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { FileImage, FileText, Image as ImageIcon, Square, Share2, Download, Loader2, Wallet, Monitor, LayoutGrid, Check, X } from "lucide-react";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import {
@@ -34,7 +34,7 @@ const LABELS: Record<ExportId, string> = {
 };
 
 export function ShareSheet() {
-  const { card, style, photo } = useSlate();
+  const { card, style, photo } = useHandOff();
   const { navigate } = useView();
   const [busy, setBusy] = React.useState<ExportId | null>(null);
   const [layoutBusy, setLayoutBusy] = React.useState<ShareCardLayout | null>(null);
@@ -49,7 +49,7 @@ export function ShareSheet() {
     try {
       const blob = await exportShareCard(card, style, layout, photo?.full);
       const fname = `${card.firstName || "contact"}-${layout}.png`;
-      const res = await shareOrDownload(blob, fname, "Slate card", "My contact");
+      const res = await shareOrDownload(blob, fname, "HandOff card", "My contact");
       toast[res === "shared" ? "success" : "default"](res === "shared" ? "Shared" : "Downloaded");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Export failed");
@@ -65,14 +65,14 @@ export function ShareSheet() {
       switch (id) {
         case "png": {
           const blob = await exportQrPng(card, style, 1200, photo?.full);
-          const res = await shareOrDownload(blob, `${card.firstName || "contact"}-qr.png`, "Slate QR", "Scan to save my contact");
+          const res = await shareOrDownload(blob, `${card.firstName || "contact"}-qr.png`, "HandOff QR", "Scan to save my contact");
           toast[res === "shared" ? "success" : "default"](res === "shared" ? "Shared" : "Downloaded");
           break;
         }
         case "svg": {
           const svg = await exportQrSvg(card, style);
           const blob = new Blob([svg], { type: "image/svg+xml" });
-          shareOrDownload(blob, `${card.firstName || "contact"}-qr.svg`, "Slate QR", "QR vector");
+          shareOrDownload(blob, `${card.firstName || "contact"}-qr.svg`, "HandOff QR", "QR vector");
           toast.default("SVG ready");
           break;
         }
@@ -83,13 +83,13 @@ export function ShareSheet() {
         }
         case "story": {
           const blob = await exportStoryImage(card, style, photo?.full);
-          const res = await shareOrDownload(blob, `${card.firstName || "contact"}-story.png`, "Slate", "My contact");
+          const res = await shareOrDownload(blob, `${card.firstName || "contact"}-story.png`, "HandOff", "My contact");
           toast[res === "shared" ? "success" : "default"](res === "shared" ? "Shared" : "Downloaded");
           break;
         }
         case "square": {
           const blob = await exportSquareImage(card, style, photo?.full);
-          const res = await shareOrDownload(blob, `${card.firstName || "contact"}-square.png`, "Slate", "My contact");
+          const res = await shareOrDownload(blob, `${card.firstName || "contact"}-square.png`, "HandOff", "My contact");
           toast[res === "shared" ? "success" : "default"](res === "shared" ? "Shared" : "Downloaded");
           break;
         }
@@ -316,8 +316,8 @@ function PreviewModal({
   onExport,
 }: {
   layout: ShareCardLayout;
-  card: NonNullable<ReturnType<typeof useSlate.getState>["card"]>;
-  style: ReturnType<typeof useSlate.getState>["style"];
+  card: NonNullable<ReturnType<typeof useHandOff.getState>["card"]>;
+  style: ReturnType<typeof useHandOff.getState>["style"];
   photoDataUrl?: string;
   onClose: () => void;
   onExport: () => Promise<void>;

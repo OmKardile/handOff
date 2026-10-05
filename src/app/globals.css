@@ -49,7 +49,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* ===== Slate Design System — iOS 27 Refined Minimalism =====
+/* ===== HandOff Design System — iOS 27 Refined Minimalism =====
    Flat, matte, paper-like. Warm cream background, near-black text,
    thin 1px borders for depth. No glass, no blur, no gradients. */
 :root {

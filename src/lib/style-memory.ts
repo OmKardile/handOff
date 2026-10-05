@@ -10,7 +10,7 @@ import { getPreset } from "@/lib/style-presets";
  * Only tracks built-in preset ids (not custom styles), max 8.
  */
 
-const KEY = "slate:style-recents";
+const KEY = "handoff:style-recents";
 const MAX = 8;
 
 function read(key: string, fallback: string[]): string[] {

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Wallet, Loader2, Image as ImageIcon, Smartphone, Info } from "lucide-react";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
@@ -11,7 +11,7 @@ import { PLAIN_STYLE } from "@/lib/style-presets";
 import { toast } from "sonner";
 
 export function WalletScreen() {
-  const { card, photo } = useSlate();
+  const { card, photo } = useHandOff();
   const { navigate } = useView();
   const [busy, setBusy] = React.useState(false);
 
@@ -97,7 +97,7 @@ export function WalletScreen() {
           <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500" />
           <p className="text-[11.5px] leading-relaxed text-amber-700 dark:text-amber-400/80">
             The Photo option may not exist on every device or region. The
-            lock-screen wallpaper works regardless. Slate does not use an official
+            lock-screen wallpaper works regardless. HandOff does not use an official
             Wallet API — that needs a server, which breaks the privacy model.
           </p>
         </div>

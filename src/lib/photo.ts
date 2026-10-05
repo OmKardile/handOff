@@ -1,5 +1,5 @@
 /**
- * Slate photo processing — fully on device.
+ * HandOff photo processing — fully on device.
  * Decodes with createImageBitmap (orientation-aware), centre-crop square,
  * draws to canvas (strips EXIF/GPS), exports JPEG q0.82 at 512px + 256px thumb.
  */

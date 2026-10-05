@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * Slate check:privacy — privacy enforcement gate.
+ * HandOff check:privacy — privacy enforcement gate.
  * Fails when app code contains network calls (fetch/XHR/WebSocket/sendBeacon/EventSource)
  * or absolute http(s):// URLs (documentation strings and the reference list excepted).
  */
@@ -76,7 +76,7 @@ for (const file of files) {
   }
 }
 
-console.log("Slate check:privacy\n");
+console.log("HandOff check:privacy\n");
 if (failures.length > 0) {
   console.error(`Failures (${failures.length}):`);
   for (const f of failures) console.error(`  ✗  ${f}`);

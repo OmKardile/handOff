@@ -16,7 +16,7 @@ import {
   ChevronRight,
   FileText,
 } from "lucide-react";
-import { useSlate } from "@/lib/store";
+import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { QrPreview } from "../qr-preview";
 import { Wordmark } from "../app-shell";
@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import { QrReveal, Reveal } from "../motion";
 
 export function HomeScreen() {
-  const { card, style, photo, qrChanged, dismissQrChanged } = useSlate();
+  const { card, style, photo, qrChanged, dismissQrChanged } = useHandOff();
   const { navigate } = useView();
   const [copied, setCopied] = React.useState(false);
 
@@ -365,7 +365,7 @@ function EmptyContactState({ onEdit }: { onEdit: () => void }) {
 }
 
 /** QR insights panel — byte breakdown by field, with a visual bar chart. */
-function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useSlate.getState>["card"]> }) {
+function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.getState>["card"]> }) {
   const { navigate } = useView();
   const [expanded, setExpanded] = React.useState(false);
   const fields = getFieldBytes(card);
