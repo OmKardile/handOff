@@ -81,7 +81,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           aria-label="Primary"
         >
           {/* macOS dock–style floating glass capsule */}
-          <div className="glass-pill pointer-events-auto flex items-center gap-1 rounded-full p-1.5 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.25),0_2px_8px_-2px_rgba(0,0,0,0.15)]">
+          <div className="glass-pill pointer-events-auto flex items-center gap-1 rounded-full p-1.5" style={{ boxShadow: "var(--elevation-floating)" }}>
             {TABS.map((t) => {
               const active = tab === t.id;
               const Icon = t.icon;

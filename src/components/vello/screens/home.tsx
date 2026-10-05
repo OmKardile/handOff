@@ -111,7 +111,7 @@ export function HomeScreen() {
 
       {/* hero card */}
       <Reveal delay={0.05}>
-      <div className="relative overflow-hidden rounded-[28px] border border-border bg-card shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
+      <div className="relative overflow-hidden rounded-[28px] border border-border bg-card" style={{ boxShadow: "var(--elevation-card)" }}>
         {/* name plate */}
         <div className="flex items-start justify-between gap-4 px-6 pt-6">
           <div className="min-w-0 flex-1">

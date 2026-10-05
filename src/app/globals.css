@@ -50,6 +50,7 @@
 }
 
 /* ===== Vello Design System — editorial, warm, cinematic restraint ===== */
+/* Inspired by Parichay's systematic token approach + iOS 27 Liquid Glass */
 :root {
   --radius: 0.75rem;
 
@@ -78,6 +79,25 @@
   --border: #e0d9cd;
   --input: #e8e2d6;
   --ring: #b0533a;
+
+  /* Elevation shadows — layered, subtle, physical (from Parichay) */
+  --elevation-subtle: 0 1px 2px rgba(17, 19, 23, 0.04), 0 2px 6px rgba(17, 19, 23, 0.03);
+  --elevation-card: 0 4px 12px rgba(17, 19, 23, 0.05), 0 1px 3px rgba(17, 19, 23, 0.03);
+  --elevation-sheet: 0 -8px 24px rgba(17, 19, 23, 0.08), 0 -2px 6px rgba(17, 19, 23, 0.04);
+  --elevation-floating: 0 12px 32px rgba(17, 19, 23, 0.12), 0 4px 8px rgba(17, 19, 23, 0.06);
+
+  /* Motion durations + easings (iOS-style physical curves) */
+  --duration-fast: 180ms;
+  --duration-normal: 260ms;
+  --duration-deliberate: 360ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Layout */
+  --layout-max-width: 540px;
+  --min-touch-target: 44px;
 
   --chart-1: #b0533a;
   --chart-2: #1f3a2e;
@@ -120,6 +140,12 @@
   --border: #2e2e34;
   --input: #33333a;
   --ring: #d17a5c;
+
+  /* Dark mode elevation shadows */
+  --elevation-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
+  --elevation-card: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
+  --elevation-sheet: 0 -8px 24px rgba(0, 0, 0, 0.4), 0 -2px 6px rgba(0, 0, 0, 0.2);
+  --elevation-floating: 0 12px 32px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
 
   --chart-1: #d17a5c;
   --chart-2: #4f7a5a;
