@@ -9,11 +9,9 @@ import { getQrPayload } from "@/lib/qr";
 import { cn } from "@/lib/utils";
 
 /**
- * ScanBadge — a minimal "Scans well" status card.
- * Inspired by a dark-mode cyberpunk status pill:
- *   - thin neon-mint border, fully rounded (rounded-2xl)
- *   - dark gradient background (charcoal → plum)
- *   - circular checkmark icon + headline + contrast description
+ * ScanBadge — "Scans well" status card in the brutalist HandOff theme.
+ * Bone card, thick ink border, hard offset shadow, rounded corners.
+ * Status tile: lime (ok) / amber (warn) / muted (loading).
  * Re-runs the scan-check whenever the card or style changes.
  */
 export function ScanBadge({
@@ -68,64 +66,50 @@ export function ScanBadge({
   const ratioText =
     contrast != null ? `${contrast.toFixed(1)}:1 contrast` : "";
 
+  // status tile: lime when ok, amber when warning, muted when loading
+  const tileCls = ok
+    ? "bg-signal text-black"
+    : loading
+      ? "bg-secondary text-muted-foreground"
+      : "bg-clay/20 text-clay";
+
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-2xl border p-3",
-        ok
-          ? "border-emerald-400/60 text-emerald-300"
-          : loading
-            ? "border-muted-foreground/40 text-muted-foreground"
-            : "border-amber-400/60 text-amber-300",
+        "brut relative overflow-hidden p-3",
         className
       )}
-      style={{
-        background:
-          "linear-gradient(110deg, #0E0E12 0%, #15121D 55%, #1B1426 100%)",
-      }}
     >
-      <div className="relative z-10 flex items-start gap-3">
-        {/* circular checkmark / spinner / warning */}
+      <div className="relative z-10 flex items-center gap-3">
+        {/* status tile — square, rounded, lime/amber/muted */}
         <span
           className={cn(
-            "mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border",
-            ok
-              ? "border-emerald-400/70"
-              : loading
-                ? "border-muted-foreground/40"
-                : "border-amber-400/70"
+            "flex h-9 w-9 flex-shrink-0 items-center justify-center border-2 border-ink",
+            tileCls
           )}
+          style={{ borderRadius: 8 }}
         >
           {loading ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={2.5} />
+            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.5} />
           ) : ok ? (
-            <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+            <Check className="h-4 w-4" strokeWidth={3} />
           ) : (
-            <AlertTriangle className="h-3.5 w-3.5" strokeWidth={2.5} />
+            <AlertTriangle className="h-4 w-4" strokeWidth={2.5} />
           )}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="text-[13px] font-semibold leading-tight">
+          <p className="font-heavy text-[13px] uppercase leading-tight tracking-wide text-foreground">
             {headline}
           </p>
-          <p className="mt-0.5 text-[11px] leading-snug opacity-70">
+          <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
             {loading
               ? "Verifying optical contrast…"
               : ok
-                ? `High optical contrast ratio (${ratioText}). Tested with stock camera algorithms.`
-                : `${ratioText || "Low contrast"} — may need higher contrast or a smaller centre image.`}
+                ? `High optical contrast (${ratioText}). Tested with stock camera algorithms.`
+                : `${ratioText || "Low contrast"} — try higher contrast or a smaller centre image.`}
           </p>
         </div>
       </div>
-      {/* faint schematic grid overlay */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, currentColor 1px, transparent 1px), linear-gradient(to bottom, currentColor 1px, transparent 1px)",
-          backgroundSize: "14px 14px",
-        }}
-      />
     </div>
   );
 }

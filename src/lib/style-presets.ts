@@ -9,7 +9,7 @@ import type { QrStyle } from "@/shared/types";
 /** The DEFAULT style — beautiful by default, not generic.
  *  Rounded dots + rounded eyes + warm ink-on-paper palette.
  *  QR plate stays light (#FBF9F5) in both themes — inverting hurts scanning.
- *  Plate radius is generously rounded (28px) for a soft, modern frame. */
+ *  Plate radius is generously rounded (40px) for a soft, modern frame. */
 export const PLAIN_STYLE: QrStyle = {
   presetId: "ink",
   moduleShape: "rounded",
@@ -28,7 +28,7 @@ export const PLAIN_STYLE: QrStyle = {
   captionEnabled: false,
   captionText: "",
   captionFont: "Fraunces",
-  plateRadius: 28,
+  plateRadius: 40,
   platePadding: 1.5,
   ecc: "M",
 };

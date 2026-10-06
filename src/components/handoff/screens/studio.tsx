@@ -323,7 +323,7 @@ export function StudioScreen() {
               <input
                 type="range"
                 min={0}
-                max={40}
+                max={72}
                 value={style.plateRadius}
                 onChange={(e) => setStyle((st) => ({ ...st, plateRadius: Number(e.target.value) }))}
                 className="w-full accent-clay"

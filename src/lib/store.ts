@@ -28,7 +28,7 @@ import { qrFingerprint } from "@/lib/vcard";
 import { getQrPayload } from "@/lib/qr";
 
 export const DEFAULT_SETTINGS: Settings = {
-  theme: "system",
+  theme: "light",
   haptics: true,
   defaultEcc: "M",
   storagePersisted: null,

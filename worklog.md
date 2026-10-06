@@ -979,3 +979,34 @@ Stage Summary:
 - SIGNAL COPY: completely purged. No DEAD/DROP/INTERCEPTED/TRANSMISSION/PAYLOAD/SIGNAL/REC anywhere in the UI. Onboarding + home now read like a normal (but brutalist-styled) app.
 - WALLPAPER: 6 named art templates (Sunburst, Halftone, Checkerboard, Confetti, Orbs, Comic) with real canvas-drawn decorative art around the QR, + separate QR-color picker. No more "boring ass wallpaper" — each template is a distinct visual design the QR sits inside.
 - Lint clean. Browser + VLM verified in dark mode.
+
+---
+Task ID: SCANBADGE-THEME + LIGHT-DEFAULT + ROUNDED-QR
+Agent: main
+Task: (1) Change "Scans well" section to match the brutalist UI theme; (2) light mode by default; (3) round the QR corners everywhere.
+
+Work Log:
+- SCANBADGE → brutalist theme:
+  - Was: dark cyberpunk gradient card (charcoal→plum), thin neon-mint border, emerald/amber text — didn't match the app.
+  - Now: `.brut` card (white/bone bg, 2px ink border, hard offset shadow, rounded corners). Status tile is a rounded square: lime (bg-signal, black checkmark) when ok / amber (bg-clay/20, clay icon) when warning / muted when loading. Headline in font-heavy uppercase, description in muted-foreground. Matches the rest of the app exactly.
+  - VLM confirmed: white/bone card, thick black border, hard offset shadow, rounded corners; lime tile with black checkmark; "SCANS WELL" + "High optical contrast (17.2:1 contrast). Tested with stock camera algorithms."
+- LIGHT MODE DEFAULT:
+  - layout.tsx: ThemeProvider defaultTheme "system" → "light", enableSystem true → false. So the app always loads in light mode regardless of OS preference.
+  - store.ts: DEFAULT_SETTINGS.theme "system" → "light" (the in-app settings store default).
+  - agent-browser eval confirmed: <html class="light">, no dark class. VLM confirmed light theme (bone/cream bg, black text).
+- ROUNDED QR CORNERS:
+  - style-presets.ts: PLAIN_STYLE.plateRadius 28 → 40 (all 36 presets inherit via ...PLAIN_STYLE, so every preset now renders a more rounded QR plate).
+  - studio.tsx: Frame > Plate radius slider max 40 → 72 (so users can go even rounder if they want). Min stays 0.
+  - The QR plate is drawn on canvas via roundRect() in qr-render.ts using style.plateRadius — so the rounded corners render on the actual QR image, in exports, wallpapers, everywhere.
+  - VLM confirmed: "The white plate behind the QR code data modules clearly has rounded corners. It is not a sharp rectangle."
+- Verification:
+  - `bun run lint`: 0 errors
+  - Restarted dev server + cleared .next CSS cache (theme default change needs clean recompile).
+  - agent-browser: full onboarding flow → home. <html class="light"> confirmed (light mode default).
+  - VLM home (light): ScanBadge matches brutalist theme (bone card, ink border, hard shadow, rounded, lime tile + checkmark); QR plate has rounded corners; overall light theme.
+
+Stage Summary:
+- ScanBadge restyled to match the brutalist app theme (was dark cyberpunk, now bone card + lime status tile + hard shadow + rounded).
+- Light mode is now the default (ThemeProvider defaultTheme="light" + enableSystem=false; store default "light"). App always loads light regardless of OS.
+- QR plate radius bumped 28→40 by default (all presets), slider range extended 0-72 so users can go rounder. Rounded corners render on the QR canvas itself (exports/wallpapers/previews all inherit).
+- Lint clean. Browser + VLM verified in light mode.
