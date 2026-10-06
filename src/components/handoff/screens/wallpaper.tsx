@@ -215,6 +215,296 @@ const TEMPLATES: ArtTemplate[] = [
       ctx.restore();
     },
   },
+  // ===== Creative / character templates =====
+  {
+    id: "kawaii-cat",
+    name: "Kawaii cat",
+    bg: "#FFE8F0",
+    accent: "#FF8FB1",
+    fg: "#3A2A33",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // A kawaii cat peeking from behind the QR (top), paws at the bottom.
+      const catColor = "#F7A8C4";
+      const catDark = "#E0799B";
+      const eyeColor = "#3A2A33";
+      const cheekColor = "rgba(255,143,177,0.5)";
+
+      // ----- Cat head peeking from the TOP, behind the QR -----
+      const headCx = qrX + qrSize / 2;
+      const headCy = qrY - qrSize * 0.34; // mostly hidden above the QR
+      const headR = qrSize * 0.42;
+      // ears (drawn first, behind head)
+      ctx.fillStyle = catColor;
+      [[-1, -1], [1, -1]].forEach(([dx]) => {
+        const ex = headCx + dx * headR * 0.62;
+        const ey = headCy - headR * 0.55;
+        ctx.beginPath();
+        ctx.moveTo(ex - headR * 0.22, ey + headR * 0.18);
+        ctx.lineTo(ex, ey - headR * 0.3);
+        ctx.lineTo(ex + headR * 0.22, ey + headR * 0.18);
+        ctx.closePath();
+        ctx.fill();
+        // inner ear
+        ctx.fillStyle = "#FFC4D8";
+        ctx.beginPath();
+        ctx.moveTo(ex - headR * 0.12, ey + headR * 0.12);
+        ctx.lineTo(ex, ey - headR * 0.12);
+        ctx.lineTo(ex + headR * 0.12, ey + headR * 0.12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.fillStyle = catColor;
+      });
+      // head
+      ctx.beginPath();
+      ctx.arc(headCx, headCy, headR, 0, Math.PI * 2);
+      ctx.fillStyle = catColor;
+      ctx.fill();
+      // cheeks
+      ctx.fillStyle = cheekColor;
+      ctx.beginPath(); ctx.arc(headCx - headR * 0.5, headCy + headR * 0.18, headR * 0.18, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(headCx + headR * 0.5, headCy + headR * 0.18, headR * 0.18, 0, Math.PI * 2); ctx.fill();
+      // eyes (two dark ovals)
+      ctx.fillStyle = eyeColor;
+      ctx.beginPath(); ctx.ellipse(headCx - headR * 0.32, headCy + headR * 0.05, headR * 0.08, headR * 0.12, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(headCx + headR * 0.32, headCy + headR * 0.05, headR * 0.08, headR * 0.12, 0, 0, Math.PI * 2); ctx.fill();
+      // eye shines
+      ctx.fillStyle = "#FFFFFF";
+      ctx.beginPath(); ctx.arc(headCx - headR * 0.3, headCy + headR * 0.01, headR * 0.03, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(headCx + headR * 0.34, headCy + headR * 0.01, headR * 0.03, 0, Math.PI * 2); ctx.fill();
+      // nose (small triangle)
+      ctx.fillStyle = catDark;
+      ctx.beginPath();
+      ctx.moveTo(headCx - headR * 0.06, headCy + headR * 0.22);
+      ctx.lineTo(headCx + headR * 0.06, headCy + headR * 0.22);
+      ctx.lineTo(headCx, headCy + headR * 0.3);
+      ctx.closePath();
+      ctx.fill();
+      // mouth (w shape)
+      ctx.strokeStyle = eyeColor;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(headCx - headR * 0.12, headCy + headR * 0.3);
+      ctx.quadraticCurveTo(headCx - headR * 0.06, headCy + headR * 0.38, headCx, headCy + headR * 0.32);
+      ctx.quadraticCurveTo(headCx + headR * 0.06, headCy + headR * 0.38, headCx + headR * 0.12, headCy + headR * 0.3);
+      ctx.stroke();
+      // whiskers
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(headCx - headR * 0.18, headCy + headR * 0.2); ctx.lineTo(headCx - headR * 0.5, headCy + headR * 0.16);
+      ctx.moveTo(headCx - headR * 0.18, headCy + headR * 0.26); ctx.lineTo(headCx - headR * 0.5, headCy + headR * 0.3);
+      ctx.moveTo(headCx + headR * 0.18, headCy + headR * 0.2); ctx.lineTo(headCx + headR * 0.5, headCy + headR * 0.16);
+      ctx.moveTo(headCx + headR * 0.18, headCy + headR * 0.26); ctx.lineTo(headCx + headR * 0.5, headCy + headR * 0.3);
+      ctx.stroke();
+
+      // ----- Two paws peeking from the BOTTOM of the QR -----
+      const pawY = qrY + qrSize + qrSize * 0.12;
+      const pawR = qrSize * 0.14;
+      [[-1], [1]].forEach(([dx]) => {
+        const px = qrX + qrSize / 2 + dx * qrSize * 0.28;
+        ctx.fillStyle = catColor;
+        ctx.beginPath(); ctx.arc(px, pawY, pawR, 0, Math.PI * 2); ctx.fill();
+        // toe beans
+        ctx.fillStyle = "#FFC4D8";
+        ctx.beginPath(); ctx.arc(px - pawR * 0.4, pawY + pawR * 0.3, pawR * 0.22, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px, pawY + pawR * 0.45, pawR * 0.22, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px + pawR * 0.4, pawY + pawR * 0.3, pawR * 0.22, 0, Math.PI * 2); ctx.fill();
+      });
+
+      // tiny floating hearts
+      ctx.fillStyle = "rgba(255,143,177,0.6)";
+      [[qrX - 60, qrY + 40, 14], [qrX + qrSize + 50, qrY + 120, 18], [qrX + 20, qrY + qrSize + 180, 12]].forEach(([x, y, s]) => {
+        ctx.beginPath();
+        ctx.arc(x as number - s * 0.5, y as number, s * 0.5, 0, Math.PI * 2);
+        ctx.arc(x as number + s * 0.5, y as number, s * 0.5, 0, Math.PI * 2);
+        ctx.moveTo(x as number - s, y as number);
+        ctx.lineTo(x as number, y as number + s);
+        ctx.lineTo(x as number + s, y as number);
+        ctx.fill();
+      });
+    },
+  },
+  {
+    id: "clouds",
+    name: "Clouds",
+    bg: "#A8D8F0",
+    accent: "#FFFFFF",
+    fg: "#1A3A5C",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // soft white clouds drifting across a sky-blue bg, sun in a corner
+      const drawCloud = (cx: number, cy: number, s: number, color: string) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(cx - s, cy, s * 0.7, 0, Math.PI * 2);
+        ctx.arc(cx + s, cy, s * 0.7, 0, Math.PI * 2);
+        ctx.arc(cx, cy - s * 0.5, s * 0.9, 0, Math.PI * 2);
+        ctx.arc(cx, cy + s * 0.2, s, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      // sun (top-right)
+      const sunX = W - 140, sunY = 180;
+      ctx.fillStyle = "#FFE066";
+      ctx.beginPath(); ctx.arc(sunX, sunY, 70, 0, Math.PI * 2); ctx.fill();
+      // sun rays
+      ctx.strokeStyle = "#FFE066";
+      ctx.lineWidth = 8;
+      for (let i = 0; i < 12; i++) {
+        const a = (i / 12) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(sunX + Math.cos(a) * 85, sunY + Math.sin(a) * 85);
+        ctx.lineTo(sunX + Math.cos(a) * 115, sunY + Math.sin(a) * 115);
+        ctx.stroke();
+      }
+      // clouds
+      drawCloud(W * 0.2, H * 0.12, 60, "#FFFFFF");
+      drawCloud(W * 0.75, H * 0.28, 70, "rgba(255,255,255,0.85)");
+      drawCloud(W * 0.15, H * 0.55, 55, "rgba(255,255,255,0.9)");
+      drawCloud(W * 0.85, H * 0.7, 65, "rgba(255,255,255,0.8)");
+      drawCloud(W * 0.5, H * 0.88, 75, "rgba(255,255,255,0.75)");
+      // grass at the bottom
+      ctx.fillStyle = "#7BC97F";
+      ctx.fillRect(0, H - 120, W, 120);
+      // little grass blades
+      ctx.strokeStyle = "#5BA85F";
+      ctx.lineWidth = 4;
+      for (let x = 10; x < W; x += 30) {
+        ctx.beginPath();
+        ctx.moveTo(x, H - 120);
+        ctx.lineTo(x + 6, H - 145);
+        ctx.stroke();
+      }
+    },
+  },
+  {
+    id: "mountains",
+    name: "Mountains",
+    bg: "#1E2A4A",
+    accent: "#C6FF00",
+    fg: "#ECE7DE",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // moon
+      ctx.fillStyle = "#F5F3E8";
+      ctx.beginPath(); ctx.arc(W - 160, 200, 60, 0, Math.PI * 2); ctx.fill();
+      // moon craters
+      ctx.fillStyle = "rgba(180,175,160,0.4)";
+      ctx.beginPath(); ctx.arc(W - 180, 190, 10, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(W - 140, 220, 8, 0, Math.PI * 2); ctx.fill();
+      // stars
+      ctx.fillStyle = "#FFFFFF";
+      const stars = [[100, 150], [300, 100], [500, 180], [800, 120], [200, 300], [900, 280], [60, 400], [950, 400]];
+      stars.forEach(([x, y]) => {
+        ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2); ctx.fill();
+      });
+      // mountain layers (back to front)
+      const drawMountain = (points: [number, number][], color: string) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, H);
+        points.forEach(([x, y]) => ctx.lineTo(x, y));
+        ctx.lineTo(W, H);
+        ctx.closePath();
+        ctx.fill();
+      };
+      drawMountain([[0, H * 0.55], [W * 0.2, H * 0.4], [W * 0.4, H * 0.5], [W * 0.6, H * 0.38], [W * 0.8, H * 0.48], [W, H * 0.42]], "#2E3B5C");
+      drawMountain([[0, H * 0.7], [W * 0.15, H * 0.58], [W * 0.35, H * 0.65], [W * 0.55, H * 0.55], [W * 0.75, H * 0.62], [W, H * 0.58]], "#1A2440");
+      drawMountain([[0, H * 0.82], [W * 0.25, H * 0.72], [W * 0.5, H * 0.78], [W * 0.75, H * 0.7], [W, H * 0.76]], "#0E1730");
+      // snow caps on front mountains
+      ctx.fillStyle = "#ECE7DE";
+      ctx.beginPath();
+      ctx.moveTo(W * 0.7, H * 0.7);
+      ctx.lineTo(W * 0.75, H * 0.7);
+      ctx.lineTo(W * 0.725, H * 0.74);
+      ctx.fill();
+    },
+  },
+  {
+    id: "bubbles",
+    name: "Bubbles",
+    bg: "#0A2A3A",
+    accent: "#22D3EE",
+    fg: "#E0F7FF",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // floating translucent bubbles
+      const bubbles = [
+        { x: 120, y: 300, r: 80, c: "rgba(34,211,238,0.18)" },
+        { x: W - 100, y: 500, r: 110, c: "rgba(167,139,250,0.16)" },
+        { x: 180, y: 900, r: 60, c: "rgba(34,211,238,0.2)" },
+        { x: W - 200, y: 1100, r: 90, c: "rgba(244,114,182,0.16)" },
+        { x: W * 0.5, y: 1500, r: 100, c: "rgba(34,211,238,0.14)" },
+        { x: 100, y: 1600, r: 50, c: "rgba(167,139,250,0.2)" },
+        { x: W - 120, y: 1750, r: 70, c: "rgba(34,211,238,0.18)" },
+      ];
+      bubbles.forEach((b) => {
+        // bubble fill
+        ctx.fillStyle = b.c;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill();
+        // bubble outline
+        ctx.strokeStyle = "rgba(224,247,255,0.3)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.stroke();
+        // shine
+        ctx.fillStyle = "rgba(255,255,255,0.35)";
+        ctx.beginPath(); ctx.ellipse(b.x - b.r * 0.35, b.y - b.r * 0.35, b.r * 0.18, b.r * 0.28, -0.5, 0, Math.PI * 2); ctx.fill();
+      });
+    },
+  },
+  {
+    id: "vines",
+    name: "Vines",
+    bg: "#F5F0E6",
+    accent: "#2E6B45",
+    fg: "#1A3A2E",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // climbing vines with leaves on left + right edges
+      const drawVine = (startX: number, dir: 1 | -1) => {
+        let x = startX;
+        let y = H;
+        ctx.strokeStyle = "#5A3A1F";
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        const steps = 16;
+        for (let i = 0; i < steps; i++) {
+          y -= H / steps;
+          x += dir * (i % 2 === 0 ? 50 : -50);
+          ctx.quadraticCurveTo(x + dir * 30, y + 40, x, y);
+        }
+        ctx.stroke();
+        // leaves along the vine
+        let ly = H;
+        let lx = startX;
+        for (let i = 0; i < steps; i++) {
+          ly -= H / steps;
+          lx += dir * (i % 2 === 0 ? 50 : -50);
+          const leafSize = 22 + (i % 3) * 6;
+          ctx.fillStyle = i % 2 === 0 ? "#2E6B45" : "#3F8556";
+          ctx.save();
+          ctx.translate(lx + dir * 25, ly);
+          ctx.rotate(dir * (0.3 + (i % 2) * 0.4));
+          ctx.beginPath();
+          ctx.ellipse(0, 0, leafSize, leafSize * 0.5, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      };
+      drawVine(70, 1);
+      drawVine(W - 70, -1);
+      // a few scattered flowers
+      const flowers = [[150, 250, "#FF6B9D"], [W - 130, 600, "#FFD93D"], [120, 1200, "#FF6B9D"], [W - 100, 1500, "#A78BFA"]];
+      flowers.forEach(([fx, fy, fc]) => {
+        // petals
+        ctx.fillStyle = fc as string;
+        for (let p = 0; p < 6; p++) {
+          const a = (p / 6) * Math.PI * 2;
+          ctx.beginPath();
+          ctx.arc(fx + Math.cos(a) * 14, fy + Math.sin(a) * 14, 12, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // center
+        ctx.fillStyle = "#FFE066";
+        ctx.beginPath(); ctx.arc(fx, fy, 9, 0, Math.PI * 2); ctx.fill();
+      });
+    },
+  },
 ];
 
 /** QR color presets that pair well with the templates. */

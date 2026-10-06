@@ -1139,3 +1139,38 @@ Stage Summary:
 - Drag-down-to-dismiss gesture added via framer-motion (drag="y", threshold 120px / velocity 600). Spring snaps back if below threshold. Tap on the grabber also closes. Escape key still works.
 - No X button anywhere on the fullscreen page — pure minimal swipe gesture.
 - Lint clean. Browser + VLM + interaction verified.
+
+---
+Task ID: CREATIVE-WALLPAPER-TEMPLATES + DESIGN-SYSTEM
+Agent: main
+Task: (1) Add creative wallpaper art templates (kawaii cat peeking behind the QR, etc.) without messing the current UI theme. (2) Create a full design system in a separate root directory encoding the current HandOff UI/UX.
+
+Work Log:
+- CREATIVE WALLPAPER TEMPLATES:
+  - Added 5 new creative/character art templates to wallpaper.tsx (total now 11 templates):
+    1. **Kawaii cat** — a cute pink cat peeking from behind the QR (head + ears + eyes + whiskers above the QR, two paws with toe beans below, floating hearts). Pink bg, pastel cat colors.
+    2. **Clouds** — sky-blue bg with white clouds, a sun with rays in the corner, green grass at the bottom with blades.
+    3. **Mountains** — night sky with moon + craters + stars, 3 layered mountain ranges (back→front), snow caps.
+    4. **Bubbles** — dark teal bg with floating translucent bubbles (cyan/purple/pink), each with outline + shine.
+    5. **Vines** — cream bg with climbing vines + leaves on both edges, scattered flowers (pink/yellow/purple) with petals + yellow centers.
+  - Each template's `draw()` function paints canvas art AROUND the QR (before the QR is drawn), so the QR sits inside the scene.
+  - Current UI theme preserved — templates use their own colors but the picker UI stays brutalist (brut cards, lime section bars, hard shadows).
+  - Verified via VLM: all 11 template names visible in the grid; kawaii cat renders with pink bg + cat ears/eyes/nose/whiskers peeking behind the QR.
+
+- DESIGN SYSTEM (separate root directory):
+  - Researched standard design system structure: tokens → primitives → components → patterns → docs.
+  - Created `/home/z/my-project/design-system/` with 22 files across 4 layers:
+    - **README.md** — entry point + quick reference table + THE ONE RULE (black text on yellow)
+    - **DESIGN-PRINCIPLES.md** — 10 principles (brutalist-not-harsh, black-on-yellow, one accent, plain language, consistent titles, concentric radii, hard shadows, snappy motion, privacy is architecture, don't mess with theme)
+    - **tokens/** (6 files): color, typography, spacing, radius, motion, elevation — raw values with light/dark variants + usage + "what NOT to do"
+    - **primitives/** (4 files): surfaces (.brut/.brut-lg/.brut-sm/.brut-signal/.brut-ink), borders, field-label, textures (field-grid/scanlines/grain/tape)
+    - **components/** (7 files): button, input, card, nav-bar, screen-header, scan-badge, qr-preview — full anatomy + specs + implementation examples
+    - **patterns/** (4 files): layout (the fixed-height shell), titles (plain English rule), color-on-lime (the #1 bug pattern), gestures (swipe-down-to-dismiss)
+  - Encoded ALL the lessons learned across this session: the dark-mode lime bug, the QR rounded-corner fix (CSS clip), the title alignment rule, the caption bug, the signal-stuff removal, the concentric radius rule, the press-stamp, etc.
+  - Each file has: definition, specs, implementation examples, usage rules, and "what NOT to do" sections.
+  - Separated from `src/` so it can be consumed by designers, contributors, AI agents, or future ports.
+
+Stage Summary:
+- 5 creative wallpaper templates added (Kawaii cat, Clouds, Mountains, Bubbles, Vines) — the QR sits inside illustrated scenes. Total 11 templates. UI theme preserved.
+- Full design system created at `/home/z/my-project/design-system/` (22 files, 4 layers). Encodes the HandOff brutalist aesthetic: tokens (color/type/spacing/radius/motion/elevation), primitives (surfaces/borders/textures/field-label), components (button/input/card/nav/header/scan-badge/qr-preview), patterns (layout/titles/color-on-lime/gestures). Includes the critical "black text on yellow" rule that caused the most bugs.
+- Lint clean. Wallpaper templates VLM-verified.
