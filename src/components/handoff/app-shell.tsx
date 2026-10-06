@@ -56,11 +56,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Scrollable content area — the ONLY thing that scrolls.
           no-scrollbar hides the 10px ink scrollbar so it doesn't eat into
-          the right padding and shift centered (mx-auto) content off-center. */}
+          the right padding and shift centered (mx-auto) content off-center.
+          No top padding here — each screen's header handles its own top
+          spacing via the shared ScreenHeader / consistent padding. */}
       <main
         className={cn(
           "no-scrollbar relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
-          hideBar ? "pb-0" : "pb-32 pt-6"
+          hideBar ? "pb-0" : "pb-32"
         )}
       >
         {children}

@@ -3,13 +3,9 @@
 import * as React from "react";
 import { ArrowLeft, ShieldCheck, WifiOff, Lock, QrCode, Palette, Share2, Download, LayoutGrid } from "lucide-react";
 import { useView } from "../view-context";
-import { QrPreview } from "../qr-preview";
 import { PageFooter } from "../dev-signature";
-import { STYLE_PRESETS, PLAIN_STYLE } from "@/lib/style-presets";
 import { SHARE_CARD_LAYOUTS, type ShareCardLayout } from "@/lib/export";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
-import { makeEmptyCard } from "@/lib/store";
-import type { Card, QrStyle } from "@/shared/types";
 import { cn } from "@/lib/utils";
 
 const FAQ = [
@@ -33,24 +29,6 @@ const FAQ = [
 
 export function ShowcaseScreen() {
   const { navigate } = useView();
-  const [demoName, setDemoName] = React.useState("Aarav Sharma");
-  const [demoTitle, setDemoTitle] = React.useState("Product Designer");
-  const [demoCompany, setDemoCompany] = React.useState("Studio Vellum");
-  const [style, setStyle] = React.useState<QrStyle>(STYLE_PRESETS[6].style); // Terracotta
-
-  const demoCard: Card = React.useMemo(
-    () => ({
-      ...makeEmptyCard(),
-      firstName: demoName.split(" ")[0] || "Aarav",
-      lastName: demoName.split(" ").slice(1).join(" ") || "Sharma",
-      jobTitle: demoTitle,
-      company: demoCompany,
-      phone: "+919876543210",
-      email: "hello@example.com",
-      website: "https://example.com",
-    }),
-    [demoName, demoTitle, demoCompany]
-  );
 
   return (
     <div className="min-h-[100dvh] bg-background paper-grain">
@@ -88,78 +66,6 @@ export function ShowcaseScreen() {
           it with their phone camera and gets <strong className="text-foreground">Add contact</strong>.
           No app, no server, no network.
         </p>
-      </section>
-
-      {/* interactive demo */}
-      <section className="mx-auto max-w-2xl px-6 pb-16">
-        <div className="rounded-3xl border border-border bg-card p-6 sm:p-8">
-          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-clay">
-            Live demo
-          </p>
-          <h2 className="mt-1 font-display text-2xl font-medium tracking-tight">
-            Type a name. Watch it scan.
-          </h2>
-          <p className="mt-1 text-[13px] text-muted-foreground">
-            This is the real QR engine. It stores nothing.
-          </p>
-
-          <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            <div className="space-y-3">
-              <label className="block">
-                <span className="mb-1 block text-[12px] font-medium text-muted-foreground">Name</span>
-                <input
-                  className="no-tap w-full rounded-xl border border-input bg-background px-3.5 py-3 text-[15px] outline-none focus:border-clay focus:ring-2 focus:ring-clay/15"
-                  value={demoName}
-                  onChange={(e) => setDemoName(e.target.value)}
-                  placeholder="Your name"
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-[12px] font-medium text-muted-foreground">Title</span>
-                <input
-                  className="no-tap w-full rounded-xl border border-input bg-background px-3.5 py-3 text-[15px] outline-none focus:border-clay focus:ring-2 focus:ring-clay/15"
-                  value={demoTitle}
-                  onChange={(e) => setDemoTitle(e.target.value)}
-                />
-              </label>
-              <label className="block">
-                <span className="mb-1 block text-[12px] font-medium text-muted-foreground">Company</span>
-                <input
-                  className="no-tap w-full rounded-xl border border-input bg-background px-3.5 py-3 text-[15px] outline-none focus:border-clay focus:ring-2 focus:ring-clay/15"
-                  value={demoCompany}
-                  onChange={(e) => setDemoCompany(e.target.value)}
-                />
-              </label>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="rounded-2xl border border-border bg-background p-3">
-                <QrPreview card={demoCard} style={style} size={180} showLoading={false} />
-              </div>
-            </div>
-          </div>
-
-          {/* preset picker */}
-          <div className="mt-6">
-            <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-              Try a style
-            </p>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {[PLAIN_STYLE, ...STYLE_PRESETS.slice(0, 8).map((p) => p.style)].map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => setStyle(s)}
-                  className={cn(
-                    "no-tap flex-shrink-0 overflow-hidden rounded-xl border-2 transition-colors",
-                    style.presetId === s.presetId ? "border-clay" : "border-border"
-                  )}
-                  aria-label={`Apply ${s.presetId} style`}
-                >
-                  <QrPreview card={demoCard} style={s} size={64} showLoading={false} />
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* how it works */}

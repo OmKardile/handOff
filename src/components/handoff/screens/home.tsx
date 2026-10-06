@@ -75,10 +75,15 @@ export function HomeScreen() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-5 pt-safe">
-      {/* top bar — wordmark + status chip */}
-      <div className="flex items-center justify-between py-4">
-        <Wordmark className="text-2xl" />
+    <div className="mx-auto max-w-md px-5">
+      {/* top bar — wordmark + status chip.
+          Uses the SAME top padding as ScreenHeader (max(safe,44px) + pb-2)
+          so the HandOff wordmark aligns with Settings/Studio/etc titles. */}
+      <div
+        className="relative z-30 flex items-center justify-between pb-2"
+        style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 44px)" }}
+      >
+        <Wordmark className="text-[30px]" />
         <button
           onClick={() => navigate("privacy")}
           className="press no-tap flex h-9 items-center gap-1.5 border-2 border-ink bg-ink px-2.5 font-heavy text-[11px] uppercase tracking-wide text-bone shadow-[2px_2px_0_0_var(--ink)]"

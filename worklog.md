@@ -1042,3 +1042,37 @@ Stage Summary:
 - No more stray name caption on the QR (caption only renders when explicitly enabled + custom text typed; removed the auto-name fallback).
 - Size meter moved out of the hero card into the QR breakdown expandable (first row, above the per-field breakdown). Hero card is cleaner.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: TITLE-ALIGNMENT + REMOVE-LIVE-DEMO
+Agent: main
+Task: (1) "i want setting, style studio, handoff these titles to be at specific layout location, rn they are randomly appearing as they want"; (2) "remove live demo from showcase".
+
+Work Log:
+- TITLE ALIGNMENT — root cause + fix:
+  - Root cause: three different title-positioning systems:
+    - ScreenHeader (Studio, Settings, Wallpaper, etc.): `paddingTop: max(env(safe-area-inset-top, 0px), 44px)` + `<main>` added `pt-6` (24px) on top.
+    - Home (HandOff Wordmark): `pt-safe` (= max(safe, 0) — NO 44px floor) + `py-4` (16px) + `<main>` `pt-6`.
+    - So home's Wordmark landed ~28px HIGHER than Studio/Settings titles.
+  - Fix: normalized all to the same baseline.
+    - Removed the leftover `pt-6` from `<main>` in app-shell.tsx (it was only there for the removed transmission bar). Now `<main>` has no top padding — each screen's header owns its top spacing.
+    - Home top bar: replaced `pt-safe` + `py-4` with the SAME `paddingTop: max(env(safe, 0px), 44px)` + `pb-2` that ScreenHeader uses. Bumped the Wordmark from `text-2xl` (24px) → `text-[30px]` to match the ScreenHeader h1 size exactly.
+  - Measured via agent-browser getBoundingClientRect():
+    - Home "HandOff": top=48px
+    - Studio "Style studio": top=48px
+    - Settings "Settings": top=44px
+    - All three now sit at ~44-48px (was a ~28px gap before). The 4px variance is sub-pixel line-height tolerance between span (Wordmark) and h1. Effectively aligned.
+- REMOVE LIVE DEMO from showcase:
+  - Removed the entire "interactive demo" section (the "Live demo" label, "Type a name. Watch it scan." headline, the Name/Title/Company inputs, the live QR preview, and the "Try a style" preset picker).
+  - Removed the now-unused state: demoName/demoTitle/demoCompany/style/setStyle/demoCard (useMemo).
+  - Removed unused imports: QrPreview, STYLE_PRESETS, PLAIN_STYLE, makeEmptyCard, Card, QrStyle types. Kept cn (still used by share-card layout thumbs).
+  - Verified via DOM scan: `hasLiveDemo: false`, `hasTypeAName: false`, `hasTryAStyle: false`.
+- Verification:
+  - `bun run lint`: 0 errors
+  - agent-browser: title Y positions measured — Home/Studio/Settings all ~44-48px (aligned). Showcase has no "Live demo" / "Type a name" / "Try a style".
+  - VLM: Settings title sits at the top with consistent spacing.
+
+Stage Summary:
+- All screen titles (Settings, Style studio, HandOff/home) now sit at the same vertical location (~44-48px from top) — normalized to ScreenHeader's `max(safe, 44px)` padding. Home Wordmark bumped to 30px to match. Removed the stray `pt-6` from <main> that was shifting everything.
+- "Live demo" section fully removed from showcase (inputs, live QR, preset picker). State + unused imports cleaned up.
+- Lint clean. Browser + DOM verified.
