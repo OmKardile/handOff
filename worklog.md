@@ -1210,3 +1210,21 @@ Stage Summary:
 - UI polished: minimal grabber (pill only, no text), clean brutalist metadata badge, "Drag down to close" hint.
 - Tap + drag + Escape all dismiss. Sub-threshold drags snap back.
 - Lint clean. Browser + interaction verified.
+
+---
+Task ID: REVERT-FULLSCREEN-KEEP-FOOTER
+Agent: main
+Task: "nah revert this change just keep the footer"
+
+Work Log:
+- Reverted fullscreen-qr.tsx to the version before the gesture-smoothing rewrite (the `useMotionValue`/`useTransform` live-fade version).
+- Restored: grabber handle with "Swipe down" text + chevron-down, simple `drag="y"` gesture (`dragConstraints`, `dragElastic`, `dragMomentum=false`, `onDragEnd` threshold 120px / velocity 600), 180ms easeIn dismiss, `.brut-lg p-5` centered card, name below.
+- KEPT the polished footer from the smoothing attempt: "Screen stays on · Drag down to close" + brutalist metadata badge (`border-2 border-ink bg-card shadow-[2px_2px_0_0_var(--ink)]`, mono text, Copy button with check feedback). Replaced the old glass-pill copy button.
+- Verification:
+  - `bun run lint`: 0 errors
+  - DOM check: hasSwipeDown=true, hasDragDown=true, hasFooter=true, hasCopyBtn=true. All expected elements present.
+
+Stage Summary:
+- Fullscreen QR reverted to pre-smoothing state (grabber + Swipe down text + simple drag gesture + brut-lg card + name below).
+- Kept only the polished footer: "Screen stays on · Drag down to close" + brutalist metadata badge with Copy button.
+- Lint clean. DOM verified.
