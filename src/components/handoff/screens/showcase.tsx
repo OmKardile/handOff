@@ -168,7 +168,7 @@ export function ShowcaseScreen() {
         <div className="mt-6 space-y-3">
           {[
             { n: "1", icon: QrCode, title: "Create your card", body: "Enter your name, contact and links. HandOff builds a compact vCard." },
-            { n: "2", icon: Palette, title: "Style the QR", body: "Pick from 28 presets or fine-tune shapes, colours and a centre element." },
+            { n: "2", icon: Palette, title: "Style the QR", body: "Pick from 36 presets or fine-tune shapes, colours and a centre element." },
             { n: "3", icon: Share2, title: "Share it", body: "Show fullscreen, export PNG/SVG/.vcf, or make a wallpaper. No app needed to scan." },
           ].map((s) => {
             const Icon = s.icon;
