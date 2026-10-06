@@ -79,7 +79,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(env(safe-area-inset-bottom),10px)]"
           aria-label="Primary"
         >
-          <div className="pointer-events-auto flex w-full max-w-md items-stretch gap-0 border-[2.5px] border-ink bg-card shadow-[5px_5px_0_0_var(--ink)]">
+          <div className="pointer-events-auto flex w-full max-w-md items-stretch gap-0 overflow-hidden border-[2.5px] border-ink bg-card shadow-[5px_5px_0_0_var(--ink)] rounded-[14px]">
             {TABS.map((t) => {
               const active = tab === t.id;
               const Icon = t.icon;

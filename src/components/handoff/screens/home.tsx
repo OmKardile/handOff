@@ -25,6 +25,7 @@ import { getFieldBytes, getTotalBytes, formatContactText } from "@/lib/qr-insigh
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { QrReveal, Reveal } from "../motion";
+import { ScanBadge } from "../scan-badge";
 import { motion } from "framer-motion";
 
 export function HomeScreen() {
@@ -188,6 +189,11 @@ export function HomeScreen() {
           <span className="field-label tabular-nums">{size.bytes}B</span>
         </div>
       </div>
+      </Reveal>
+
+      {/* Scan status — minimal "Scans well" badge */}
+      <Reveal delay={0.08}>
+        <ScanBadge card={card} style={style} photoDataUrl={photo?.full} className="mt-3" />
       </Reveal>
 
       {/* QR insights — byte breakdown */}

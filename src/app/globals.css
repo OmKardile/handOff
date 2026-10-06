@@ -48,10 +48,10 @@
   --color-void: var(--void);
   --color-bone: var(--bone);
   --color-cobalt: var(--cobalt);
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 2px;
-  --radius-xl: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
 }
 
 /* ======================================================================
@@ -290,26 +290,26 @@
   .brut {
     border: 2px solid var(--ink);
     box-shadow: var(--elevation-card);
-    border-radius: 2px;
+    border-radius: var(--radius-lg);
     background: var(--card);
   }
   .brut-lg {
     border: 3px solid var(--ink);
     box-shadow: var(--elevation-sheet);
-    border-radius: 3px;
+    border-radius: var(--radius-xl);
     background: var(--card);
   }
   .brut-sm {
     border: 1.5px solid var(--ink);
     box-shadow: 2px 2px 0 0 var(--ink);
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     background: var(--card);
   }
   /* Filled signal tile (lime block w/ ink text) */
   .brut-signal {
     border: 2px solid var(--ink);
     box-shadow: var(--elevation-card);
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     background: var(--signal);
     color: var(--ink);
   }
@@ -317,7 +317,7 @@
   .brut-ink {
     border: 2px solid var(--ink);
     box-shadow: var(--elevation-card);
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     background: var(--ink);
     color: var(--bone);
   }
@@ -328,7 +328,7 @@
   .glass, .glass-strong, .glass-pill, .glass-card {
     position: relative;
     isolation: isolate;
-    border-radius: 2px;
+    border-radius: var(--radius-lg);
   }
   .glass > *, .glass-strong > *, .glass-pill > *, .glass-card > * {
     position: relative;
@@ -358,7 +358,7 @@
     background: var(--card);
     border: 2px solid var(--ink);
     box-shadow: var(--elevation-card);
-    border-radius: 2px;
+    border-radius: var(--radius-lg);
   }
 
   /* ---- Field grid: full graph-paper grid (not just edge ticks) ---- */

@@ -914,3 +914,32 @@ Stage Summary:
 - 8 new vivid presets added (Aurora, Sunset Strip, Mint Chip, Magma, Lagoon, Bubblegum, Matrix, Royal Jade) — total 36. New "Vivid & beautiful" group in Studio.
 - Wallpaper screen REBUILT brutalist with a 12-preset beautiful-QR picker (defaults to Aurora, not the boring default), 8 backdrops, live preview, and a lime+black download button. No more boring-ass wallpaper.
 - Lint clean. Browser + VLM verified all three fixes.
+
+---
+Task ID: SCAN-BADGE + ROUNDED-CORNERS
+Agent: main
+Task: User pasted a reference image of a minimal dark "Scans well" status card (neon-mint text, circular checkmark, contrast ratio, fully rounded). Wanted it "at very minimal level maybe instead of that signal stupidity". Also wanted "rounded corners everywhere".
+
+Work Log:
+- Analyzed the pasted reference image via VLM: a dark-gradient rounded pill card with a thin neon-mint border, circular checkmark icon, "Scans well" headline, and "High optical contrast ratio (14.2:1). Tested with stock camera algorithms." description. Faint schematic grid overlay.
+- Created src/components/handoff/scan-badge.tsx — a ScanBadge component that:
+  - Renders the QR to an offscreen 320px canvas, runs evaluateScan() (the existing scan-check lib that decodes the QR + computes WCAG contrast ratio between moduleColor and background).
+  - Shows the real result: green checkmark + "Scans well" + "High optical contrast ratio (XX.X:1 contrast). Tested with stock camera algorithms." when ok; amber warning + the scan-check message when not; spinner + "Checking…" while loading.
+  - Styled to match the reference: dark gradient background (charcoal→plum), thin colored border, fully rounded (rounded-2xl), circular icon, faint 14px grid overlay.
+  - Re-runs whenever card/style/photo changes (120ms debounce).
+- Added <ScanBadge> to home.tsx, right under the QR hero card (Reveal delay 0.08). This is the minimal, useful replacement for the removed "signal stupidity" — it tells the user something real (their QR scans well + the actual contrast ratio) instead of fake transmission fluff.
+- ROUNDED CORNERS everywhere:
+  - Bumped radius tokens in globals.css: --radius-sm 2→6px, --radius-md 2→10px, --radius-lg 2→14px, --radius-xl 4→20px.
+  - Updated .brut (→14px), .brut-lg (→20px), .brut-sm (→10px), .brut-signal (→10px), .brut-ink (→10px), .glass/.glass-strong/.glass-pill/.glass-card (→14px), .solid-card (→14px) to use the radius vars. Thick ink borders + hard offset shadows KEPT — only corners softened.
+  - Rounded the bottom nav container (app-shell.tsx): added rounded-[14px] + overflow-hidden so the tab corners follow the container.
+- Verification:
+  - `bun run lint`: 0 errors
+  - Restarted dev server + cleared .next CSS cache (radius token changes need a clean recompile).
+  - agent-browser eval: confirmed --radius-lg=14px, --radius-xl=20px tokens live.
+  - VLM home screenshot: confirmed (1) "Scans well" badge with circular checkmark, dark background, rounded corners, contrast ratio shown; (2) main QR card rounded corners; (3) "YOUR CARD" lime header strip rounded at top; (4) SHOW/SHARE/STYLE + EDIT/WALLET/WALLPAPER buttons all rounded; (5) bottom nav fully rounded pill.
+  - Badge position verified: sits at ~555px in main scroll, directly under the QR hero card. Live contrast reading 17.2:1 for the default Ink preset.
+
+Stage Summary:
+- Replaced the removed "signal stupidity" with a minimal, useful ScanBadge: dark rounded card, circular checkmark, "Scans well" headline + live contrast ratio (e.g. "17.2:1 contrast. Tested with stock camera algorithms."). Matches the user's reference image aesthetic. Runs the real scan-check on every QR/style change.
+- Rounded corners applied globally (radius tokens 6/10/14/20px) across all .brut/.glass/.solid-card surfaces + bottom nav. Brutalist thick ink borders + hard offset shadows retained — only corners softened.
+- Lint clean. Browser + VLM verified.
