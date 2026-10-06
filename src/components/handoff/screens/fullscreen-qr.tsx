@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Copy, Check, ChevronDown } from "lucide-react";
-import { motion, type PanInfo } from "framer-motion";
+import { Copy, Check } from "lucide-react";
+import { motion, useMotionValue, useTransform, type PanInfo, animate } from "framer-motion";
 import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { QrPreview } from "../qr-preview";
@@ -10,8 +10,8 @@ import { getQrSizeInfo } from "@/lib/qr";
 import { getFieldBytes, getTotalBytes } from "@/lib/qr-insights";
 import { toast } from "sonner";
 
-/** Dismiss threshold (px) — drag down past this and the sheet closes. */
-const DISMISS_THRESHOLD = 120;
+/** Drag down past this (px) → dismiss. */
+const DISMISS_THRESHOLD = 110;
 
 export function FullscreenQr() {
   const { card, style, photo } = useHandOff();
@@ -20,11 +20,15 @@ export function FullscreenQr() {
   const [copiedMeta, setCopiedMeta] = React.useState(false);
   const [dismissing, setDismissing] = React.useState(false);
 
+  // live drag Y → drives opacity + scale for premium feel
+  const dragY = useMotionValue(0);
+  const dragOpacity = useTransform(dragY, [0, 400], [1, 0.4]);
+  const dragScale = useTransform(dragY, [0, 400], [1, 0.94]);
+
   React.useEffect(() => {
     function resize() {
-      // leave room for the grabber + the name strip below the QR (inside the card)
-      const s = Math.min(window.innerWidth - 80, window.innerHeight - 280);
-      setSize(Math.min(s, 480));
+      const s = Math.min(window.innerWidth - 64, window.innerHeight - 220);
+      setSize(Math.max(200, Math.min(s, 520)));
     }
     resize();
     window.addEventListener("resize", resize);
@@ -37,38 +41,33 @@ export function FullscreenQr() {
     async function acquire() {
       try {
         const wl = navigator as Navigator & { wakeLock?: { request: (t: string) => Promise<{ release: () => Promise<void> }> } };
-        if (wl.wakeLock) {
-          lock = await wl.wakeLock.request("screen");
-        }
-      } catch {
-        /* ignore */
-      }
+        if (wl.wakeLock) lock = await wl.wakeLock.request("screen");
+      } catch { /* ignore */ }
     }
     void acquire();
-    const onVis = () => {
-      if (document.visibilityState === "visible") void acquire();
-    };
+    const onVis = () => { if (document.visibilityState === "visible") void acquire(); };
     document.addEventListener("visibilitychange", onVis);
-    return () => {
-      document.removeEventListener("visibilitychange", onVis);
-      void lock?.release();
-    };
+    return () => { document.removeEventListener("visibilitychange", onVis); void lock?.release(); };
   }, []);
+
+  const dismiss = React.useCallback(() => {
+    setDismissing(true);
+    // smoothly slide down + fade out
+    animate(dragY, window.innerHeight, { duration: 0.32, ease: [0.32, 0.72, 0, 1] });
+    animate(dragOpacity, 0, { duration: 0.32, ease: "easeIn" });
+    setTimeout(() => navigate("home"), 300);
+  }, [dragY, dragOpacity, navigate]);
 
   // close on Escape
   React.useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") navigate("home");
-    }
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") dismiss(); }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
+  }, [dismiss]);
 
-  // drag-to-dismiss: when the user drags down past threshold, close.
   function onDragEnd(_: unknown, info: PanInfo) {
-    if (info.offset.y > DISMISS_THRESHOLD || info.velocity.y > 600) {
-      setDismissing(true);
-      setTimeout(() => navigate("home"), 180);
+    if (info.offset.y > DISMISS_THRESHOLD || info.velocity.y > 500) {
+      dismiss();
     }
   }
 
@@ -78,16 +77,9 @@ export function FullscreenQr() {
   return (
     <motion.div
       className="fixed inset-0 z-50 flex flex-col overflow-hidden paper-grain pt-safe"
-      drag="y"
-      dragConstraints={{ top: 0, bottom: 0 }}
-      dragElastic={{ top: 0, bottom: 0.5 }}
-      dragMomentum={false}
-      onDragEnd={onDragEnd}
-      animate={dismissing ? { y: window.innerHeight, opacity: 0 } : { y: 0, opacity: 1 }}
-      transition={dismissing ? { duration: 0.18, ease: "easeIn" } : { type: "spring", stiffness: 400, damping: 35 }}
-      style={{ touchAction: "none" }}
+      style={{ touchAction: "none", y: dragY, opacity: dragOpacity, scale: dragScale }}
     >
-      {/* Vibrant mesh gradient — orbs drift AND cycle colour (hue-rotate) */}
+      {/* Ambient mesh gradient */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] animate-[hueA_50s_linear_infinite]" style={{ animationDelay: "-8s" }}>
           <div className="h-full w-full rounded-full opacity-[0.35] blur-[50px] animate-[driftA_24s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
@@ -109,84 +101,86 @@ export function FullscreenQr() {
         @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"] { animation: none !important; } }
       `}</style>
 
-      {/* Grabber handle — minimal swipe-down affordance (replaces the X button).
-          A small pill at the top center. Tapping it also closes. */}
+      {/* Drag layer — captures the gesture across the whole screen.
+          The content inside is non-draggable (buttons, copy) so taps still work. */}
+      <motion.div
+        className="absolute inset-0 z-0"
+        drag="y"
+        dragConstraints={{ top: 0, bottom: 0 }}
+        dragElastic={{ top: 0, bottom: 0.6 }}
+        dragMomentum={false}
+        _dragX={dragY}
+        onDrag={(_, info) => dragY.set(Math.max(0, info.offset.y))}
+        onDragEnd={onDragEnd}
+      />
+
+      {/* Grabber handle — minimal, elegant. Tapping also dismisses. */}
       <button
-        onClick={() => navigate("home")}
-        className="group flex w-full flex-col items-center gap-1.5 pt-3 pb-2"
-        aria-label="Swipe down to close"
+        onClick={dismiss}
+        className="group relative z-10 flex w-full flex-col items-center gap-2 pt-3 pb-3"
+        aria-label="Close"
       >
-        <span className="h-1.5 w-10 rounded-full bg-foreground/25 transition-colors group-hover:bg-foreground/40 group-active:bg-foreground/50" />
-        <span className="flex items-center gap-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/60 transition-colors group-hover:text-muted-foreground">
-          <ChevronDown className="h-3 w-3" strokeWidth={2.5} />
-          Swipe down
-        </span>
+        <span className="h-[5px] w-9 rounded-full bg-foreground/20 transition-all duration-200 group-hover:w-11 group-hover:bg-foreground/35 group-active:scale-90" />
       </button>
 
-      <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="brut-lg overflow-hidden">
-          {/* QR */}
-          <div className="flex justify-center p-5">
-            <QrPreview
-              card={card}
-              style={style}
-              size={size}
-              photoDataUrl={photo?.full}
-              showLoading={false}
+      {/* Centered card */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-6">
+        <div className="brut-lg p-5">
+          <QrPreview
+            card={card}
+            style={style}
+            size={size}
+            photoDataUrl={photo?.full}
+            showLoading={false}
+          />
+        </div>
+        <div className="mt-6 flex flex-col items-center text-center">
+          {photo && (
+            <img
+              src={photo.full}
+              alt=""
+              className="mb-2 h-11 w-11 border-2 border-ink object-cover"
             />
-          </div>
-          {/* name — inside the card, centered at the bottom */}
-          <div className="flex flex-col items-center gap-1 border-t-2 border-ink bg-card px-6 py-4 text-center">
-            {photo && (
-              <img
-                src={photo.full}
-                alt=""
-                className="mb-1 h-10 w-10 border-2 border-ink object-cover"
-              />
-            )}
-            <h1 className="font-display text-xl uppercase tracking-tight">
-              {fullName || "Your card"}
-            </h1>
-            {card.jobTitle && (
-              <p className="text-[12px] text-muted-foreground">{card.jobTitle}</p>
-            )}
-            {card.company && (
-              <p className="text-[11px] text-muted-foreground">{card.company}</p>
-            )}
-          </div>
+          )}
+          <h1 className="font-display text-[1.6rem] uppercase leading-tight tracking-tight">
+            {fullName || "Your card"}
+          </h1>
+          {card.jobTitle && (
+            <p className="mt-0.5 text-[13px] text-muted-foreground">{card.jobTitle}</p>
+          )}
+          {card.company && (
+            <p className="text-[12px] text-muted-foreground/80">{card.company}</p>
+          )}
         </div>
       </div>
 
-      <div className="pb-10 text-center">
-        <p className="text-[12px] text-muted-foreground">
-          Screen stays on while this is open
+      {/* Footer metadata */}
+      <div className="relative z-10 pb-8 text-center">
+        <p className="text-[11px] text-muted-foreground/70">
+          Screen stays on · Drag down to close
         </p>
         {(() => {
           const fields = getFieldBytes(card);
           const total = getTotalBytes(fields);
           const dataFields = fields.filter((f) => f.id !== "envelope").length;
           const sizeInfo = getQrSizeInfo(card);
-          const meta = `${total} bytes · QR v${sizeInfo.version} · ${dataFields} field${dataFields === 1 ? "" : "s"} · ECC ${style.ecc}`;
+          const meta = `${total}B · v${sizeInfo.version} · ${dataFields} field${dataFields === 1 ? "" : "s"} · ECC ${style.ecc}`;
           return (
-            <>
-              <p className="mt-1 text-[10.5px] tabular-nums text-muted-foreground/60">{meta}</p>
-              <button
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(meta);
-                    setCopiedMeta(true);
-                    toast.success("Metadata copied");
-                    setTimeout(() => setCopiedMeta(false), 1500);
-                  } catch {
-                    toast.error("Couldn't copy");
-                  }
-                }}
-                className="glass-pill no-tap mx-auto mt-1.5 inline-flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-medium text-muted-foreground/70 transition-colors hover:text-foreground"
-              >
-                {copiedMeta ? <Check className="h-2.5 w-2.5 text-emerald-500" /> : <Copy className="h-2.5 w-2.5" />}
-                {copiedMeta ? "Copied" : "Copy"}
-              </button>
-            </>
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(meta);
+                  setCopiedMeta(true);
+                  toast.success("Metadata copied");
+                  setTimeout(() => setCopiedMeta(false), 1500);
+                } catch { toast.error("Couldn't copy"); }
+              }}
+              className="no-tap mx-auto mt-1.5 inline-flex items-center gap-1 border-2 border-ink bg-card px-2.5 py-1 font-mono text-[10px] text-muted-foreground shadow-[2px_2px_0_0_var(--ink)] transition-colors hover:text-foreground"
+              style={{ borderRadius: 8 }}
+            >
+              {copiedMeta ? <Check className="h-2.5 w-2.5 text-emerald-500" /> : <Copy className="h-2.5 w-2.5" />}
+              {copiedMeta ? "Copied" : meta}
+            </button>
           );
         })()}
       </div>

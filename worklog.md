@@ -1174,3 +1174,39 @@ Stage Summary:
 - 5 creative wallpaper templates added (Kawaii cat, Clouds, Mountains, Bubbles, Vines) — the QR sits inside illustrated scenes. Total 11 templates. UI theme preserved.
 - Full design system created at `/home/z/my-project/design-system/` (22 files, 4 layers). Encodes the HandOff brutalist aesthetic: tokens (color/type/spacing/radius/motion/elevation), primitives (surfaces/borders/textures/field-label), components (button/input/card/nav/header/scan-badge/qr-preview), patterns (layout/titles/color-on-lime/gestures). Includes the critical "black text on yellow" rule that caused the most bugs.
 - Lint clean. Wallpaper templates VLM-verified.
+
+---
+Task ID: SMOOTH-FULLSCREEN-GESTURE
+Agent: main
+Task: "nevermind the fullscreen thing, just smooth out the gesture of swipe down and have some better ui of it"
+
+Work Log:
+- Reverted the card-restructure experiment (name inside the card) — went back to the clean centered layout (QR card centered, name below the card).
+- SMOOTHED THE GESTURE:
+  - Was: `drag="y"` on the whole motion.div with `dragConstraints` + `dragElastic`, animate on `dismissing` state. Rigid — no live feedback during drag.
+  - Now: uses `useMotionValue` (dragY) + `useTransform` to derive `dragOpacity` (1→0.4 as you drag 0→400px) and `dragScale` (1→0.94). So the whole sheet FADES + SHRINKS live as you drag down — premium feel.
+  - A separate full-screen `motion.div` drag layer captures the gesture (z-0), while content sits on top (z-10) so buttons/copy still receive taps.
+  - `onDrag` updates `dragY` to `Math.max(0, info.offset.y)` so the sheet only moves DOWN (never up).
+  - `dragElastic={{ top: 0, bottom: 0.6 }}` — resists slightly going down, can't go up.
+  - Snap-back when below threshold: framer-motion's `dragSnapToOrigin` behavior (spring back to 0).
+  - Dismiss: `animate(dragY, window.innerHeight, { duration: 0.32, ease: [0.32,0.72,0,1] })` + `animate(dragOpacity, 0)` — smooth 320ms slide-down + fade with a custom cubic-bezier (decelerating, iOS-sheet-like). Was 180ms easeIn (abrupt).
+  - Threshold lowered: 110px (was 120) / velocity 500 (was 600) — easier to dismiss.
+- BETTER UI:
+  - Grabber: removed the "Swipe down" text + chevron. Now just a minimal pill (`h-[5px] w-9 rounded-full bg-foreground/20`) that expands (`group-hover:w-11`) + darkens on hover + scales down on active. Pure minimalism.
+  - Card: `.brut-lg p-5` (clean brutalist card, no internal name strip).
+  - Name section below card: centered, photo square with ink border, `font-display text-[1.6rem]` uppercase, job title + company muted.
+  - Footer: "Screen stays on · Drag down to close" + a brutalist metadata badge (border-2 ink, hard shadow, mono text) that copies on tap. Replaced the old glass-pill copy button.
+  - QR size: `min(vw-64, vh-220, 520)` with `max(200, ...)` floor — fits comfortably with grabber + name + footer.
+- Verification:
+  - `bun run lint`: 0 errors (fixed `react-hooks/immutability` by wrapping `dismiss` in `useCallback`).
+  - VLM: minimal grabber pill at top (no text), brutalist card centered, name centered below, clean metadata footer.
+  - Tap grabber → dismissed → returned home ✅
+  - Simulated 250px drag-down → dismissed → returned home ✅
+  - Simulated 50px drag (below threshold) → snapped back, stayed open ✅
+
+Stage Summary:
+- Fullscreen QR reverted to clean centered layout (QR card + name below).
+- Gesture smoothed: live opacity fade (1→0.4) + scale (1→0.94) during drag, full-screen drag layer, spring snap-back below threshold, 320ms decelerating slide-down dismiss (iOS-sheet feel).
+- UI polished: minimal grabber (pill only, no text), clean brutalist metadata badge, "Drag down to close" hint.
+- Tap + drag + Escape all dismiss. Sub-threshold drags snap back.
+- Lint clean. Browser + interaction verified.
