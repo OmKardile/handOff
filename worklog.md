@@ -943,3 +943,39 @@ Stage Summary:
 - Replaced the removed "signal stupidity" with a minimal, useful ScanBadge: dark rounded card, circular checkmark, "Scans well" headline + live contrast ratio (e.g. "17.2:1 contrast. Tested with stock camera algorithms."). Matches the user's reference image aesthetic. Runs the real scan-check on every QR/style change.
 - Rounded corners applied globally (radius tokens 6/10/14/20px) across all .brut/.glass/.solid-card surfaces + bottom nav. Brutalist thick ink borders + hard offset shadows retained — only corners softened.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: DARK-MODE-LIME-FIX + SIGNAL-COPY-GONE + WALLPAPER-ART-TEMPLATES
+Agent: main
+Task: User angry (rightly): (1) "still white text on lime — CHECK THE FUCKING DARK MODE" — found root cause; (2) "WHY THE FUCK THERES STILL THAT STUPID SIGNAL THING" — leftover signal copy; (3) wallpaper presets meant "art around QR, cartoon, named templates — QR sits there with it", NOT just QR color presets.
+
+Work Log:
+- FIX 1 — white-on-lime in DARK MODE (root cause):
+  - Root cause: I used `text-ink` on lime (bg-signal) surfaces. `--ink` = #0A0A0A in LIGHT mode (black, correct) but FLIPS to #EDEAE0 (bone/near-white) in DARK mode → text became white-on-lime. Basic contrast failure.
+  - Fix: replaced EVERY `text-ink` on a lime surface with FIXED `text-black` (Tailwind #000, never flips). Files: home.tsx (YOUR CARD header, On your card bar, SHARE button, Add details button), onboarding.tsx (3 CTA buttons), app-shell.tsx (active nav tab + help button hover). Also fixed the CSS safeguard `.brut-signal { color: #0A0A0A }` (was `var(--ink)` which also flipped).
+  - The onboarding inputs already had `focus:text-black` (fixed last round) — confirmed still correct.
+  - Verified in DARK MODE via agent-browser: VLM confirmed "YOUR CARD", "READY", "On your card" bar, "CARD" nav tab all render BLACK on lime in dark mode. White-on-lime gone.
+- FIX 2 — removed ALL remaining signal/transmission/dead-drop copy:
+  - Removed giant "DEAD" / "DROP" background watermarks from app-shell.tsx.
+  - Onboarding: "//INTERCEPTED" tape → "Digital business card"; "CH.01 · DEVICE-ONLY" → "No app needed to scan"; "Your card. Your signal." → "Your card. Nothing leaves your phone."; "//EST. 30s · PAYLOAD STAYS ON THIS DEVICE" → "Takes 30 seconds · Stays on this device"; "//PAYLOAD" tag → "Preview"; "//STEP 0X · ..." → "Step X · ..."; "//NOTHING LEAVES THIS DEVICE" → "Nothing leaves this device"; privacy spec NET/SERVER/TRACK/DEVICE → ACCOUNT/SERVER/TRACKING/STORAGE (ON DEVICE).
+  - Home: "SIGNAL" meter label → "Size"; "//READY" → "Ready".
+  - No "signal/transmission/payload/dead drop/intercepted/rec" copy remains anywhere in the UI.
+- FIX 3 — wallpaper ART TEMPLATES (what the user actually wanted):
+  - Rebuilt wallpaper.tsx with 6 NAMED ART TEMPLATES, each drawing decorative canvas art AROUND the QR:
+    - Sunburst: 36 radial lime rays fanning from behind the QR on navy.
+    - Halftone: dotted field that gets denser toward edges, vermilion on cream.
+    - Checkerboard: lime checker border frame + lime corner brackets at QR corners, on plum.
+    - Confetti: 160 scattered rects/dots/stars in 5 colors around the QR on forest green.
+    - Orbs: 4 big soft gradient orbs (cobalt/lime/vermilion/mint) on void black.
+    - Comic: yellow halftone bg + "BOOM" 24-point star burst behind QR + thick black outline, comic-book style.
+  - Each template has bg/accent/fg colors + a draw(ctx,W,H,qrSize,qrX,qrY) function that paints the art BEFORE the QR is drawn, so the QR sits ON TOP of the art.
+  - Separated "Art template" picker (6 designs) from "QR color" picker (6 QR presets: Ink/Aurora/Lagoon/Sunset Strip/Royal Jade/Neon Pulse). So you pick the ART + the QR color independently.
+  - Phone preview + downloaded PNG both render the selected template's art + the selected QR color + name/title.
+  - All surfaces rounded (borderRadius 6-18px). Brutalist ink borders + hard shadows retained.
+  - Verified: downloaded a wallpaper — no canvas errors, no exceptions. VLM confirmed "ART TEMPLATE 6 DESIGNS" grid (Sunburst/Halftone/Checkerboard/Confetti/Orbs/Comic) + "QR COLOR 6 LOOKS" + "Active: Sunburst" + phone preview showing QR inside the Sunburst rays.
+
+Stage Summary:
+- DARK MODE: every lime/yellow surface now has FIXED BLACK text (text-black / #0A0A0A), never the flipping --ink. VLM-verified black-on-lime in dark mode.
+- SIGNAL COPY: completely purged. No DEAD/DROP/INTERCEPTED/TRANSMISSION/PAYLOAD/SIGNAL/REC anywhere in the UI. Onboarding + home now read like a normal (but brutalist-styled) app.
+- WALLPAPER: 6 named art templates (Sunburst, Halftone, Checkerboard, Confetti, Orbs, Comic) with real canvas-drawn decorative art around the QR, + separate QR-color picker. No more "boring ass wallpaper" — each template is a distinct visual design the QR sits inside.
+- Lint clean. Browser + VLM verified in dark mode.

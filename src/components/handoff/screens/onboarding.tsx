@@ -77,7 +77,7 @@ export function Onboarding() {
           <Check className="h-8 w-8" strokeWidth={3} />
         </div>
         <p className="font-display text-3xl uppercase tracking-tight">Your card is ready</p>
-        <p className="field-label">{"//NOTHING LEAVES THIS DEVICE"}</p>
+        <p className="field-label">Nothing leaves this device</p>
       </div>
     );
   }
@@ -85,17 +85,16 @@ export function Onboarding() {
   if (step === "welcome") {
     return (
       <div className="relative flex min-h-[100dvh] flex-col px-5 pt-[max(env(safe-area-inset-top,0px),48px)] pb-8">
-        {/* TRANSMISSION INTERCEPTED intro */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="mt-6 flex flex-col gap-4"
         >
-          {/* intercepted stamp */}
+          {/* small tag */}
           <div className="flex items-center gap-2">
-            <span className="tape field-label rotate-[-2deg] px-2 py-1 text-ink">{"//INTERCEPTED"}</span>
-            <span className="field-label opacity-60">CH.01 · DEVICE-ONLY</span>
+            <span className="tape field-label rotate-[-2deg] px-2 py-1 text-ink">Digital business card</span>
+            <span className="field-label opacity-60">No app needed to scan</span>
           </div>
 
           {/* giant wordmark */}
@@ -103,10 +102,10 @@ export function Onboarding() {
             HAND<br />OFF
           </h1>
 
-          {/* heavy tagline */}
+          {/* tagline */}
           <div className="brut-ink max-w-[20rem] px-3 py-2">
             <p className="font-heavy text-[13px] uppercase leading-tight tracking-wide text-bone">
-              Your card. Your signal.<br />Nothing leaves the device.
+              Your card.<br />Nothing leaves your phone.
             </p>
           </div>
         </motion.div>
@@ -121,10 +120,10 @@ export function Onboarding() {
           className="mb-4 flex items-center gap-4 border-y-2 border-ink py-2"
         >
           {[
-            { k: "NET", v: "NONE" },
+            { k: "ACCOUNT", v: "NONE" },
             { k: "SERVER", v: "NONE" },
-            { k: "TRACK", v: "NONE" },
-            { k: "DEVICE", v: "ONLY" },
+            { k: "TRACKING", v: "NONE" },
+            { k: "STORAGE", v: "ON DEVICE" },
           ].map((s) => (
             <div key={s.k} className="flex flex-col">
               <span className="field-label opacity-60">{s.k}</span>
@@ -141,12 +140,12 @@ export function Onboarding() {
         >
           <button
             onClick={() => setStep("identity")}
-            className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_0_var(--ink)]"
+            className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-black shadow-[5px_5px_0_0_var(--ink)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_0_var(--ink)]"
           >
             ▸ Create your card
           </button>
           <p className="mt-3 text-center field-label">
-            {"//EST. 30s · PAYLOAD STAYS ON THIS DEVICE"}
+            Takes 30 seconds · Stays on this device
           </p>
         </motion.div>
       </div>
@@ -199,7 +198,7 @@ export function Onboarding() {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="brut-lg relative p-3"
           >
-            <span className="absolute -top-2 left-3 bg-card px-1.5 field-label">{"//PAYLOAD"}</span>
+            <span className="absolute -top-2 left-3 bg-card px-1.5 field-label">Preview</span>
             <QrPreview
               card={previewCard}
               style={style}
@@ -253,7 +252,7 @@ export function Onboarding() {
           <motion.button
             onClick={finish}
             whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
-            className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)]"
+            className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-black shadow-[5px_5px_0_0_var(--ink)]"
           >
             <Check className="h-4 w-4" strokeWidth={3} />
             Create card
@@ -264,7 +263,7 @@ export function Onboarding() {
               onClick={() => setStep(steps[stepIndex + 1])}
               disabled={step === "identity" && !firstName.trim()}
               whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
-              className="press no-tap flex flex-1 items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)] disabled:opacity-40"
+              className="press no-tap flex flex-1 items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-black shadow-[5px_5px_0_0_var(--ink)] disabled:opacity-40"
             >
               Continue
               <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
@@ -360,7 +359,7 @@ function IdentityStep({
   return (
     <div className="space-y-5">
       <div>
-        <p className="field-label opacity-70">{"//STEP 01 · IDENTITY"}</p>
+        <p className="field-label opacity-70">Step 1 · Identity</p>
         <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Who are you</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -424,7 +423,7 @@ function ContactStep({
   return (
     <div className="space-y-5">
       <div>
-        <p className="field-label opacity-70">{"//STEP 02 · CONTACT"}</p>
+        <p className="field-label opacity-70">Step 2 · Contact</p>
         <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Reach you how</h2>
       </div>
       <Field label="Phone">
@@ -472,7 +471,7 @@ function PhotoStep({
   return (
     <div className="space-y-5">
       <div>
-        <p className="field-label opacity-70">{"//STEP 03 · PHOTO"}</p>
+        <p className="field-label opacity-70">Step 3 · Photo</p>
         <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Add a face</h2>
         <p className="mt-1 text-[13px] text-muted-foreground">
           Optional. Cropped square. All location data stripped on-device.

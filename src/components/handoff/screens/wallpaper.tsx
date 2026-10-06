@@ -13,40 +13,227 @@ import type { QrStyle } from "@/shared/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-/** Backdrops — curated to pair beautifully with the vivid QR presets.
- *  Each has a deep bg color + a fg color for the name text. */
-const BACKDROPS = [
-  { id: "void", name: "Void", color: "#08080A", fg: "#EDEAE0" },
-  { id: "midnight", name: "Midnight", color: "#0E1B33", fg: "#ECE7DE" },
-  { id: "plum", name: "Plum", color: "#1A0F2E", fg: "#ECE7DE" },
-  { id: "forest", name: "Forest", color: "#0F1F1A", fg: "#ECE7DE" },
-  { id: "espresso", name: "Espresso", color: "#1A1410", fg: "#ECE7DE" },
-  { id: "clay", name: "Clay", color: "#8A3B22", fg: "#FBF4EC" },
-  { id: "cobalt", name: "Cobalt", color: "#1B2BE0", fg: "#FBF4EC" },
-  { id: "ink", name: "Ink", color: "#0A0A0A", fg: "#EDEAE0" },
+/** A wallpaper art template — draws decorative art around the QR. */
+interface ArtTemplate {
+  id: string;
+  name: string;
+  bg: string; // background color
+  accent: string; // art accent color
+  fg: string; // text color
+  /** draw the decorative art on the canvas (called BEFORE the QR is drawn) */
+  draw: (ctx: CanvasRenderingContext2D, W: number, H: number, qrSize: number, qrX: number, qrY: number) => void;
+}
+
+const TEMPLATES: ArtTemplate[] = [
+  {
+    id: "sunburst",
+    name: "Sunburst",
+    bg: "#0E1B33",
+    accent: "#C6FF00",
+    fg: "#ECE7DE",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      const cx = qrX + qrSize / 2;
+      const cy = qrY + qrSize / 2;
+      const maxR = Math.hypot(W, H);
+      ctx.save();
+      ctx.translate(cx, cy);
+      const rays = 36;
+      for (let i = 0; i < rays; i++) {
+        ctx.rotate((Math.PI * 2) / rays);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-30, maxR);
+        ctx.lineTo(30, maxR);
+        ctx.closePath();
+        ctx.fillStyle = i % 2 === 0 ? "rgba(198,255,0,0.10)" : "rgba(198,255,0,0.04)";
+        ctx.fill();
+      }
+      ctx.restore();
+    },
+  },
+  {
+    id: "halftone",
+    name: "Halftone",
+    bg: "#FBF9F5",
+    accent: "#FF3B1F",
+    fg: "#16161A",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // dotted halftone gradient field, denser at edges
+      const cx = qrX + qrSize / 2;
+      const cy = qrY + qrSize / 2;
+      const maxD = Math.hypot(W, H) / 2;
+      for (let x = 20; x < W; x += 28) {
+        for (let y = 20; y < H; y += 28) {
+          const d = Math.hypot(x - cx, y - cy);
+          const t = Math.min(1, d / maxD);
+          const r = 2 + t * 7;
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,59,31,${0.08 + t * 0.18})`;
+          ctx.fill();
+        }
+      }
+    },
+  },
+  {
+    id: "checker",
+    name: "Checkerboard",
+    bg: "#1A0F2E",
+    accent: "#C6FF00",
+    fg: "#ECE7DE",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // checkerboard border frame around the whole canvas
+      const tile = 48;
+      const frame = 64;
+      ctx.fillStyle = "#C6FF00";
+      for (let x = 0; x < W; x += tile) {
+        for (let y = 0; y < H; y += tile) {
+          const inFrame = x < frame || x > W - frame || y < frame || y > H - frame;
+          if (!inFrame) continue;
+          if (((x / tile) + (y / tile)) % 2 === 0) {
+            ctx.fillRect(x, y, tile, tile);
+          }
+        }
+      }
+      // accent: lime corner brackets at the QR corners
+      const c = 36;
+      ctx.strokeStyle = "#C6FF00";
+      ctx.lineWidth = 8;
+      [[qrX, qrY, 1, 1], [qrX + qrSize, qrY, -1, 1], [qrX, qrY + qrSize, 1, -1], [qrX + qrSize, qrY + qrSize, -1, -1]].forEach(([x, y, dx, dy]) => {
+        ctx.beginPath();
+        ctx.moveTo(x, y + dy * c);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x + dx * c, y);
+        ctx.stroke();
+      });
+    },
+  },
+  {
+    id: "confetti",
+    name: "Confetti",
+    bg: "#0F1F1A",
+    accent: "#34D399",
+    fg: "#ECE7DE",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      const colors = ["#34D399", "#C6FF00", "#F59E0B", "#EC4899", "#06B6D4"];
+      const cx = qrX + qrSize / 2;
+      const cy = qrY + qrSize / 2;
+      // seeded-ish random for consistency
+      let seed = 7;
+      const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+      for (let i = 0; i < 160; i++) {
+        const x = rand() * W;
+        const y = rand() * H;
+        // skip the QR area
+        if (x > qrX - 20 && x < qrX + qrSize + 20 && y > qrY - 20 && y < qrY + qrSize + 20) continue;
+        const c = colors[Math.floor(rand() * colors.length)];
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rand() * Math.PI);
+        ctx.fillStyle = c;
+        const shape = rand();
+        if (shape < 0.5) {
+          ctx.fillRect(-4, -2, 8, 4); // rect
+        } else if (shape < 0.8) {
+          ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill(); // dot
+        } else {
+          // star
+          ctx.beginPath();
+          for (let j = 0; j < 5; j++) {
+            const a = (j / 5) * Math.PI * 2 - Math.PI / 2;
+            ctx.lineTo(Math.cos(a) * 5, Math.sin(a) * 5);
+            const a2 = a + Math.PI / 5;
+            ctx.lineTo(Math.cos(a2) * 2, Math.sin(a2) * 2);
+          }
+          ctx.closePath();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    },
+  },
+  {
+    id: "orbs",
+    name: "Orbs",
+    bg: "#08080A",
+    accent: "#1B2BE0",
+    fg: "#EDEAE0",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // big soft gradient orbs behind the QR
+      const orbs = [
+        { x: W * 0.2, y: H * 0.2, r: 280, c: "rgba(27,43,224,0.35)" },
+        { x: W * 0.85, y: H * 0.35, r: 320, c: "rgba(198,255,0,0.18)" },
+        { x: W * 0.3, y: H * 0.75, r: 240, c: "rgba(255,59,31,0.22)" },
+        { x: W * 0.8, y: H * 0.8, r: 200, c: "rgba(52,211,153,0.2)" },
+      ];
+      orbs.forEach((o) => {
+        const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+        g.addColorStop(0, o.c);
+        g.addColorStop(1, "transparent");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      });
+    },
+  },
+  {
+    id: "comic",
+    name: "Comic",
+    bg: "#FFF6DC",
+    accent: "#0A0A0A",
+    fg: "#0A0A0A",
+    draw: (ctx, W, H, qrSize, qrX, qrY) => {
+      // halftone dots + thick black outline + "BOOM" star burst behind QR
+      const cx = qrX + qrSize / 2;
+      const cy = qrY + qrSize / 2;
+      // yellow halftone bg
+      for (let x = 0; x < W; x += 22) {
+        for (let y = 0; y < H; y += 22) {
+          const d = Math.hypot(x - cx, y - cy);
+          const r = Math.max(0.5, 5 - d / 220);
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,59,31,0.18)";
+          ctx.fill();
+        }
+      }
+      // star burst behind QR
+      ctx.save();
+      ctx.translate(cx, cy);
+      const points = 24;
+      ctx.beginPath();
+      for (let i = 0; i < points * 2; i++) {
+        const a = (i / (points * 2)) * Math.PI * 2;
+        const r = i % 2 === 0 ? qrSize * 0.95 : qrSize * 0.72;
+        ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+      }
+      ctx.closePath();
+      ctx.fillStyle = "#FF3B1F";
+      ctx.fill();
+      ctx.strokeStyle = "#0A0A0A";
+      ctx.lineWidth = 6;
+      ctx.stroke();
+      ctx.restore();
+    },
+  },
 ];
 
-/** Curated "beautiful & cool" QR presets for the wallpaper.
- *  Defaults to Aurora (the first one) so the wallpaper never feels boring/default. */
-const WALLPAPER_PRESET_IDS = [
-  "aurora", "lagoon", "sunset-strip", "mint-chip",
-  "magma", "bubblegum", "royal-jade", "neon-pulse",
-  "dusk-rose", "tidepool", "afterglow", "ember",
-];
+/** QR color presets that pair well with the templates. */
+const WALLPAPER_QR_IDS = ["ink", "aurora", "lagoon", "sunset-strip", "royal-jade", "neon-pulse"];
 
 export function WallpaperScreen() {
   const { card, style, photo } = useHandOff();
   const { navigate } = useView();
   const [busy, setBusy] = React.useState(false);
-  const [backdrop, setBackdrop] = React.useState(BACKDROPS[0]);
-  const [presetId, setPresetId] = React.useState<string>(WALLPAPER_PRESET_IDS[0]);
+  const [templateId, setTemplateId] = React.useState<string>(TEMPLATES[0].id);
+  const [qrPresetId, setQrPresetId] = React.useState<string>("ink");
 
   const wallpaperPresets = React.useMemo(
-    () => WALLPAPER_PRESET_IDS.map((id) => STYLE_PRESETS.find((p) => p.id === id)).filter(Boolean) as typeof STYLE_PRESETS,
+    () => WALLPAPER_QR_IDS.map((id) => STYLE_PRESETS.find((p) => p.id === id)).filter(Boolean) as typeof STYLE_PRESETS,
     []
   );
-  const activePreset = wallpaperPresets.find((p) => p.id === presetId) ?? wallpaperPresets[0];
-  const wallpaperStyle: QrStyle = activePreset?.style ?? style;
+  const activeTemplate = TEMPLATES.find((t) => t.id === templateId) ?? TEMPLATES[0];
+  const activeQrPreset = wallpaperPresets.find((p) => p.id === qrPresetId) ?? wallpaperPresets[0];
+  const wallpaperStyle: QrStyle = activeQrPreset?.style ?? style;
 
   if (!card) return null;
 
@@ -63,19 +250,24 @@ export function WallpaperScreen() {
       const ctx = canvas.getContext("2d")!;
 
       // backdrop
-      ctx.fillStyle = backdrop.color;
+      ctx.fillStyle = activeTemplate.bg;
       ctx.fillRect(0, 0, W, H);
 
       // QR plate in the 36%-80% band
       const qrSize = Math.round(W * 0.56);
       const qrX = (W - qrSize) / 2;
       const qrY = Math.round(H * 0.36);
+
+      // draw template art (behind QR)
+      activeTemplate.draw(ctx, W, H, qrSize, qrX, qrY);
+
+      // QR
       const qrCanvas = document.createElement("canvas");
       await renderQrToCanvas(qrCanvas, card, wallpaperStyle, qrSize, photo?.full);
       ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
 
       // name + title beneath, inside band
-      ctx.fillStyle = backdrop.fg;
+      ctx.fillStyle = activeTemplate.fg;
       await document.fonts.load('500 48px "Fraunces"');
       ctx.textAlign = "center";
       const name = [card.firstName, card.lastName].filter(Boolean).join(" ");
@@ -102,7 +294,7 @@ export function WallpaperScreen() {
     <div className="mx-auto max-w-md">
       <ScreenHeader title="Wallpaper" onBack={() => navigate("home")} helpGuideId="wallpaper-apply" />
       <div className="px-5 pb-28 pt-4">
-        {/* intro card */}
+        {/* intro */}
         <div className="brut p-5">
           <div className="flex items-center gap-2">
             <span className="brut-signal flex h-7 w-7 items-center justify-center">
@@ -111,9 +303,8 @@ export function WallpaperScreen() {
             <h2 className="font-heavy text-[15px] uppercase tracking-wide">Lock-screen wallpaper</h2>
           </div>
           <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">
-            A phone-shaped image with your QR placed in the safe zone — clear of the
-            clock and shortcuts. Pick a beautiful QR design below, then download and set
-            it as your lock screen.
+            Pick an art template, then a QR color. Your QR sits inside the design,
+            clear of the clock and shortcuts. Download and set it as your lock screen.
           </p>
         </div>
 
@@ -121,26 +312,26 @@ export function WallpaperScreen() {
         <div className="mt-5 flex justify-center">
           <div
             className="relative overflow-hidden border-[3px] border-ink shadow-[5px_5px_0_0_var(--ink)]"
-            style={{ width: 220, height: 440, background: backdrop.color, borderRadius: 4 }}
+            style={{ width: 220, height: 440, background: activeTemplate.bg, borderRadius: 18 }}
           >
             {/* faux clock */}
             <div className="absolute left-0 right-0 top-6 flex flex-col items-center">
-              <span className="font-display text-5xl font-light leading-none" style={{ color: backdrop.fg }}>
+              <span className="font-display text-5xl font-light leading-none" style={{ color: activeTemplate.fg }}>
                 9:41
               </span>
               <span
                 className="mt-1 text-[9px] uppercase tracking-[0.18em]"
-                style={{ color: backdrop.fg, opacity: 0.6 }}
+                style={{ color: activeTemplate.fg, opacity: 0.6 }}
               >
                 {new Date().toLocaleDateString("en", { weekday: "long", month: "short", day: "numeric" })}
               </span>
             </div>
             {/* QR */}
-            <div className="absolute left-1/2 top-[36%] -translate-x-1/2 border-2 border-ink bg-white p-1.5">
+            <div className="absolute left-1/2 top-[36%] -translate-x-1/2 border-2 border-ink bg-white p-1.5" style={{ borderRadius: 6 }}>
               <QrPreview card={card} style={wallpaperStyle} size={120} photoDataUrl={photo?.full} showLoading={false} />
             </div>
             {/* name */}
-            <div className="absolute left-1/2 top-[72%] -translate-x-1/2 text-center" style={{ color: backdrop.fg }}>
+            <div className="absolute left-1/2 top-[72%] -translate-x-1/2 text-center" style={{ color: activeTemplate.fg }}>
               <p className="font-display text-sm font-medium uppercase tracking-wide leading-tight">
                 {[card.firstName, card.lastName].filter(Boolean).join(" ")}
               </p>
@@ -149,74 +340,80 @@ export function WallpaperScreen() {
           </div>
         </div>
 
-        {/* QR design picker — beautiful presets */}
+        {/* art template picker */}
         <div className="mt-6">
           <div className="mb-2 flex items-center gap-2 border-b-2 border-ink pb-1">
             <span className="h-1.5 w-1.5 bg-signal" />
-            <p className="field-label font-bold text-foreground">QR design</p>
-            <span className="field-label text-muted-foreground">{wallpaperPresets.length} beautiful looks</span>
+            <p className="field-label font-bold text-foreground">Art template</p>
+            <span className="field-label text-muted-foreground">{TEMPLATES.length} designs</span>
           </div>
-          <div className="grid grid-cols-4 gap-2">
-            {wallpaperPresets.map((p) => (
+          <div className="grid grid-cols-3 gap-2">
+            {TEMPLATES.map((t) => (
               <button
-                key={p.id}
-                onClick={() => setPresetId(p.id)}
+                key={t.id}
+                onClick={() => setTemplateId(t.id)}
                 className={cn(
-                  "press no-tap relative flex flex-col items-center gap-1 border-2 border-ink bg-card p-1.5 shadow-[2px_2px_0_0_var(--ink)]",
-                  presetId === p.id && "ring-2 ring-signal ring-offset-1 ring-offset-background"
+                  "press no-tap relative flex flex-col items-center gap-1.5 border-2 border-ink p-2 shadow-[2px_2px_0_0_var(--ink)]",
+                  templateId === t.id && "ring-2 ring-signal ring-offset-1 ring-offset-background"
                 )}
-                aria-label={p.name}
-                aria-pressed={presetId === p.id}
+                style={{ background: t.bg, borderRadius: 10 }}
+                aria-label={t.name}
+                aria-pressed={templateId === t.id}
               >
-                <div className="aspect-square w-full overflow-hidden border border-ink">
-                  <QrPreview
-                    card={card}
-                    style={p.style}
-                    size={56}
-                    photoDataUrl={photo?.full}
-                    showLoading={false}
-                  />
-                </div>
-                <span className="w-full truncate text-center text-[9px] font-bold uppercase tracking-wide text-foreground">
-                  {p.name}
+                {/* mini preview swatch */}
+                <span
+                  className="flex h-10 w-full items-center justify-center"
+                  style={{ background: t.bg, borderRadius: 6 }}
+                >
+                  <span className="h-4 w-4" style={{ background: t.accent, borderRadius: 2 }} />
                 </span>
-                {presetId === p.id && (
+                <span className="w-full truncate text-center text-[10px] font-bold uppercase tracking-wide" style={{ color: t.fg }}>
+                  {t.name}
+                </span>
+                {templateId === t.id && (
                   <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center border border-ink bg-signal">
-                    <Check className="h-2.5 w-2.5" strokeWidth={3.5} />
+                    <Check className="h-2.5 w-2.5 text-black" strokeWidth={3.5} />
                   </span>
                 )}
               </button>
             ))}
           </div>
           <p className="mt-2 field-label leading-relaxed">
-            ACTIVE: <span className="font-bold text-foreground">{activePreset?.name.toUpperCase()}</span> · TAP TO CHANGE
+            Active: <span className="font-bold text-foreground">{activeTemplate.name}</span> · Tap to change
           </p>
         </div>
 
-        {/* backdrop picker */}
+        {/* QR color picker */}
         <div className="mt-6">
           <div className="mb-2 flex items-center gap-2 border-b-2 border-ink pb-1">
             <span className="h-1.5 w-1.5 bg-signal" />
-            <p className="field-label font-bold text-foreground">Backdrop</p>
-            <span className="field-label text-muted-foreground">{BACKDROPS.length} tones</span>
+            <p className="field-label font-bold text-foreground">QR color</p>
+            <span className="field-label text-muted-foreground">{wallpaperPresets.length} looks</span>
           </div>
-          <div className="grid grid-cols-4 gap-2">
-            {BACKDROPS.map((b) => (
+          <div className="grid grid-cols-3 gap-2">
+            {wallpaperPresets.map((p) => (
               <button
-                key={b.id}
-                onClick={() => setBackdrop(b)}
-                className="press no-tap flex flex-col items-center gap-1"
-                aria-label={b.name}
-                aria-pressed={backdrop.id === b.id}
+                key={p.id}
+                onClick={() => setQrPresetId(p.id)}
+                className={cn(
+                  "press no-tap relative flex flex-col items-center gap-1 border-2 border-ink bg-card p-1.5 shadow-[2px_2px_0_0_var(--ink)]",
+                  qrPresetId === p.id && "ring-2 ring-signal ring-offset-1 ring-offset-background"
+                )}
+                style={{ borderRadius: 10 }}
+                aria-label={p.name}
+                aria-pressed={qrPresetId === p.id}
               >
-                <span
-                  className={cn(
-                    "h-10 w-10 border-2 border-ink shadow-[2px_2px_0_0_var(--ink)]",
-                    backdrop.id === b.id && "ring-2 ring-signal ring-offset-1 ring-offset-background"
-                  )}
-                  style={{ background: b.color, borderRadius: 2 }}
-                />
-                <span className="text-[9px] font-bold uppercase tracking-wide text-foreground">{b.name}</span>
+                <div className="aspect-square w-full overflow-hidden border border-ink" style={{ borderRadius: 6 }}>
+                  <QrPreview card={card} style={p.style} size={56} photoDataUrl={photo?.full} showLoading={false} />
+                </div>
+                <span className="w-full truncate text-center text-[9px] font-bold uppercase tracking-wide text-foreground">
+                  {p.name}
+                </span>
+                {qrPresetId === p.id && (
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center border border-ink bg-signal">
+                    <Check className="h-2.5 w-2.5 text-black" strokeWidth={3.5} />
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -229,13 +426,14 @@ export function WallpaperScreen() {
           className={cn(
             "press no-tap mt-6 flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-black shadow-[5px_5px_0_0_var(--ink)] disabled:opacity-50"
           )}
+          style={{ borderRadius: 14 }}
         >
           {busy ? <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.5} /> : <Download className="h-4 w-4" strokeWidth={2.5} />}
           Download wallpaper
         </button>
 
         {/* info */}
-        <div className="mt-5 flex gap-2 border-2 border-ink bg-card p-3 shadow-[2px_2px_0_0_var(--ink)]">
+        <div className="mt-5 flex gap-2 border-2 border-ink bg-card p-3 shadow-[2px_2px_0_0_var(--ink)]" style={{ borderRadius: 10 }}>
           <Info className="mt-0.5 h-4 w-4 flex-shrink-0 text-clay" strokeWidth={2.5} />
           <p className="text-[11.5px] leading-relaxed text-muted-foreground">
             On Android, open the image and set it as your lock-screen wallpaper. On

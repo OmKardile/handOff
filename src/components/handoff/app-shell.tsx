@@ -43,13 +43,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
         {/* scanlines */}
         <div className="absolute inset-0 scanlines opacity-60" />
-        {/* giant watermark word — rotated, very faint */}
-        <div className="absolute -right-[12%] top-[8%] -rotate-[24deg] select-none font-display text-[42vh] leading-none text-ink/[0.035]">
-          DEAD
-        </div>
-        <div className="absolute -left-[10%] bottom-[6%] -rotate-[24deg] select-none font-display text-[42vh] leading-none text-ink/[0.035]">
-          DROP
-        </div>
       </div>
       <style>{`
         @keyframes driftA { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(50px,40px) scale(1.14)} }
@@ -119,7 +112,7 @@ function DockItem({
       transition={{ type: "spring", stiffness: 600, damping: 25 }}
       className={cn(
         "no-tap press relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5",
-        active ? "bg-signal text-ink" : "bg-card text-ink hover:bg-secondary"
+        active ? "bg-signal text-black" : "bg-card text-ink hover:bg-secondary"
       )}
       aria-current={active ? "page" : undefined}
       aria-label={label}
@@ -161,7 +154,7 @@ export function ScreenHeader({
                 navigate("help-guide");
               }
             }}
-            className="no-tap press flex h-9 w-9 items-center justify-center border-2 border-ink bg-card text-ink shadow-[2px_2px_0_0_var(--ink)] transition-colors hover:bg-signal"
+            className="no-tap press flex h-9 w-9 items-center justify-center border-2 border-ink bg-card text-ink shadow-[2px_2px_0_0_var(--ink)] transition-colors hover:bg-signal hover:text-black"
             aria-label={`Help with ${title}`}
           >
             <HelpCircle className="h-[18px] w-[18px]" strokeWidth={2} />

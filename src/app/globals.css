@@ -491,9 +491,10 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none; /* Chromium/Safari */
   }
-  /* Safeguard: any lime/yellow surface defaults to ink (black) text.
-     Belt-and-suspenders so bg-signal never renders with non-black text. */
-  .brut-signal { color: var(--ink); }
+  /* Safeguard: any lime/yellow surface defaults to FIXED black text.
+     --ink flips to bone in dark mode, so we MUST use a fixed #0A0A0A here,
+     never var(--ink), or text turns white-on-lime in dark mode. */
+  .brut-signal { color: #0A0A0A; }
   /* Brutalist transitions — snappy */
   button, a, [role="button"], [role="switch"] {
     transition: transform 0.08s ease, background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;

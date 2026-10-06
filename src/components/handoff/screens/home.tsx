@@ -114,12 +114,12 @@ export function HomeScreen() {
       <Reveal delay={0.05}>
       <div className="brut-lg relative overflow-hidden">
         {/* header strip — INK ON LIME (black on yellow) */}
-        <div className="flex items-center justify-between border-b-2 border-ink bg-signal px-4 py-1.5 text-ink">
-          <span className="field-label flex items-center gap-1.5 font-bold text-ink">
-            <span className="h-1.5 w-1.5 rounded-full bg-ink blink" />
+        <div className="flex items-center justify-between border-b-2 border-ink bg-signal px-4 py-1.5 text-black">
+          <span className="field-label flex items-center gap-1.5 font-bold text-black">
+            <span className="h-1.5 w-1.5 rounded-full bg-black blink" />
             YOUR CARD
           </span>
-          <span className="field-label text-ink/60">{"//READY"}</span>
+          <span className="field-label text-black/60">Ready</span>
         </div>
 
         {/* name plate */}
@@ -166,7 +166,7 @@ export function HomeScreen() {
 
         {/* signal strength meter (byte size) */}
         <div className="flex items-center justify-between gap-3 border-t-2 border-ink px-4 py-2.5">
-          <span className="field-label">SIGNAL</span>
+          <span className="field-label">Size</span>
           <div className="flex flex-1 items-center gap-1">
             {Array.from({ length: 12 }).map((_, i) => {
               const threshold = i / 12;
@@ -247,8 +247,8 @@ export function HomeScreen() {
       <div className="mt-7 mb-4">
         {/* section label — INK ON LIME strip */}
         <div className="mb-2 flex items-center gap-2 border-2 border-ink bg-signal px-2 py-1 shadow-[2px_2px_0_0_var(--ink)]">
-          <span className="h-1.5 w-1.5 bg-ink" />
-          <span className="font-heavy text-[11px] uppercase tracking-wide text-ink">On your card</span>
+          <span className="h-1.5 w-1.5 bg-black" />
+          <span className="font-heavy text-[11px] uppercase tracking-wide text-black">On your card</span>
         </div>
         {hasContactDetails ? (
           <div className="brut overflow-hidden">
@@ -326,7 +326,7 @@ function PrimaryAction({
       className={cn(
         "press no-tap flex flex-col items-center gap-2 border-[2.5px] border-ink py-4 shadow-[4px_4px_0_0_var(--ink)]",
         highlight
-          ? "bg-signal text-ink"
+          ? "bg-signal text-black"
           : "bg-card text-ink hover:bg-secondary"
       )}
     >
@@ -381,7 +381,7 @@ function EmptyContactState({ onEdit }: { onEdit: () => void }) {
       </p>
       <button
         onClick={onEdit}
-        className="press no-tap mx-auto mt-3 flex items-center gap-1.5 border-2 border-ink bg-signal px-3.5 py-1.5 font-heavy text-[12px] uppercase tracking-wide text-ink shadow-[2px_2px_0_0_var(--ink)]"
+        className="press no-tap mx-auto mt-3 flex items-center gap-1.5 border-2 border-ink bg-signal px-3.5 py-1.5 font-heavy text-[12px] uppercase tracking-wide text-black shadow-[2px_2px_0_0_var(--ink)]"
       >
         Add details
         <ChevronRight className="h-3 w-3" strokeWidth={2.5} />
