@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { X, Copy, Check } from "lucide-react";
+import { Copy, Check, ChevronDown } from "lucide-react";
+import { motion, type PanInfo } from "framer-motion";
 import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { QrPreview } from "../qr-preview";
@@ -9,11 +10,15 @@ import { getQrSizeInfo } from "@/lib/qr";
 import { getFieldBytes, getTotalBytes } from "@/lib/qr-insights";
 import { toast } from "sonner";
 
+/** Dismiss threshold (px) — drag down past this and the sheet closes. */
+const DISMISS_THRESHOLD = 120;
+
 export function FullscreenQr() {
   const { card, style, photo } = useHandOff();
   const { navigate } = useView();
   const [size, setSize] = React.useState(320);
   const [copiedMeta, setCopiedMeta] = React.useState(false);
+  const [dismissing, setDismissing] = React.useState(false);
 
   React.useEffect(() => {
     function resize() {
@@ -28,7 +33,6 @@ export function FullscreenQr() {
   // keep screen awake via Wake Lock API
   React.useEffect(() => {
     let lock: { release: () => Promise<void> } | null = null;
-    let released = false;
     async function acquire() {
       try {
         const wl = navigator as Navigator & { wakeLock?: { request: (t: string) => Promise<{ release: () => Promise<void> }> } };
@@ -45,7 +49,6 @@ export function FullscreenQr() {
     };
     document.addEventListener("visibilitychange", onVis);
     return () => {
-      released = true;
       document.removeEventListener("visibilitychange", onVis);
       void lock?.release();
     };
@@ -60,13 +63,30 @@ export function FullscreenQr() {
     return () => window.removeEventListener("keydown", onKey);
   }, [navigate]);
 
+  // drag-to-dismiss: when the user drags down past threshold, close.
+  function onDragEnd(_: unknown, info: PanInfo) {
+    if (info.offset.y > DISMISS_THRESHOLD || info.velocity.y > 600) {
+      setDismissing(true);
+      setTimeout(() => navigate("home"), 180);
+    }
+  }
+
   if (!card) return null;
   const fullName = [card.firstName, card.lastName].filter(Boolean).join(" ");
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col overflow-hidden paper-grain pt-safe">
-      {/* Vibrant mesh gradient — orbs drift AND cycle colour (hue-rotate)
-          via nested wrappers so the blur filter never clashes with the hue filter. */}
+    <motion.div
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden paper-grain pt-safe"
+      drag="y"
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={{ top: 0, bottom: 0.5 }}
+      dragMomentum={false}
+      onDragEnd={onDragEnd}
+      animate={dismissing ? { y: window.innerHeight, opacity: 0 } : { y: 0, opacity: 1 }}
+      transition={dismissing ? { duration: 0.18, ease: "easeIn" } : { type: "spring", stiffness: 400, damping: 35 }}
+      style={{ touchAction: "none" }}
+    >
+      {/* Vibrant mesh gradient — orbs drift AND cycle colour (hue-rotate) */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
         <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] animate-[hueA_50s_linear_infinite]" style={{ animationDelay: "-8s" }}>
           <div className="h-full w-full rounded-full opacity-[0.35] blur-[50px] animate-[driftA_24s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
@@ -87,21 +107,23 @@ export function FullscreenQr() {
         @keyframes hueC { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
         @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"] { animation: none !important; } }
       `}</style>
-      <div className="glass flex items-center justify-between border-b border-border px-4 py-3">
-        <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          Tap to scan
+
+      {/* Grabber handle — minimal swipe-down affordance (replaces the X button).
+          A small pill at the top center. Tapping it also closes. */}
+      <button
+        onClick={() => navigate("home")}
+        className="group flex w-full flex-col items-center gap-1.5 pt-3 pb-2"
+        aria-label="Swipe down to close"
+      >
+        <span className="h-1.5 w-10 rounded-full bg-foreground/25 transition-colors group-hover:bg-foreground/40 group-active:bg-foreground/50" />
+        <span className="flex items-center gap-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/60 transition-colors group-hover:text-muted-foreground">
+          <ChevronDown className="h-3 w-3" strokeWidth={2.5} />
+          Swipe down
         </span>
-        <button
-          onClick={() => navigate("home")}
-          className="glass-pill no-tap flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-foreground transition-all hover:bg-foreground/5 active:scale-95"
-          aria-label="Close"
-        >
-          <X className="h-[18px] w-[18px]" strokeWidth={2.2} />
-        </button>
-      </div>
+      </button>
 
       <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="rounded-[28px] bg-card p-5 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]">
+        <div className="rounded-[28px] border-2 border-ink bg-card p-5 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]">
           <QrPreview
             card={card}
             style={style}
@@ -163,6 +185,6 @@ export function FullscreenQr() {
           );
         })()}
       </div>
-    </div>
+    </motion.div>
   );
 }

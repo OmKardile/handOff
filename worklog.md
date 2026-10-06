@@ -1110,3 +1110,32 @@ Stage Summary:
 - Wallpaper screen inner/outer radius mismatches fixed (phone container + QR wrapper + template swatches + color thumbnails all now match their containers).
 - Gap between card border and QR border confirmed uniform by VLM.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: FULLSCREEN-SWIPE-DOWN
+Agent: main
+Task: "change the top of full screen page to swipe down aesthetic minimal gesture instead of cross button"
+
+Work Log:
+- Removed the top bar containing "Tap to scan" label + X close button from fullscreen-qr.tsx.
+- Replaced with a minimal iOS-sheet-style grabber handle at the top center:
+  - A small pill (h-1.5 w-10 rounded-full bg-foreground/25) — the standard "drag handle" affordance.
+  - Below it: a chevron-down icon + "SWIPE DOWN" label in tiny spaced-caps, so the gesture is discoverable but unobtrusive.
+  - The whole grabber is a <button> — tapping it also closes (for users who don't realize they can drag).
+- Added drag-down-to-dismiss gesture using framer-motion:
+  - The entire fullscreen container is a `motion.div` with `drag="y"`, `dragConstraints={{ top: 0, bottom: 0 }}` (can only drag down), `dragElastic={{ top: 0, bottom: 0.5 }}` (resists slightly), `dragMomentum={false}`.
+  - `onDragEnd`: if `offset.y > 120px` OR `velocity.y > 600`, sets `dismissing=true` → animates the sheet down off-screen (y: window.innerHeight, opacity: 0) → navigates home after 180ms.
+  - If the drag doesn't pass the threshold, the spring snaps it back to y:0.
+  - `touchAction: "none"` on the container so the drag doesn't conflict with browser scroll.
+- Kept the Escape key handler (keyboard users can still press Escape to close).
+- Verification:
+  - `bun run lint`: 0 errors
+  - agent-browser: opened fullscreen QR. VLM confirmed: NO X/close button, YES pill grabber handle, YES chevron-down + "SWIPE DOWN" text.
+  - Tapped the grabber → returned to home (ADA LOVELACE heading visible). Tap-to-close works.
+  - Simulated a pointer drag-down (200px) → returned to home. Drag-to-dismiss works.
+
+Stage Summary:
+- Fullscreen QR top bar (X button + "Tap to scan") replaced with a minimal grabber handle (pill + chevron-down + "SWIPE DOWN" label).
+- Drag-down-to-dismiss gesture added via framer-motion (drag="y", threshold 120px / velocity 600). Spring snaps back if below threshold. Tap on the grabber also closes. Escape key still works.
+- No X button anywhere on the fullscreen page — pure minimal swipe gesture.
+- Lint clean. Browser + VLM + interaction verified.
