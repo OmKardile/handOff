@@ -108,22 +108,22 @@ export function FullscreenQr() {
         @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"] { animation: none !important; } }
       `}</style>
 
-      {/* Grabber handle — minimal swipe-down affordance (replaces the X button).
-          A small pill at the top center. Tapping it also closes. */}
+      {/* Grabber handle — minimal swipe-down affordance.
+          Bigger text + subtle bounce animation on the chevron. */}
       <button
         onClick={() => navigate("home")}
-        className="group flex w-full flex-col items-center gap-1.5 pt-3 pb-2"
+        className="group flex w-full flex-col items-center gap-2 pt-3 pb-2"
         aria-label="Swipe down to close"
       >
-        <span className="h-1.5 w-10 rounded-full bg-foreground/25 transition-colors group-hover:bg-foreground/40 group-active:bg-foreground/50" />
-        <span className="flex items-center gap-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/60 transition-colors group-hover:text-muted-foreground">
-          <ChevronDown className="h-3 w-3" strokeWidth={2.5} />
+        <span className="h-1.5 w-10 rounded-full bg-foreground/25 transition-all duration-200 group-hover:w-12 group-hover:bg-foreground/40 group-active:scale-90" />
+        <span className="flex items-center gap-1 text-[13px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/70 transition-colors group-hover:text-muted-foreground">
+          <ChevronDown className="h-3.5 w-3.5 animate-bounce stroke-[2.5]" style={{ animationDuration: "1.6s" }} />
           Swipe down
         </span>
       </button>
 
       <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="brut-lg p-5">
+        <div className="brut-lg p-2">
           <QrPreview
             card={card}
             style={style}

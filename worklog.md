@@ -1228,3 +1228,42 @@ Stage Summary:
 - Fullscreen QR reverted to pre-smoothing state (grabber + Swipe down text + simple drag gesture + brut-lg card + name below).
 - Kept only the polished footer: "Screen stays on · Drag down to close" + brutalist metadata badge with Copy button.
 - Lint clean. DOM verified.
+
+---
+Task ID: QR-FIXES + SIGNATURE + HAPTICS + CAPACITOR
+Agent: main
+Task: Multiple: (1) fix border/radius mismatch on fullscreen QR + reduce whitespace + bigger "Swipe down" text + animation; (2) add app signature to QR corners (anti-screenshot); (3) fix haptics switch; (4) verify capacitor build.
+
+Work Log:
+- FULLSCREEN QR FIXES:
+  - Reduced card padding from `p-5` (20px) → `p-2` (8px) — minimal whitespace, QR fills the card.
+  - Bigger "Swipe down" text: `text-[10px]` → `text-[13px]` + `font-semibold` + `tracking-[0.15em]`.
+  - Bouncing chevron animation: added `animate-bounce` with `animationDuration: 1.6s` on the ChevronDown icon.
+  - Grabber pill: added `group-hover:w-12` (expands on hover) + `group-active:scale-90`.
+  - VLM confirmed: "Swipe down" text is legible + larger, chevron present, padding is minimal/tight.
+- APP SIGNATURE / WATERMARK (anti-screenshot):
+  - Added `drawSignature()` to qr-render.ts — draws a tiny "HandOff" text in the bottom-right corner of the QR canvas.
+  - Uses `style.moduleColor` at 35% opacity — visible on light plates, subtle on dark.
+  - Font: JetBrains Mono 700, size ≈4% of canvas (scales with QR size).
+  - Positioned at 5%/4.5% padding from the bottom-right edge — safely inside the border-radius curve (not clipped).
+  - Rendered on ALL QR instances ≥100px (home, fullscreen, exports, wallpapers) — anyone who screenshots the QR also captures the signature.
+  - VLM confirmed: "tiny semi-transparent text 'HandOff' in the bottom-right corner of the QR code area."
+- HAPTICS SWITCH FIX (was broken):
+  - ROOT CAUSE: `useHaptics` in haptics.ts read from `localStorage.getItem("handoff:haptics")` — a key that was NEVER written. The store persists settings to IndexedDB, not localStorage. So the hook always returned `true` regardless of the toggle.
+  - FIX: rewrote `useHaptics` to read directly from the zustand store: `useHandOff((s) => s.settings.haptics)`.
+  - Also added a localStorage mirror in `setSettings` (`localStorage.setItem("handoff:haptics", "on"/"off")`) for any non-React code that reads it synchronously.
+  - Added Capacitor Haptics support: dynamic import of `@capacitor/haptics` on native platforms (iOS/Android) → uses `Haptics.impact()` with style based on pattern. Falls back to Web Vibration API on web.
+  - Verified: toggling the switch in Settings now writes `"off"` / `"on"` to localStorage AND updates the store.
+- CAPACITOR SETUP:
+  - Installed: `@capacitor/core`, `@capacitor/haptics`, `@capacitor/cli` (dev).
+  - Created `capacitor.config.ts`: appId `com.handoff.app`, appName `HandOff`, webDir `out`, Haptics plugin configured.
+  - Added package.json scripts: `cap:sync` (next build + cap sync), `cap:add:ios`, `cap:add:android`, `cap:open:ios`, `cap:open:android`, `build:web`.
+  - Note: `next.config.ts` currently uses `output: "standalone"` (for the Node server). For Capacitor builds, temporarily switch to `output: "export"` to generate the `out/` directory, then run `cap sync`.
+  - All packages verified present in node_modules.
+
+Stage Summary:
+- Fullscreen QR: minimal padding (p-2), bigger "Swipe down" text (13px semibold) + bouncing chevron animation, expanding grabber pill.
+- App signature: tiny "HandOff" watermark in bottom-right corner of every QR ≥100px (home, fullscreen, exports, wallpapers). Anti-screenshot measure. Uses moduleColor at 35% opacity.
+- Haptics: FIXED — now reads from zustand store (was reading a never-written localStorage key). Toggle works. Supports Capacitor Haptics on native + Web Vibration API fallback. localStorage mirror added.
+- Capacitor: packages installed (@capacitor/core, @capacitor/haptics, @capacitor/cli), capacitor.config.ts created, scripts added (cap:sync, cap:add:ios/android, cap:open:ios/android, build:web).
+- Lint clean. Browser + VLM + DOM verified.

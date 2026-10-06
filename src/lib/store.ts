@@ -228,6 +228,8 @@ export const useHandOff = create<HandOffState>((set, get) => ({
     const current = get().settings;
     const next = typeof updater === "function" ? updater(current) : updater;
     set({ settings: next });
+    // mirror haptics to localStorage for fast sync reads (used by haptics.ts fallback)
+    try { localStorage.setItem("handoff:haptics", next.haptics ? "on" : "off"); } catch { /* ignore */ }
     void get().saveSettingsNow();
   },
 

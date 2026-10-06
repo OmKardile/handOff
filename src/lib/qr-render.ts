@@ -174,6 +174,51 @@ export async function renderQrToCanvas(
   if (style.captionEnabled && style.captionText.trim()) {
     await drawCaption(ctx, canvas, style.captionText.trim(), style);
   }
+
+  // App signature — a tiny "HandOff" watermark in the bottom-right corner.
+  // Anti-screenshot measure: anyone who screenshots the QR also captures this
+  // signature, making it traceable. Subtle but present on ALL renders (home,
+  // fullscreen, exports, wallpapers). Skipped on very small previews (<100px).
+  // Drawn AFTER restore so it's not clipped by the CSS border-radius, but
+  // positioned far enough from the corner to avoid the clip curve.
+  if (size >= 100) {
+    drawSignature(ctx, canvas, style);
+  }
+}
+
+/** Draw a subtle "HandOff" signature in the bottom-right corner of the QR plate.
+ *  Positioned safely inside the border-radius curve so it's not clipped. */
+function drawSignature(
+  ctx: CanvasRenderingContext2D,
+  canvas: HTMLCanvasElement,
+  style: QrStyle
+) {
+  const s = canvas.width;
+  // font size scales with canvas (≈4% of QR size, min 8px)
+  const fontSize = Math.max(8, Math.round(s * 0.04));
+  const text = "HandOff";
+
+  // padding: position well inside the border-radius curve.
+  // At 28px radius, the curve eats ~8px at 45°. Use 6% to clear it safely.
+  const padX = Math.round(s * 0.05);
+  const padY = Math.round(s * 0.045);
+
+  ctx.save();
+  ctx.font = `700 ${fontSize}px "JetBrains Mono", ui-monospace, monospace`;
+  const metrics = ctx.measureText(text);
+  const textW = metrics.width;
+
+  // bottom-right, inside the radius curve
+  const x = s - padX - textW;
+  const y = s - padY;
+
+  // semi-transparent module color — visible on light plates, subtle on dark
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = style.moduleColor;
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText(text, x, y);
+  ctx.restore();
 }
 
 function roundRect(
