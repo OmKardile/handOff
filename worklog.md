@@ -1267,3 +1267,29 @@ Stage Summary:
 - Haptics: FIXED — now reads from zustand store (was reading a never-written localStorage key). Toggle works. Supports Capacitor Haptics on native + Web Vibration API fallback. localStorage mirror added.
 - Capacitor: packages installed (@capacitor/core, @capacitor/haptics, @capacitor/cli), capacitor.config.ts created, scripts added (cap:sync, cap:add:ios/android, cap:open:ios/android, build:web).
 - Lint clean. Browser + VLM + DOM verified.
+
+---
+Task ID: FIX-CORNER-RADIUS-CONCENTRIC
+Agent: main
+Task: "corner radius is still not fixed" — the inner QR plate radius was LARGER than the outer card radius (backwards), creating a visible step where the gap pinched at corners.
+
+Work Log:
+- ROOT CAUSE (finally identified): The QrPreview wrapper used `style.plateRadius` (28px) while the parent card used `--radius-xl` (28px). Same value, BUT the wrapper ALSO has `border-2 border-ink` (2px) + the card has `p-2` (8px) padding around it. So:
+  - Outer card effective radius: 28px
+  - Inner QR wrapper radius: 28px (SAME as outer)
+  - This is BACKWARDS — when two nested rounded rectangles have the same radius, the gap between them is WIDER at the straight edges and PINCHES (narrows) at the corners. The inner curve "catches up" to the outer curve at the corner.
+- FIX: applied the concentric rule `inner = outer - padding`.
+  - Card radius: 28px (--radius-xl)
+  - Padding between card and QR wrapper: 8px (p-2)
+  - Inner QR wrapper radius: 28 - 8 = 20px
+  - Changed QrPreview wrapper `borderRadius: style.plateRadius` → `borderRadius: 20` (fixed value matching the card's concentric requirement).
+  - Changed PLAIN_STYLE.plateRadius 28 → 20 (the canvas-drawn plate radius, so the canvas-drawn curve aligns with the CSS-clipped curve).
+- VERIFICATION:
+  - Computed values confirmed: wrapperRadius=20px, cardRadius=28px. Difference=8px = exactly the p-2 padding. Mathematically concentric.
+  - VLM (with geometric context) confirmed: "The gap is uniform all the way around, including at the corners. Proper concentric inset (picture frame mat effect). The 20px inner / 28px outer / 8px padding relationship is mathematically correct. If the inner radius were larger (e.g., 24px), the white gap would pinch and disappear at the corners." — that was exactly the bug.
+  - Verified on both the home hero card AND the fullscreen QR card.
+
+Stage Summary:
+- Corner radius FIXED: inner QR plate is now 20px, outer card is 28px, difference (8px) = the padding. Concentric — gap is uniform at corners (picture-frame-mat effect). No more pinching/step.
+- Both the CSS border-radius (QrPreview wrapper) and the canvas-drawn plateRadius (qr-render.ts) are now 20px, so they align.
+- Verified on home + fullscreen. Lint clean. Browser + VLM (with context) verified.

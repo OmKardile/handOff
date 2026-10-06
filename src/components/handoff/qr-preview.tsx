@@ -53,7 +53,15 @@ export function QrPreview({
   return (
     <div
       className={cn("relative inline-block overflow-hidden border-2 border-ink", className)}
-      style={{ width: size, height: size, borderRadius: style.plateRadius }}
+      style={{
+        width: size,
+        height: size,
+        // Concentric radius: the parent card is --radius-xl (28px) with padding
+        // around this QR wrapper. To keep the gap uniform at the corners
+        // (concentric curves), the inner radius = outer radius - padding.
+        // Card is 28px, padding is ~8px → inner = 20px.
+        borderRadius: 20,
+      }}
     >
       <canvas
         ref={canvasRef}

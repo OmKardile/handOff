@@ -29,7 +29,7 @@ export const PLAIN_STYLE: QrStyle = {
   captionEnabled: false,
   captionText: "",
   captionFont: "Fraunces",
-  plateRadius: 28,
+  plateRadius: 20,
   platePadding: 1.5,
   ecc: "M",
 };
