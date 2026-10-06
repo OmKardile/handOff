@@ -1381,3 +1381,34 @@ Stage Summary:
 - Verified: Sunburst (rays), Kawaii cat (ears/eyes/whiskers/paws/hearts), Clouds (clouds/sky/grass) all render in the phone preview now.
 - The downloaded PNG was already correct (generate() had the art) — only the preview was missing it.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: CUTER-KAWAII-CAT
+Agent: main
+Task: "make the cat more cute and realistic use internet media if u want"
+
+Work Log:
+- Completely rewrote the kawaii cat template's draw() function with much cuter, more realistic proportions and premium kawaii illustration details:
+  - **Eyes**: big round eyes with radial gradient (dark top → lighter bottom) + DOUBLE shine (large top-left catchlight + small bottom-right shine) — the "glassy anime" look.
+  - **Ears**: rounded triangles (quadraticCurveTo, not sharp lines) with pink inner ears.
+  - **Head**: squircle shape (scale 1.08 taller) + soft linear gradient overlay (white top highlight → subtle shadow bottom) for 3D depth.
+  - **Forehead stripe**: tabby marking (subtle catDark at 35% alpha) for realism.
+  - **Cheeks**: blush ellipses (soft pink).
+  - **Muzzle**: white puff under the eyes.
+  - **Nose**: heart-shaped (bezier curves), bright pink — cuter than a triangle.
+  - **Mouth**: soft w-shape with rounded line caps.
+  - **Whiskers**: curved (quadratic, not straight) + thinner + semi-transparent.
+  - **Paws**: rounded ellipses with 4 toe beans + a bigger main pad (heart-ish) — properly detailed.
+  - **Tail**: curls from the right side with a quadratic curve + lighter tip + outline.
+  - **Floating hearts**: 5 hearts, varied sizes/colors/opacity (proper bezier heart shape, not arc-stitched).
+  - **Sparkles**: 3 4-point star sparkles (gold + white) for magical atmosphere.
+- Removed unused `catShadow` variable.
+- Note: didn't use internet media — the app is offline (CSP: connect-src 'self'), so I drew everything with canvas primitives. The result is a hand-drawn kawaii illustration using gradients, bezier curves, and layered shapes.
+- VERIFICATION:
+  - `bun run lint`: 0 errors
+  - VLM confirmed ALL 8 features: big sparkly eyes with double shine, rounded ears with pink inner, white muzzle puff, heart-shaped pink nose, cute paws with toe beans, curling tail, floating hearts + sparkles, premium kawaii illustration (gradient shading, soft highlights, blush, layered depth). "Significantly more detailed and emotionally appealing than a simple flat graphic."
+
+Stage Summary:
+- Kawaii cat completely redesigned: premium chibi-style illustration with gradient eyes + double shine, rounded ears, heart nose, muzzle, blush, tabby stripe, detailed paws with toe beans, curling tail, floating hearts, and sparkles.
+- Drawn entirely with canvas primitives (app is offline — no external images).
+- Lint clean. VLM verified all 8 features render.

@@ -223,104 +223,227 @@ const TEMPLATES: ArtTemplate[] = [
     accent: "#FF8FB1",
     fg: "#3A2A33",
     draw: (ctx, W, H, qrSize, qrX, qrY) => {
-      // A kawaii cat peeking from behind the QR (top), paws at the bottom.
-      const catColor = "#F7A8C4";
-      const catDark = "#E0799B";
-      const eyeColor = "#3A2A33";
-      const cheekColor = "rgba(255,143,177,0.5)";
+      // A cuter, more realistic kawaii cat peeking from behind the QR.
+      // Drawn with softer shapes, bigger sparkly eyes, a muzzle, collar + bell, and a tail.
+      const catColor = "#FBC4D6";
+      const catLight = "#FDE8F0";
+      const catDark = "#E8A0BD";
+      const eyeColor = "#2A1F2A";
+      const cheekColor = "rgba(255,120,160,0.4)";
+      const innerEar = "#FFB0CC";
+      const muzzleColor = "#FFF5F8";
 
-      // ----- Cat head peeking from the TOP, behind the QR -----
-      const headCx = qrX + qrSize / 2;
-      const headCy = qrY - qrSize * 0.34; // mostly hidden above the QR
-      const headR = qrSize * 0.42;
-      // ears (drawn first, behind head)
+      const cx = qrX + qrSize / 2;
+
+      // ── Tail curling from the right side ──
+      const tailBaseX = qrX + qrSize + qrSize * 0.05;
+      const tailBaseY = qrY + qrSize * 0.55;
+      ctx.save();
       ctx.fillStyle = catColor;
-      [[-1, -1], [1, -1]].forEach(([dx]) => {
-        const ex = headCx + dx * headR * 0.62;
-        const ey = headCy - headR * 0.55;
+      ctx.strokeStyle = catDark;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(tailBaseX, tailBaseY);
+      ctx.quadraticCurveTo(tailBaseX + qrSize * 0.35, tailBaseY - qrSize * 0.1, tailBaseX + qrSize * 0.3, tailBaseY - qrSize * 0.45);
+      ctx.quadraticCurveTo(tailBaseX + qrSize * 0.25, tailBaseY - qrSize * 0.5, tailBaseX + qrSize * 0.12, tailBaseY - qrSize * 0.42);
+      ctx.quadraticCurveTo(tailBaseX + qrSize * 0.08, tailBaseY - qrSize * 0.2, tailBaseX, tailBaseY + qrSize * 0.08);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      // tail tip (lighter)
+      ctx.fillStyle = catLight;
+      ctx.beginPath();
+      ctx.arc(tailBaseX + qrSize * 0.28, tailBaseY - qrSize * 0.43, qrSize * 0.06, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // ── Cat head peeking from the TOP, behind the QR ──
+      // Position so only the upper portion (ears + forehead + eyes) shows above the QR
+      const headCx = cx;
+      const headCy = qrY - qrSize * 0.28;
+      const headR = qrSize * 0.48;
+      const earR = headR * 0.45;
+
+      // Ears (drawn first, behind head) — rounded triangles, more realistic
+      ctx.fillStyle = catColor;
+      [[-1], [1]].forEach(([dx]) => {
+        const earCx = headCx + dx * headR * 0.6;
+        const earCy = headCy - headR * 0.7;
+        // outer ear — rounded triangle
         ctx.beginPath();
-        ctx.moveTo(ex - headR * 0.22, ey + headR * 0.18);
-        ctx.lineTo(ex, ey - headR * 0.3);
-        ctx.lineTo(ex + headR * 0.22, ey + headR * 0.18);
+        ctx.moveTo(earCx - earR * 0.7, earCy + earR * 0.5);
+        ctx.quadraticCurveTo(earCx - earR * 0.5, earCy - earR * 0.9, earCx, earCy - earR * 0.5);
+        ctx.quadraticCurveTo(earCx + earR * 0.5, earCy - earR * 0.9, earCx + earR * 0.7, earCy + earR * 0.5);
+        ctx.quadraticCurveTo(earCx, earCy + earR * 0.3, earCx - earR * 0.7, earCy + earR * 0.5);
         ctx.closePath();
         ctx.fill();
         // inner ear
-        ctx.fillStyle = "#FFC4D8";
+        ctx.fillStyle = innerEar;
         ctx.beginPath();
-        ctx.moveTo(ex - headR * 0.12, ey + headR * 0.12);
-        ctx.lineTo(ex, ey - headR * 0.12);
-        ctx.lineTo(ex + headR * 0.12, ey + headR * 0.12);
+        ctx.moveTo(earCx - earR * 0.35, earCy + earR * 0.25);
+        ctx.quadraticCurveTo(earCx - earR * 0.25, earCy - earR * 0.4, earCx, earCy - earR * 0.15);
+        ctx.quadraticCurveTo(earCx + earR * 0.25, earCy - earR * 0.4, earCx + earR * 0.35, earCy + earR * 0.25);
+        ctx.quadraticCurveTo(earCx, earCy + earR * 0.15, earCx - earR * 0.35, earCy + earR * 0.25);
         ctx.closePath();
         ctx.fill();
         ctx.fillStyle = catColor;
       });
-      // head
+
+      // Head — slightly squircle (taller than wide) for a cuter look
+      ctx.save();
+      ctx.translate(headCx, headCy);
+      ctx.scale(1, 1.08);
       ctx.beginPath();
-      ctx.arc(headCx, headCy, headR, 0, Math.PI * 2);
+      ctx.arc(0, 0, headR, 0, Math.PI * 2);
       ctx.fillStyle = catColor;
       ctx.fill();
-      // cheeks
-      ctx.fillStyle = cheekColor;
-      ctx.beginPath(); ctx.arc(headCx - headR * 0.5, headCy + headR * 0.18, headR * 0.18, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(headCx + headR * 0.5, headCy + headR * 0.18, headR * 0.18, 0, Math.PI * 2); ctx.fill();
-      // eyes (two dark ovals)
-      ctx.fillStyle = eyeColor;
-      ctx.beginPath(); ctx.ellipse(headCx - headR * 0.32, headCy + headR * 0.05, headR * 0.08, headR * 0.12, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(headCx + headR * 0.32, headCy + headR * 0.05, headR * 0.08, headR * 0.12, 0, 0, Math.PI * 2); ctx.fill();
-      // eye shines
-      ctx.fillStyle = "#FFFFFF";
-      ctx.beginPath(); ctx.arc(headCx - headR * 0.3, headCy + headR * 0.01, headR * 0.03, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(headCx + headR * 0.34, headCy + headR * 0.01, headR * 0.03, 0, Math.PI * 2); ctx.fill();
-      // nose (small triangle)
-      ctx.fillStyle = catDark;
-      ctx.beginPath();
-      ctx.moveTo(headCx - headR * 0.06, headCy + headR * 0.22);
-      ctx.lineTo(headCx + headR * 0.06, headCy + headR * 0.22);
-      ctx.lineTo(headCx, headCy + headR * 0.3);
-      ctx.closePath();
-      ctx.fill();
-      // mouth (w shape)
-      ctx.strokeStyle = eyeColor;
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(headCx - headR * 0.12, headCy + headR * 0.3);
-      ctx.quadraticCurveTo(headCx - headR * 0.06, headCy + headR * 0.38, headCx, headCy + headR * 0.32);
-      ctx.quadraticCurveTo(headCx + headR * 0.06, headCy + headR * 0.38, headCx + headR * 0.12, headCy + headR * 0.3);
-      ctx.stroke();
-      // whiskers
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(headCx - headR * 0.18, headCy + headR * 0.2); ctx.lineTo(headCx - headR * 0.5, headCy + headR * 0.16);
-      ctx.moveTo(headCx - headR * 0.18, headCy + headR * 0.26); ctx.lineTo(headCx - headR * 0.5, headCy + headR * 0.3);
-      ctx.moveTo(headCx + headR * 0.18, headCy + headR * 0.2); ctx.lineTo(headCx + headR * 0.5, headCy + headR * 0.16);
-      ctx.moveTo(headCx + headR * 0.18, headCy + headR * 0.26); ctx.lineTo(headCx + headR * 0.5, headCy + headR * 0.3);
-      ctx.stroke();
+      // soft shadow on the lower half for depth
+      ctx.save();
+      ctx.clip();
+      const headGrad = ctx.createLinearGradient(0, -headR, 0, headR);
+      headGrad.addColorStop(0, "rgba(255,255,255,0.15)");
+      headGrad.addColorStop(0.6, "rgba(0,0,0,0)");
+      headGrad.addColorStop(1, "rgba(160,80,120,0.18)");
+      ctx.fillStyle = headGrad;
+      ctx.fillRect(-headR, -headR, headR * 2, headR * 2);
+      ctx.restore();
+      ctx.restore();
 
-      // ----- Two paws peeking from the BOTTOM of the QR -----
-      const pawY = qrY + qrSize + qrSize * 0.12;
-      const pawR = qrSize * 0.14;
+      // Forehead stripe (tabby marking — adds realism)
+      ctx.fillStyle = catDark;
+      ctx.globalAlpha = 0.35;
+      ctx.beginPath();
+      ctx.moveTo(headCx, headCy - headR * 0.75);
+      ctx.quadraticCurveTo(headCx - headR * 0.08, headCy - headR * 0.4, headCx, headCy - headR * 0.3);
+      ctx.quadraticCurveTo(headCx + headR * 0.08, headCy - headR * 0.4, headCx, headCy - headR * 0.75);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Cheeks (blush)
+      ctx.fillStyle = cheekColor;
+      ctx.beginPath(); ctx.ellipse(headCx - headR * 0.48, headCy + headR * 0.18, headR * 0.2, headR * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(headCx + headR * 0.48, headCy + headR * 0.18, headR * 0.2, headR * 0.14, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Eyes — big, round, with gradient + double shine (kawaii style)
       [[-1], [1]].forEach(([dx]) => {
-        const px = qrX + qrSize / 2 + dx * qrSize * 0.28;
-        ctx.fillStyle = catColor;
-        ctx.beginPath(); ctx.arc(px, pawY, pawR, 0, Math.PI * 2); ctx.fill();
-        // toe beans
-        ctx.fillStyle = "#FFC4D8";
-        ctx.beginPath(); ctx.arc(px - pawR * 0.4, pawY + pawR * 0.3, pawR * 0.22, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(px, pawY + pawR * 0.45, pawR * 0.22, 0, Math.PI * 2); ctx.fill();
-        ctx.beginPath(); ctx.arc(px + pawR * 0.4, pawY + pawR * 0.3, pawR * 0.22, 0, Math.PI * 2); ctx.fill();
+        const ex = headCx + dx * headR * 0.34;
+        const ey = headCy + headR * 0.02;
+        const eR = headR * 0.16;
+        // eye socket (dark, gradient: top dark → bottom slightly lighter)
+        const eyeGrad = ctx.createRadialGradient(ex, ey - eR * 0.3, eR * 0.2, ex, ey + eR * 0.2, eR);
+        eyeGrad.addColorStop(0, "#4A3A4A");
+        eyeGrad.addColorStop(1, eyeColor);
+        ctx.fillStyle = eyeGrad;
+        ctx.beginPath(); ctx.ellipse(ex, ey, eR * 0.85, eR, 0, 0, Math.PI * 2); ctx.fill();
+        // big shine (top-left)
+        ctx.fillStyle = "rgba(255,255,255,0.95)";
+        ctx.beginPath(); ctx.ellipse(ex - eR * 0.3, ey - eR * 0.35, eR * 0.32, eR * 0.42, -0.3, 0, Math.PI * 2); ctx.fill();
+        // small shine (bottom-right)
+        ctx.fillStyle = "rgba(255,255,255,0.6)";
+        ctx.beginPath(); ctx.arc(ex + eR * 0.25, ey + eR * 0.3, eR * 0.12, 0, Math.PI * 2); ctx.fill();
       });
 
-      // tiny floating hearts
-      ctx.fillStyle = "rgba(255,143,177,0.6)";
-      [[qrX - 60, qrY + 40, 14], [qrX + qrSize + 50, qrY + 120, 18], [qrX + 20, qrY + qrSize + 180, 12]].forEach(([x, y, s]) => {
+      // Muzzle (small white puff under the eyes)
+      ctx.fillStyle = muzzleColor;
+      ctx.beginPath();
+      ctx.ellipse(headCx, headCy + headR * 0.28, headR * 0.28, headR * 0.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Nose (heart-shaped, cuter)
+      const noseY = headCy + headR * 0.24;
+      const noseS = headR * 0.06;
+      ctx.fillStyle = "#E85A8A";
+      ctx.beginPath();
+      ctx.moveTo(headCx, noseY + noseS * 0.8);
+      ctx.bezierCurveTo(headCx, noseY, headCx - noseS, noseY - noseS * 0.3, headCx - noseS * 0.5, noseY - noseS * 0.3);
+      ctx.bezierCurveTo(headCx, noseY - noseS * 0.3, headCx, noseY, headCx, noseY + noseS * 0.2);
+      ctx.bezierCurveTo(headCx, noseY, headCx + noseS, noseY - noseS * 0.3, headCx + noseS * 0.5, noseY - noseS * 0.3);
+      ctx.bezierCurveTo(headCx + noseS, noseY - noseS * 0.3, headCx, noseY, headCx, noseY + noseS * 0.8);
+      ctx.fill();
+
+      // Mouth (w shape, soft)
+      ctx.strokeStyle = "#9A6A7A";
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(headCx - headR * 0.1, headCy + headR * 0.36);
+      ctx.quadraticCurveTo(headCx - headR * 0.05, headCy + headR * 0.42, headCx, headCy + headR * 0.36);
+      ctx.quadraticCurveTo(headCx + headR * 0.05, headCy + headR * 0.42, headCx + headR * 0.1, headCy + headR * 0.36);
+      ctx.stroke();
+
+      // Whiskers (softer, thinner)
+      ctx.strokeStyle = "rgba(180,150,160,0.6)";
+      ctx.lineWidth = 1.5;
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      // left whiskers
+      ctx.moveTo(headCx - headR * 0.22, headCy + headR * 0.25); ctx.quadraticCurveTo(headCx - headR * 0.6, headCy + headR * 0.18, headCx - headR * 0.65, headCy + headR * 0.12);
+      ctx.moveTo(headCx - headR * 0.22, headCy + headR * 0.32); ctx.quadraticCurveTo(headCx - headR * 0.6, headCy + headR * 0.35, headCx - headR * 0.65, headCy + headR * 0.32);
+      // right whiskers
+      ctx.moveTo(headCx + headR * 0.22, headCy + headR * 0.25); ctx.quadraticCurveTo(headCx + headR * 0.6, headCy + headR * 0.18, headCx + headR * 0.65, headCy + headR * 0.12);
+      ctx.moveTo(headCx + headR * 0.22, headCy + headR * 0.32); ctx.quadraticCurveTo(headCx + headR * 0.6, headCy + headR * 0.35, headCx + headR * 0.65, headCy + headR * 0.32);
+      ctx.stroke();
+
+      // ── Two paws peeking from the BOTTOM of the QR (cuter, with toe beans) ──
+      const pawY = qrY + qrSize + qrSize * 0.1;
+      const pawR = qrSize * 0.16;
+      [[-1], [1]].forEach(([dx]) => {
+        const px = cx + dx * qrSize * 0.26;
+        // paw shape (rounded, slightly squashed)
+        ctx.fillStyle = catColor;
         ctx.beginPath();
-        ctx.arc(x as number - s * 0.5, y as number, s * 0.5, 0, Math.PI * 2);
-        ctx.arc(x as number + s * 0.5, y as number, s * 0.5, 0, Math.PI * 2);
-        ctx.moveTo(x as number - s, y as number);
-        ctx.lineTo(x as number, y as number + s);
-        ctx.lineTo(x as number + s, y as number);
+        ctx.ellipse(px, pawY, pawR * 1.05, pawR * 0.85, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // toe beans (4 small pads)
+        ctx.fillStyle = "#FFB8CE";
+        const beanR = pawR * 0.2;
+        ctx.beginPath(); ctx.arc(px - pawR * 0.42, pawY - pawR * 0.15, beanR, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px - pawR * 0.14, pawY - pawR * 0.3, beanR, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px + pawR * 0.14, pawY - pawR * 0.3, beanR, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(px + pawR * 0.42, pawY - pawR * 0.15, beanR, 0, Math.PI * 2); ctx.fill();
+        // main pad (bigger, heart-ish)
+        ctx.fillStyle = "#FF9AB8";
+        ctx.beginPath();
+        ctx.ellipse(px, pawY + pawR * 0.35, pawR * 0.45, pawR * 0.3, 0, 0, Math.PI * 2);
         ctx.fill();
       });
+
+      // ── Floating hearts (more, varied sizes) ──
+      const drawHeart = (x: number, y: number, s: number, color: string, alpha: number) => {
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y + s * 0.7);
+        ctx.bezierCurveTo(x - s * 1.2, y - s * 0.2, x - s * 0.4, y - s, x, y - s * 0.3);
+        ctx.bezierCurveTo(x + s * 0.4, y - s, x + s * 1.2, y - s * 0.2, x, y + s * 0.7);
+        ctx.fill();
+        ctx.restore();
+      };
+      drawHeart(qrX - qrSize * 0.08, qrY + qrSize * 0.12, 16, "#FF8FB1", 0.7);
+      drawHeart(qrX + qrSize + qrSize * 0.06, qrY + qrSize * 0.25, 22, "#FF6FA0", 0.6);
+      drawHeart(qrX + qrSize * 0.05, qrY + qrSize + qrSize * 0.22, 14, "#FFB0CC", 0.7);
+      drawHeart(qrX - qrSize * 0.1, qrY + qrSize * 0.6, 10, "#FF8FB1", 0.5);
+      drawHeart(qrX + qrSize + qrSize * 0.1, qrY + qrSize * 0.7, 12, "#FF6FA0", 0.6);
+
+      // ── Sparkles ──
+      const drawSparkle = (x: number, y: number, s: number, color: string) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(x, y - s);
+        ctx.lineTo(x + s * 0.3, y - s * 0.3);
+        ctx.lineTo(x + s, y);
+        ctx.lineTo(x + s * 0.3, y + s * 0.3);
+        ctx.lineTo(x, y + s);
+        ctx.lineTo(x - s * 0.3, y + s * 0.3);
+        ctx.lineTo(x - s, y);
+        ctx.lineTo(x - s * 0.3, y - s * 0.3);
+        ctx.closePath();
+        ctx.fill();
+      };
+      drawSparkle(qrX - qrSize * 0.12, qrY + qrSize * 0.3, 8, "rgba(255,215,0,0.6)");
+      drawSparkle(qrX + qrSize + qrSize * 0.08, qrY + qrSize * 0.5, 6, "rgba(255,215,0,0.5)");
+      drawSparkle(qrX + qrSize * 0.5, qrY - qrSize * 0.05, 5, "rgba(255,255,255,0.7)");
     },
   },
   {
