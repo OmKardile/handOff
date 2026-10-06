@@ -882,3 +882,35 @@ Stage Summary:
 - Black-on-yellow is consistent across every lime surface in the app (verified by VLM element-by-element).
 - The right-side scrollbar is gone — main scroll container uses .no-scrollbar (hidden via scrollbar-width:none + ::-webkit-scrollbar display:none). Content is now perfectly centered with symmetric left/right margins. Padding (px-5) and max-width (max-w-md) unchanged; they now render truly centered because nothing steals the right gutter.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: FIX-BLACK-ON-LIME + REMOVE-SIGNAL + WALLPAPER-PRESETS
+Agent: main
+Task: Three fixes from user feedback (frustrated): (1) "turn the text [black on] yellow where tf u did it" — found the missed spot; (2) "remove the signal stupidity revert it to what it was before"; (3) "beautiful cool presets for the wallpaper QR design not the fucking default — user should not feel like boring ass wallpaper".
+
+Work Log:
+- FIX 1 — black text on lime INPUTS (the spot I missed):
+  - User's pasted screenshot showed the onboarding First-Name input focused → lime bg but WHITE typed text. Root cause: inputCls had `focus:bg-signal` but NO `focus:text-*`, so typed text stayed `text-foreground` (bone/near-white in dark mode) → unreadable white-on-lime.
+  - Fix: added `focus:text-black focus:placeholder:text-black/40` to inputCls. `text-black` is a fixed #000 (not a theme var) so it's black on lime in BOTH light + dark mode. Verified via agent-browser eval: focused input bg=rgb(198,255,0), color=rgb(0,0,0). VLM confirmed typed "Ada" is BLACK on lime.
+- FIX 2 — remove the "signal stupidity":
+  - Removed from app-shell.tsx: the top TransmissionBar (SIGNAL·OK + scrolling ticker + live clock), the corner readouts (//CH.01 + version), and the REC indicator block (blinking clay dot + "REC") from the bottom nav. Deleted the TransmissionBar component entirely.
+  - Reverted <main> top padding pt-7 → pt-6 (the transmission bar needed 7; without it 6 centers better).
+  - Kept the brutalist bottom nav (3 tabs, lime active), the field-grid + interference background, and everything else. Only the signal-themed overlays are gone — the brutalist design itself stays.
+  - VLM confirmed: no transmission bar at top, no REC at bottom.
+- FIX 3 — wallpaper with beautiful cool presets (not the default):
+  - Added 8 NEW "Vivid & beautiful" QR presets to style-presets.ts (new group "vivid"): Aurora (blue→green dots gradient), Sunset Strip (purple→amber), Mint Chip (deep-green→mint, centered initials), Magma (radial dark-red→orange, square), Lagoon (classy-rounded navy→cyan, centered initials), Bubblegum (pink dots gradient), Matrix (black bg, green-on-black, initials — the one dark-plate vivid), Royal Jade (jade→teal classy + gold eyes). Total presets now 36 (was 28). Updated StylePreset.group type to include "vivid". Added a "Vivid & beautiful" PresetGroup row in studio.tsx. Updated showcase copy "28 presets" → "36 presets".
+  - REBUILT wallpaper.tsx (was still the old soft rounded-3xl design):
+    - Brutalist styling: brut cards, thick ink borders, hard offset shadows, lime accents.
+    - NEW: QR DESIGN picker — a 4-col grid of 12 curated beautiful presets (Aurora, Lagoon, Sunset Strip, Mint Chip, Magma, Bubblegum, Royal Jade, Neon Pulse, Dusk Rose, Tidepool, Afterglow, Ember). Each thumbnail renders a live mini-QR in that preset's colors. Selected preset shows a lime ring + lime checkmark badge. DEFAULTS TO AURORA (not the boring default Ink) so the wallpaper never feels default.
+    - The phone preview + the downloaded PNG both use the SELECTED preset's style (wallpaperStyle), so what you see is what you get.
+    - Expanded backdrops 4 → 8: Void, Midnight, Plum, Forest, Espresso, Clay, Cobalt, Ink — each curated to pair with the vivid presets.
+    - Download button: lime bg, black text, hard black offset shadow (brutalist).
+    - Section headers use the ink-on-lime strip pattern (QR DESIGN, BACKDROP) with field-label readouts ("12 BEAUTIFUL LOOKS", "8 TONES", "ACTIVE: AURORA · TAP TO CHANGE").
+  - Verification: VLM confirmed phone-preview QR shows Aurora vivid gradient (teal/cyan/blue, NOT default black); brutalist styling; "QR DESIGN 12 BEAUTIFUL LOOKS" grid with Aurora/Lagoon/Sunset Strip/Mint Chip/Magma/Bubblegum/Royal Jade/Neon Pulse visible; Aurora selected with lime checkmark; BACKDROP section with 8 swatches (Void/Midnight/Plum/Forest/Espresso/Clay/Cobalt/Ink); DOWNLOAD WALLPAPER button lime+black+hard-shadow.
+
+Stage Summary:
+- Black-on-lime now applies to INPUTS too (was the missed spot) — typed text is black on lime in both themes.
+- Signal/transmission/REC/corner-readout overlays REMOVED from app-shell; brutalist design (nav, bg, surfaces) retained. Clean and calm again.
+- 8 new vivid presets added (Aurora, Sunset Strip, Mint Chip, Magma, Lagoon, Bubblegum, Matrix, Royal Jade) — total 36. New "Vivid & beautiful" group in Studio.
+- Wallpaper screen REBUILT brutalist with a 12-preset beautiful-QR picker (defaults to Aurora, not the boring default), 8 backdrops, live preview, and a lime+black download button. No more boring-ass wallpaper.
+- Lint clean. Browser + VLM verified all three fixes.

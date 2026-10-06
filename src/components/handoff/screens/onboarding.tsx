@@ -336,7 +336,7 @@ function Field({
 }
 
 const inputCls =
-  "no-tap w-full border-2 border-ink bg-card px-4 py-3.5 text-[16px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:bg-signal focus:placeholder:text-ink/40";
+  "no-tap w-full border-2 border-ink bg-card px-4 py-3.5 text-[16px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:bg-signal focus:text-black focus:placeholder:text-black/40";
 
 function IdentityStep({
   firstName,

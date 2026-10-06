@@ -61,33 +61,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"], .blink, .ticker-track { animation: none !important; } }
       `}</style>
 
-      {/* ===== Transmission status bar (top) =====
-          Mono readout: SIGNAL · live clock · ticker · REC dot. */}
-      {!hideBar && <TransmissionBar />}
-
       {/* Scrollable content area — the ONLY thing that scrolls.
           no-scrollbar hides the 10px ink scrollbar so it doesn't eat into
           the right padding and shift centered (mx-auto) content off-center. */}
       <main
         className={cn(
           "no-scrollbar relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
-          hideBar ? "pb-0" : "pb-32 pt-7"
+          hideBar ? "pb-0" : "pb-32 pt-6"
         )}
       >
         {children}
       </main>
-
-      {/* corner readouts — fixed, mono */}
-      {!hideBar && (
-        <>
-          <span className="pointer-events-none fixed bottom-2 left-3 z-40 field-label opacity-50">
-            {"//CH.01"}
-          </span>
-          <span className="pointer-events-none fixed bottom-2 right-3 z-40 field-label opacity-50">
-            v{BRAND.version}
-          </span>
-        </>
-      )}
 
       {/* ===== Brutalist bottom nav ===== */}
       {!hideBar && (
@@ -109,53 +93,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 />
               );
             })}
-            {/* REC indicator block */}
-            <div className="flex items-center gap-1.5 border-l-[2.5px] border-ink bg-ink px-3">
-              <span className="h-2 w-2 rounded-full bg-clay blink" />
-              <span className="field-label text-bone/80">REC</span>
-            </div>
           </div>
         </nav>
       )}
-    </div>
-  );
-}
-
-/** Top transmission status bar — mono readout with live clock + scrolling ticker. */
-function TransmissionBar() {
-  const [now, setNow] = React.useState<string>("");
-  React.useEffect(() => {
-    const tick = () => {
-      const d = new Date();
-      const p = (n: number) => String(n).padStart(2, "0");
-      setNow(`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`);
-    };
-    tick();
-    const i = setInterval(tick, 1000);
-    return () => clearInterval(i);
-  }, []);
-
-  return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-40 flex h-6 items-center gap-2 border-b border-ink/80 bg-ink px-3 text-bone">
-      <span className="field-label flex items-center gap-1.5 text-bone/90">
-        <span className="h-1.5 w-1.5 rounded-full bg-signal" />
-        SIGNAL·OK
-      </span>
-      <span className="field-label text-bone/50">|</span>
-      {/* scrolling ticker — duplicated content for seamless loop */}
-      <div className="relative flex-1 overflow-hidden">
-        <div className="ticker-track field-label text-bone/70">
-          <span className="mx-4">DEAD DROP // DEVICE-ONLY TRANSMISSION</span>
-          <span className="mx-4">NO NETWORK · NO SERVER · NO TRACKING</span>
-          <span className="mx-4">PAYLOAD ENCRYPTED ON-DEVICE</span>
-          <span className="mx-4">RADIO SILENCE ENGAGED</span>
-          <span className="mx-4">DEAD DROP // DEVICE-ONLY TRANSMISSION</span>
-          <span className="mx-4">NO NETWORK · NO SERVER · NO TRACKING</span>
-          <span className="mx-4">PAYLOAD ENCRYPTED ON-DEVICE</span>
-          <span className="mx-4">RADIO SILENCE ENGAGED</span>
-        </div>
-      </div>
-      <span className="field-label tabular-nums text-bone/90">{now}</span>
     </div>
   );
 }
