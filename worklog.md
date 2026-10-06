@@ -743,3 +743,27 @@ Stage Summary:
 - Preset library expanded 17 → 28 across all 4 groups; scan-safety preserved (good contrast + ECC M minimum).
 - Showcase copy updated to reflect new count.
 - Browser-verified: renders cleanly, rounded plate confirmed visually, all 11 new presets selectable.
+
+---
+Task ID: BG-COLOR-CYCLE
+Agent: main
+Task: Background gradient orbs should change color over time, not just move.
+
+Work Log:
+- Diagnosed: app-shell.tsx had 5 drifting orbs but each had a FIXED color (vermilion/navy/brass/green/vermilion). Only `transform` animated; the radial-gradient `background` never changed.
+- Also found fullscreen-qr.tsx had 3 orbs that were COMPLETELY static (no drift, no color).
+- TECHNIQUE: `filter: hue-rotate()` cycles an element's hue 0→360°. But `blur()` is also a `filter` — putting both on the same element makes the animation's filter override the static blur. Solution: NEST each orb — outer WRAPPER runs the hue-rotate animation (filter), inner div runs the drift animation (transform) + keeps the blur (filter). Two filters on two different elements = no conflict.
+- app-shell.tsx: restructured all 5 orbs into wrapper(inner) pairs. Added 5 hue keyframes (hue1–hue5, each 0→360deg). Gave each orb a DIFFERENT hue-cycle duration (44/48/55/62/70s) so they desync, plus a NEGATIVE animation-delay (-6/-12/-22/-31/-40s) so colours diverge from t=0 instead of starting in lockstep.
+- fullscreen-qr.tsx: restructured its 3 orbs the same way, AND added drift animations (driftA/B/C) since they were previously fully static. Now the fullscreen QR view also has a living, colour-shifting mesh.
+- Updated `prefers-reduced-motion` media query to also kill the `hue*` animations (not just `drift*`).
+- Verification:
+  - `bun run lint`: 0 errors
+  - agent-browser eval confirmed all 5 orbs have `animationName: hue1..hue5`, correct durations + negative delays applied.
+  - agent-browser eval on orb1: computed `filter: hue-rotate(108.122deg)` — PROVES the filter is live-animating (not just declared), since a static element would read 0deg. The inner bg still reads the original vermilion rgb(185,61,23) — the wrapper filter is what shifts the perceived color.
+  - VLM screenshot analysis of the home bg confirmed multiple DISTINCT orb colours now visible — "teal/mint", "pink/rose", "beige/peach" — i.e. the original vermilion/navy/brass/green have rotated into complementary hues, and the orbs are different colours from each other (not in lockstep).
+
+Stage Summary:
+- Background mesh now does BOTH: drift (position/scale) + slow colour cycling (full 360° hue rotation per orb, 44–70s cycles, desynced).
+- Fullscreen QR ambient mesh upgraded from fully-static → drifting + colour-cycling.
+- Reduced-motion users get a static background (no drift, no hue shift).
+- Browser + VLM verified: orbs render with varied, shifting colours; filter confirmed live at ~108° mid-cycle.

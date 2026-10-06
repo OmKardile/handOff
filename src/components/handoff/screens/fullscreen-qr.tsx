@@ -65,12 +65,28 @@ export function FullscreenQr() {
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col overflow-hidden paper-grain pt-safe">
-      {/* Vibrant mesh gradient */}
+      {/* Vibrant mesh gradient — orbs drift AND cycle colour (hue-rotate)
+          via nested wrappers so the blur filter never clashes with the hue filter. */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] rounded-full opacity-[0.35] blur-[50px]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
-        <div className="absolute top-[30%] -left-[10%] h-[45vh] w-[45vh] rounded-full opacity-[0.25] blur-[55px]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
-        <div className="absolute bottom-[-5%] right-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.2] blur-[60px]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
+        <div className="absolute -top-[10%] -right-[5%] h-[50vh] w-[50vh] animate-[hueA_50s_linear_infinite]" style={{ animationDelay: "-8s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.35] blur-[50px] animate-[driftA_24s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        </div>
+        <div className="absolute top-[30%] -left-[10%] h-[45vh] w-[45vh] animate-[hueB_64s_linear_infinite]" style={{ animationDelay: "-28s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.25] blur-[55px] animate-[driftB_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
+        </div>
+        <div className="absolute bottom-[-5%] right-[10%] h-[40vh] w-[40vh] animate-[hueC_72s_linear_infinite]" style={{ animationDelay: "-45s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.2] blur-[60px] animate-[driftC_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
+        </div>
       </div>
+      <style>{`
+        @keyframes driftA { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,30px) scale(1.12)} }
+        @keyframes driftB { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-50px,20px) scale(1.1)} }
+        @keyframes driftC { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-40px) scale(0.92)} }
+        @keyframes hueA { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hueB { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hueC { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"] { animation: none !important; } }
+      `}</style>
       <div className="glass flex items-center justify-between border-b border-border px-4 py-3">
         <span className="text-[12px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
           Tap to scan

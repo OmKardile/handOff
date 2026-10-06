@@ -24,11 +24,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           Both layers together: the orbs give glass something to refract,
           the edge ticks give the nautical chart identity. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] rounded-full opacity-[0.4] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
-        <div className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] rounded-full opacity-[0.3] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
-        <div className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] rounded-full opacity-[0.22] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
-        <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] rounded-full opacity-[0.15] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2E6B45, transparent 60%)" }} />
-        <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] rounded-full opacity-[0.18] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        {/* Each orb is a hue-rotate WRAPPER (filter) around a blur+drift INNER (filter+transform).
+            Putting hue on the wrapper and blur on the inner avoids filter-property conflicts,
+            so colour now cycles slowly while the orbs keep drifting. Durations + negative
+            delays desync the colour cycles so the whole field shifts organically, not in lockstep. */}
+        <div className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] animate-[hue1_48s_linear_infinite]" style={{ animationDelay: "-6s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.4] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        </div>
+        <div className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] animate-[hue2_62s_linear_infinite]" style={{ animationDelay: "-22s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.3] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
+        </div>
+        <div className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] animate-[hue3_70s_linear_infinite]" style={{ animationDelay: "-40s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.22] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
+        </div>
+        <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] animate-[hue4_55s_linear_infinite]" style={{ animationDelay: "-12s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.15] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2E6B45, transparent 60%)" }} />
+        </div>
+        <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] animate-[hue5_44s_linear_infinite]" style={{ animationDelay: "-31s" }}>
+          <div className="h-full w-full rounded-full opacity-[0.18] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        </div>
       </div>
       <style>{`
         @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-30px,40px) scale(1.1) rotate(60deg)} 66%{transform:translate(20px,-20px) scale(0.92) rotate(120deg)} }
@@ -36,7 +50,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 40%{transform:translate(-40px,-50px) scale(1.08)} 70%{transform:translate(30px,20px) scale(0.88)} }
         @keyframes drift4 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 50%{transform:translate(40px,30px) scale(1.12) rotate(180deg)} }
         @keyframes drift5 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(1.1)} }
-        @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"] { animation: none !important; } }
+        /* Slow colour cycle — full 360° hue rotation so each orb drifts through
+           complementary hues over ~45-70s. Long duration keeps it a living wash,
+           not a strobe. Different durations + negative delays desync the orbs. */
+        @keyframes hue1 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hue2 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hue3 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hue4 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hue5 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"] { animation: none !important; } }
       `}</style>
 
       {/* Scrollable content area — the ONLY thing that scrolls. */}
