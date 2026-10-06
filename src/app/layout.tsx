@@ -1,11 +1,37 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Instrument_Sans, JetBrains_Mono } from "next/font/google";
+import { Anton, Archivo_Black, Fraunces, Instrument_Sans, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "@fontsource/caveat/400.css";
 import "@fontsource/caveat/500.css";
 import "@fontsource/caveat/700.css";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+
+/* DEAD DROP design system fonts.
+   - Anton: heavy condensed display — the "wtf" headlines
+   - Archivo Black: alt heavy for stamps/labels
+   - Space Grotesk: modern grotesk body sans
+   - Fraunces / Instrument Sans / JetBrains Mono: retained so existing QR caption
+     presets (which reference these families by name in canvas rendering) still work. */
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
+
+const archivoBlack = Archivo_Black({
+  variable: "--font-archivo-black",
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -61,8 +87,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f3ee" },
-    { media: "(prefers-color-scheme: dark)", color: "#141417" },
+    { media: "(prefers-color-scheme: light)", color: "#f2efe6" },
+    { media: "(prefers-color-scheme: dark)", color: "#08080a" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -88,7 +114,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body
-        className={`${fraunces.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} font-sans antialiased select-none`}
+        className={`${anton.variable} ${archivoBlack.variable} ${spaceGrotesk.variable} ${fraunces.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} font-sans antialiased select-none`}
       >
         <ThemeProvider
           attribute="class"

@@ -767,3 +767,37 @@ Stage Summary:
 - Fullscreen QR ambient mesh upgraded from fully-static → drifting + colour-cycling.
 - Reduced-motion users get a static background (no drift, no hue shift).
 - Browser + VLM verified: orbs render with varied, shifting colours; filter confirmed live at ~108° mid-cycle.
+
+---
+Task ID: DEAD-DROP-REDESIGN
+Agent: main
+Task: "NEED SOME CRAZY UI UX DIRECTION whole redesign" — a wild, wtf-inducing redesign.
+
+Work Log:
+- Concept: "DEAD DROP / SIGNAL//NOISE" — a post-digital brutalist "intercepted transmission" aesthetic. The app becomes a field-operative's dead-drop device: card = payload packet, privacy = radio silence, sharing = transmission. Visual language = zine-collage meets terminal.
+- Palette: bone canvas #F2EFE6, ink #0A0A0A, ACID LIME signal #C6FF00, vermilion alert #FF3B1F (kept for QR eyes + alerts), cobalt data #1B2BE0. Dark mode: void #08080A, bone text, lime stays loud.
+- Typography: added Anton (heavy condensed display — the "wtf" headlines), Archivo Black (stamps/labels), Space Grotesk (body sans). Kept Fraunces/Instrument Sans/JetBrains Mono so existing QR caption presets still render. Repointed --font-display → Anton, --font-sans → Space Grotesk.
+- globals.css: full rewrite of design tokens. --border became INK black (every 1px border is now a brutalist hairline). Radii crushed to 2px max. Added brutalist utilities: .brut / .brut-lg / .brut-sm (thick ink borders + hard offset shadows, no blur), .brut-signal (lime tile), .brut-ink (ink tile). Added .field-grid (full graph-paper grid), .scanlines (CRT overlay), .field-grain (harsher noise), .tape (translucent label tape), .stamp (inset double border). Added keyframes: ticker (marquee), blink (REC dot), glitch-shift/glitch-1/glitch-2 (RGB-split). Glass utilities re-skinned to solid cards for compat. .press:active translates into the hard shadow (stamped-button feel).
+- app-shell.tsx: rebuilt. Background = bone wash + full field-grid + 3 drifting hue-cycling interference blocks (lime/cobalt/vermilion) + scanlines + giant rotated "DEAD"/"DROP" watermark text. New top TransmissionBar: black strip with SIGNAL·OK + scrolling ticker ("DEAD DROP // DEVICE-ONLY TRANSMISSION...", "NO NETWORK · NO SERVER · NO TRACKING", "PAYLOAD ENCRYPTED ON-DEVICE", "RADIO SILENCE ENGAGED") + live clock. New bottom nav: brutalist full-width bar, thick ink borders, hard offset shadow, active tab = acid-lime filled block, plus a REC indicator block with blinking vermilion dot. Corner readouts //CH.01 + version.
+- onboarding.tsx: welcome = "//INTERCEPTED" tape stamp + CH.01·DEVICE-ONLY + giant Anton "HAND OFF" headline + ink tagline block + privacy spec strip (NET/SERVER/TRACK/DEVICE = NONE/NONE/NONE/ONLY) + lime "▸ INITIATE DEAD DROP" block button. Form steps = //PACKET 01·IDENTITY / 02·COMMS / 03·FACE headers, heavy Anton titles, brutalist inputs (2px ink border, focus → lime fill), packet progress as 7 ink-bordered segments. Done = "PAYLOAD READY" + //TRANSMISSION ARMED.
+- home.tsx: hero card = PAYLOAD PACKET — black "TRANSMISSION READY" header strip (lime blink dot) + //PAYLOAD tag, name in huge Anton uppercase, QR, then a 12-segment SIGNAL meter (lime bars, clay if red/overflow) with byte count. Actions = SHOW / TRANSMIT (lime highlight) / STYLE brutalist blocks. Secondary = EDIT/WALLET/WALLPAPER. Payload breakdown panel + contact rows all re-skinned. Top chip = ink "OFFLINE" with lime blink dot.
+- BUG FIXED: removed `.glitch` pseudo-elements from the onboarding headline — `data-text="HAND\nOFF"` rendered the literal `\n` and polluted the accessible name ("HAND\NOFF HAND OFF HAND\NOFF"). Now plain heavy Anton, clean a11y name "HAND OFF".
+- BUG FIXED (critical): after first rewrite, browser served STALE compiled CSS (old --ink:#16161a, --signal empty → bg-signal was transparent, no lime anywhere). Root cause = Next.js dev CSS chunk cache not invalidated by file rewrite. Fix = killed next-server, cleared .next/static/chunks css + .next/cache, restarted dev server. After restart, computed vars confirmed: --ink:#0a0a0a, --signal:#c6ff00, --bg:#f2efe6. Lime now renders everywhere.
+- Removed invalid `.paper-grain { composes: none; }` (CSS Modules syntax, not valid in plain CSS).
+- Verification (all after CSS cache fix):
+  - `bun run lint`: 0 errors
+  - agent-browser: full onboarding flow (welcome → identity → contact → photo → arm payload → home). Accessible names clean.
+  - VLM onboarding: confirmed brutalist/post-digital/zine style, bone+ink palette, huge heavy condensed "HAND OFF" headline, //INTERCEPTED tape, NET/SERVER/TRACK/DEVICE spec table, DEAD DROP background watermark, brutalist block button with hard offset shadow, acid-lime CTA fill.
+  - VLM home: confirmed black TRANSMISSION READY header strip with lime dot, huge heavy ADA LOVELACE, black status bar with scrolling mono ticker + live clock, SHOW/TRANSMIT(lime)/STYLE action grid, EDIT/WALLET/WALLPAPER with hard borders + offset shadows, PAYLOAD BREAKDOWN panel, contact rows.
+  - QR renders correctly (dark modules + vermilion eyes from default Ink preset) — no rendering regression.
+  - Studio screen inherits brutalist styling via repointed tokens; all 28 presets present.
+  - Dark mode verified: near-black bg, lime accents, white text, red alerts — holds in both themes.
+
+Stage Summary:
+- COMPLETE visual + interaction redesign to "DEAD DROP / SIGNAL//NOISE" brutalist aesthetic.
+- Foundation: new tokens (bone/ink/lime/vermilion/cobalt), new fonts (Anton/Archivo Black/Space Grotesk), new utilities (.brut*, .field-grid, .scanlines, .tape, .stamp, .blink, .ticker, .press), new keyframes (ticker/blink/glitch).
+- Shell: field-grid + scanline + interference background, top transmission status bar (ticker + live clock + REC), brutalist bottom nav with lime active + REC block, corner readouts.
+- Onboarding: intercepted-transmission intro, packet-step forms, lime arm-payload CTA.
+- Home: payload-packet hero (TRANSMISSION READY strip + SIGNAL meter), brutalist action grid, payload-breakdown panel.
+- Other screens (studio/settings/editor/share/etc.) inherit the new palette automatically via repointed semantic tokens (--border=ink, --card=white, --accent=lime) — they look consistent without per-screen rewrites.
+- Works in light + dark mode. QR rendering preserved. Lint clean. Browser + VLM verified.

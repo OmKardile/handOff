@@ -72,53 +72,81 @@ export function Onboarding() {
 
   if (step === "done") {
     return (
-      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-4 px-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-clay/10">
-          <Check className="h-8 w-8 text-clay" />
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-5 px-6">
+        <div className="brut-signal flex h-16 w-16 items-center justify-center">
+          <Check className="h-8 w-8" strokeWidth={3} />
         </div>
-        <p className="font-display text-2xl tracking-tight">Your card is ready</p>
-        <p className="text-sm text-muted-foreground">Nothing leaves your phone.</p>
+        <p className="font-display text-3xl uppercase tracking-tight">Payload ready</p>
+        <p className="field-label">{"//TRANSMISSION ARMED · DEVICE-ONLY"}</p>
       </div>
     );
   }
 
   if (step === "welcome") {
     return (
-      <div className="flex min-h-[100dvh] flex-col items-center px-6 pt-[max(env(safe-area-inset-top,0px),60px)] pb-10">
-        {/* ARCHIPELAGO arrival: logo + headline + sub */}
+      <div className="relative flex min-h-[100dvh] flex-col px-5 pt-[max(env(safe-area-inset-top,0px),48px)] pb-8">
+        {/* TRANSMISSION INTERCEPTED intro */}
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col items-center gap-3"
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-6 flex flex-col gap-4"
         >
-          <HandOffMark className="h-16 w-16" />
-          <h1 className="font-display text-[2.2rem] font-semibold tracking-tight">
-            HandOff
+          {/* intercepted stamp */}
+          <div className="flex items-center gap-2">
+            <span className="tape field-label rotate-[-2deg] px-2 py-1 text-ink">{"//INTERCEPTED"}</span>
+            <span className="field-label opacity-60">CH.01 · DEVICE-ONLY</span>
+          </div>
+
+          {/* giant wordmark */}
+          <h1 className="font-display text-[19vw] leading-[0.82] tracking-[-0.02em] text-foreground sm:text-[7rem]">
+            HAND<br />OFF
           </h1>
-          <p className="text-[14px] text-muted-foreground">
-            Hand your card off. Nothing leaves your phone.
-          </p>
+
+          {/* heavy tagline */}
+          <div className="brut-ink max-w-[20rem] px-3 py-2">
+            <p className="font-heavy text-[13px] uppercase leading-tight tracking-wide text-bone">
+              Your card. Your signal.<br />Nothing leaves the device.
+            </p>
+          </div>
         </motion.div>
 
         <div className="flex-1" />
 
-        {/* CTA — vermilion beacon button */}
+        {/* privacy spec strip */}
         <motion.div
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          className="mb-4 flex items-center gap-4 border-y-2 border-ink py-2"
+        >
+          {[
+            { k: "NET", v: "NONE" },
+            { k: "SERVER", v: "NONE" },
+            { k: "TRACK", v: "NONE" },
+            { k: "DEVICE", v: "ONLY" },
+          ].map((s) => (
+            <div key={s.k} className="flex flex-col">
+              <span className="field-label opacity-60">{s.k}</span>
+              <span className="font-heavy text-[12px] text-foreground">{s.v}</span>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* CTA — brutalist block button */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full"
         >
           <button
             onClick={() => setStep("identity")}
-            className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white transition-transform active:scale-[0.98]"
+            className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_0_var(--ink)]"
           >
-            Create your card
-            <ChevronRight className="h-4 w-4" />
+            ▸ Initiate dead drop
           </button>
-          <p className="mt-3 text-center text-[11px] text-muted-foreground">
-            Takes 30 seconds. Everything stays on this device.
+          <p className="mt-3 text-center field-label">
+            {"//EST. 30s · PAYLOAD STAYS ON THIS DEVICE"}
           </p>
         </motion.div>
       </div>
@@ -137,40 +165,41 @@ export function Onboarding() {
   };
 
   return (
-    <div className="flex h-[100dvh] flex-col px-6 pt-safe">
-      {/* progress — 7 graticule ticks along the top */}
+    <div className="flex h-[100dvh] flex-col px-5 pt-safe">
+      {/* progress — PACKET 01/03 readout */}
       <div className="flex items-center gap-3 py-5 pb-3">
         <button
           onClick={() => setStep(stepIndex === 0 ? "welcome" : steps[stepIndex - 1])}
-          className="no-tap -ml-1 text-sm text-muted-foreground"
+          className="press no-tap -ml-1 border-2 border-ink bg-card px-2 py-1 font-heavy text-[11px] uppercase text-ink shadow-[2px_2px_0_0_var(--ink)]"
         >
-          Back
+          ◂ Back
         </button>
         <div className="flex flex-1 gap-1">
           {Array.from({ length: 7 }).map((_, i) => (
             <div
               key={i}
               className={cn(
-                "h-1 flex-1 rounded-full transition-colors",
-                i <= stepIndex ? "bg-clay" : "bg-muted"
+                "h-2.5 flex-1 border-2 border-ink transition-colors",
+                i <= stepIndex ? "bg-signal" : "bg-card"
               )}
             />
           ))}
         </div>
-        <span className="text-xs tabular-nums text-muted-foreground">{stepIndex + 1}/{steps.length}</span>
+        <span className="field-label tabular-nums">{stepIndex + 1}/{steps.length}</span>
       </div>
 
-      {/* Scrollable form area — content scrolls, buttons stay fixed */}
+      {/* Scrollable form area */}
       <div className="flex-1 overflow-y-auto overscroll-y-contain">
-        {/* live QR preview */}
+        {/* live QR preview — payload packet */}
         <div className="mb-6 flex justify-center pt-2">
           <motion.div
             key={`qr-${step}`}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-3xl border border-border bg-card p-3 shadow-sm"
+            className="brut-lg relative p-3"
           >
+            <span className="absolute -top-2 left-3 bg-card px-1.5 field-label">{"//PAYLOAD"}</span>
             <QrPreview
               card={previewCard}
               style={style}
@@ -215,36 +244,35 @@ export function Onboarding() {
           )}
         </motion.div>
 
-        {/* Scroll hint — fades in when content is scrollable */}
         <ScrollHint />
       </div>
 
-      {/* Sticky bottom bar — always visible, never scrolls away */}
-      <div className="border-t border-border bg-background/95 px-6 pb-[max(env(safe-area-inset-bottom),16px)] pt-3 backdrop-blur-sm">
+      {/* Sticky bottom bar */}
+      <div className="border-t-2 border-ink bg-bone px-5 pb-[max(env(safe-area-inset-bottom),16px)] pt-3">
         {step === "photo" ? (
           <motion.button
             onClick={finish}
-            whileTap={{ scale: 0.96, transition: { duration: 0.1 } }}
-            className="no-tap flex w-full items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white"
+            whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+            className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)]"
           >
-            <Check className="h-4 w-4" />
-            Finish
+            <Check className="h-4 w-4" strokeWidth={3} />
+            Arm payload
           </motion.button>
         ) : (
           <div className="flex gap-3">
             <motion.button
               onClick={() => setStep(steps[stepIndex + 1])}
               disabled={step === "identity" && !firstName.trim()}
-              whileTap={{ scale: 0.96, transition: { duration: 0.1 } }}
-              className="no-tap flex flex-1 items-center justify-center gap-2 rounded-full bg-clay py-4 text-[15px] font-medium text-white disabled:opacity-40"
+              whileTap={{ scale: 0.97, transition: { duration: 0.1 } }}
+              className="press no-tap flex flex-1 items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)] disabled:opacity-40"
             >
               Continue
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" strokeWidth={2.5} />
             </motion.button>
             {step !== "identity" && (
               <button
                 onClick={() => setStep(steps[stepIndex + 1])}
-                className="no-tap rounded-full border border-border px-5 py-4 text-[15px] text-muted-foreground"
+                className="press no-tap border-[2.5px] border-ink bg-card px-5 py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)]"
               >
                 Skip
               </button>
@@ -300,17 +328,15 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-[13px] font-medium text-foreground">
-        {label}
-      </span>
+      <span className="mb-1.5 block field-label">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-[11px] text-muted-foreground">{hint}</span>}
+      {hint && <span className="mt-1 block field-label opacity-70">{"//"}{hint}</span>}
     </label>
   );
 }
 
 const inputCls =
-  "no-tap w-full rounded-xl border border-input bg-background px-4 py-3.5 text-[16px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-clay focus:ring-2 focus:ring-clay/20";
+  "no-tap w-full border-2 border-ink bg-card px-4 py-3.5 text-[16px] text-foreground outline-none transition-colors placeholder:text-muted-foreground/50 focus:bg-signal focus:placeholder:text-ink/40";
 
 function IdentityStep({
   firstName,
@@ -334,10 +360,8 @@ function IdentityStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">Your identity</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          This is what people see first.
-        </p>
+        <p className="field-label opacity-70">{"//PACKET 01 · IDENTITY"}</p>
+        <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Who are you</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <Field label="First name">
@@ -400,10 +424,8 @@ function ContactStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">How to reach you</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          All optional — add what you want to share.
-        </p>
+        <p className="field-label opacity-70">{"//PACKET 02 · COMMS"}</p>
+        <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Reach you how</h2>
       </div>
       <Field label="Phone">
         <input
@@ -450,31 +472,32 @@ function PhotoStep({
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="font-display text-2xl font-medium tracking-tight">Add a photo</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Optional. We crop it square and strip all location data.
+        <p className="field-label opacity-70">{"//PACKET 03 · FACE"}</p>
+        <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Add a face</h2>
+        <p className="mt-1 text-[13px] text-muted-foreground">
+          Optional. Cropped square. All location data stripped on-device.
         </p>
       </div>
       <button
         onClick={() => inputRef.current?.click()}
-        className="no-tap flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-border bg-card transition-colors hover:border-clay/50"
+        className="press no-tap flex aspect-square w-full flex-col items-center justify-center gap-3 border-[2.5px] border-ink border-dashed bg-card shadow-[4px_4px_0_0_var(--ink)] transition-colors hover:bg-signal/30"
       >
         {photo ? (
           <>
             <img
               src={photo.full}
               alt="Your photo"
-              className="h-28 w-28 rounded-full object-cover"
+              className="h-28 w-28 border-2 border-ink object-cover"
             />
-            <span className="text-sm font-medium">Change photo</span>
+            <span className="font-heavy text-[13px] uppercase">Change face</span>
           </>
         ) : (
           <>
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-              <Camera className="h-6 w-6 text-muted-foreground" />
+            <div className="flex h-14 w-14 items-center justify-center border-2 border-ink bg-signal/40">
+              <Camera className="h-6 w-6" strokeWidth={2} />
             </div>
-            <span className="text-sm font-medium">Choose a photo</span>
-            <span className="text-xs text-muted-foreground">JPEG or PNG, up to 12 MB</span>
+            <span className="font-heavy text-[13px] uppercase">Choose a photo</span>
+            <span className="field-label">JPEG / PNG · MAX 12MB</span>
           </>
         )}
       </button>

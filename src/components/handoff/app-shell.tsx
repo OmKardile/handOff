@@ -9,9 +9,9 @@ import { BRAND } from "@/shared/brand";
 import { HELP_GUIDES, setSelectedGuide } from "@/lib/help-content";
 
 const TABS = [
-  { id: "card", label: "Card", icon: CreditCard, view: "home" as const },
-  { id: "studio", label: "Studio", icon: Palette, view: "studio" as const },
-  { id: "settings", label: "Settings", icon: SettingsIcon, view: "settings" as const },
+  { id: "card", label: "CARD", icon: CreditCard, view: "home" as const },
+  { id: "studio", label: "STUDIO", icon: Palette, view: "studio" as const },
+  { id: "settings", label: "CONFIG", icon: SettingsIcon, view: "settings" as const },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -19,65 +19,81 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const hideBar = view === "onboarding" || view === "fullscreen-qr";
 
   return (
-    <div className="relative flex h-[100dvh] flex-col overflow-hidden paper-grain">
-      {/* Vibrant mesh-gradient background + chart graticule edge ticks.
-          Both layers together: the orbs give glass something to refract,
-          the edge ticks give the nautical chart identity. */}
+    <div className="relative flex h-[100dvh] flex-col overflow-hidden field-grain">
+      {/* ===== DEAD DROP background field =====
+          Layer 1: full graph-paper grid (field-grid)
+          Layer 2: drifting "interference" color blocks (lime + cobalt) that hue-cycle
+          Layer 3: scanlines (CRT)
+          Layer 4: giant rotated watermark word
+          All pointer-events-none, all behind content. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
-        {/* Each orb is a hue-rotate WRAPPER (filter) around a blur+drift INNER (filter+transform).
-            Putting hue on the wrapper and blur on the inner avoids filter-property conflicts,
-            so colour now cycles slowly while the orbs keep drifting. Durations + negative
-            delays desync the colour cycles so the whole field shifts organically, not in lockstep. */}
-        <div className="absolute -top-[10%] -right-[5%] h-[55vh] w-[55vh] animate-[hue1_48s_linear_infinite]" style={{ animationDelay: "-6s" }}>
-          <div className="h-full w-full rounded-full opacity-[0.4] blur-[50px] animate-[drift1_20s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        {/* base canvas wash */}
+        <div className="absolute inset-0 bg-background" />
+        {/* field grid */}
+        <div className="absolute inset-0 field-grid opacity-70" />
+        {/* interference blocks — drift + hue cycle (nested wrappers) */}
+        <div className="absolute -top-[15%] -right-[10%] h-[60vh] w-[60vh] animate-[hueA_50s_linear_infinite]" style={{ animationDelay: "-10s" }}>
+          <div className="h-full w-full opacity-[0.18] blur-[70px] animate-[driftA_24s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #C6FF00, transparent 60%)" }} />
         </div>
-        <div className="absolute top-[25%] -left-[12%] h-[50vh] w-[50vh] animate-[hue2_62s_linear_infinite]" style={{ animationDelay: "-22s" }}>
-          <div className="h-full w-full rounded-full opacity-[0.3] blur-[55px] animate-[drift2_25s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #0E1B33, transparent 60%)" }} />
+        <div className="absolute top-[40%] -left-[15%] h-[55vh] w-[55vh] animate-[hueB_64s_linear_infinite]" style={{ animationDelay: "-30s" }}>
+          <div className="h-full w-full opacity-[0.14] blur-[75px] animate-[driftB_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #1B2BE0, transparent 60%)" }} />
         </div>
-        <div className="absolute bottom-[-8%] right-[5%] h-[45vh] w-[45vh] animate-[hue3_70s_linear_infinite]" style={{ animationDelay: "-40s" }}>
-          <div className="h-full w-full rounded-full opacity-[0.22] blur-[65px] animate-[drift3_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #8A6A1F, transparent 60%)" }} />
+        <div className="absolute bottom-[-12%] right-[10%] h-[45vh] w-[45vh] animate-[hueC_72s_linear_infinite]" style={{ animationDelay: "-50s" }}>
+          <div className="h-full w-full opacity-[0.12] blur-[80px] animate-[driftC_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #FF3B1F, transparent 60%)" }} />
         </div>
-        <div className="absolute top-[55%] left-[10%] h-[40vh] w-[40vh] animate-[hue4_55s_linear_infinite]" style={{ animationDelay: "-12s" }}>
-          <div className="h-full w-full rounded-full opacity-[0.15] blur-[60px] animate-[drift4_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #2E6B45, transparent 60%)" }} />
+        {/* scanlines */}
+        <div className="absolute inset-0 scanlines opacity-60" />
+        {/* giant watermark word — rotated, very faint */}
+        <div className="absolute -right-[12%] top-[8%] -rotate-[24deg] select-none font-display text-[42vh] leading-none text-ink/[0.035]">
+          DEAD
         </div>
-        <div className="absolute top-[5%] left-[15%] h-[35vh] w-[35vh] animate-[hue5_44s_linear_infinite]" style={{ animationDelay: "-31s" }}>
-          <div className="h-full w-full rounded-full opacity-[0.18] blur-[55px] animate-[drift5_22s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #B93D17, transparent 60%)" }} />
+        <div className="absolute -left-[10%] bottom-[6%] -rotate-[24deg] select-none font-display text-[42vh] leading-none text-ink/[0.035]">
+          DROP
         </div>
       </div>
       <style>{`
-        @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 33%{transform:translate(-30px,40px) scale(1.1) rotate(60deg)} 66%{transform:translate(20px,-20px) scale(0.92) rotate(120deg)} }
-        @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,-40px) scale(1.15)} }
-        @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 40%{transform:translate(-40px,-50px) scale(1.08)} 70%{transform:translate(30px,20px) scale(0.88)} }
-        @keyframes drift4 { 0%,100%{transform:translate(0,0) scale(1) rotate(0deg)} 50%{transform:translate(40px,30px) scale(1.12) rotate(180deg)} }
-        @keyframes drift5 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,40px) scale(1.1)} }
-        /* Slow colour cycle — full 360° hue rotation so each orb drifts through
-           complementary hues over ~45-70s. Long duration keeps it a living wash,
-           not a strobe. Different durations + negative delays desync the orbs. */
-        @keyframes hue1 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
-        @keyframes hue2 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
-        @keyframes hue3 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
-        @keyframes hue4 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
-        @keyframes hue5 { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
-        @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"] { animation: none !important; } }
+        @keyframes driftA { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(50px,40px) scale(1.14)} }
+        @keyframes driftB { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-60px,30px) scale(1.1)} }
+        @keyframes driftC { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-50px) scale(0.9)} }
+        @keyframes hueA { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hueB { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @keyframes hueC { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+        @media (prefers-reduced-motion: reduce) { [class*="animate-[drift"], [class*="animate-[hue"], .blink, .ticker-track { animation: none !important; } }
       `}</style>
+
+      {/* ===== Transmission status bar (top) =====
+          Mono readout: SIGNAL · live clock · ticker · REC dot. */}
+      {!hideBar && <TransmissionBar />}
 
       {/* Scrollable content area — the ONLY thing that scrolls. */}
       <main
         className={cn(
           "relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
-          hideBar ? "pb-0" : "pb-36"
+          hideBar ? "pb-0" : "pb-32 pt-7"
         )}
       >
         {children}
       </main>
 
+      {/* corner readouts — fixed, mono */}
+      {!hideBar && (
+        <>
+          <span className="pointer-events-none fixed bottom-2 left-3 z-40 field-label opacity-50">
+            {"//CH.01"}
+          </span>
+          <span className="pointer-events-none fixed bottom-2 right-3 z-40 field-label opacity-50">
+            v{BRAND.version}
+          </span>
+        </>
+      )}
+
+      {/* ===== Brutalist bottom nav ===== */}
       {!hideBar && (
         <nav
-          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center pb-[max(env(safe-area-inset-bottom),14px)]"
+          className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-[max(env(safe-area-inset-bottom),10px)]"
           aria-label="Primary"
         >
-          {/* macOS dock–style floating glass capsule */}
-          <div className="glass-pill pointer-events-auto flex items-center gap-1 rounded-full p-1.5">
+          <div className="pointer-events-auto flex w-full max-w-md items-stretch gap-0 border-[2.5px] border-ink bg-card shadow-[5px_5px_0_0_var(--ink)]">
             {TABS.map((t) => {
               const active = tab === t.id;
               const Icon = t.icon;
@@ -91,6 +107,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 />
               );
             })}
+            {/* REC indicator block */}
+            <div className="flex items-center gap-1.5 border-l-[2.5px] border-ink bg-ink px-3">
+              <span className="h-2 w-2 rounded-full bg-clay blink" />
+              <span className="field-label text-bone/80">REC</span>
+            </div>
           </div>
         </nav>
       )}
@@ -98,8 +119,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** A single macOS-dock-style tab item with hover magnification.
-    No tooltip — on mobile they get stuck; the icons are self-explanatory. */
+/** Top transmission status bar — mono readout with live clock + scrolling ticker. */
+function TransmissionBar() {
+  const [now, setNow] = React.useState<string>("");
+  React.useEffect(() => {
+    const tick = () => {
+      const d = new Date();
+      const p = (n: number) => String(n).padStart(2, "0");
+      setNow(`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`);
+    };
+    tick();
+    const i = setInterval(tick, 1000);
+    return () => clearInterval(i);
+  }, []);
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 top-0 z-40 flex h-6 items-center gap-2 border-b border-ink/80 bg-ink px-3 text-bone">
+      <span className="field-label flex items-center gap-1.5 text-bone/90">
+        <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+        SIGNAL·OK
+      </span>
+      <span className="field-label text-bone/50">|</span>
+      {/* scrolling ticker — duplicated content for seamless loop */}
+      <div className="relative flex-1 overflow-hidden">
+        <div className="ticker-track field-label text-bone/70">
+          <span className="mx-4">DEAD DROP // DEVICE-ONLY TRANSMISSION</span>
+          <span className="mx-4">NO NETWORK · NO SERVER · NO TRACKING</span>
+          <span className="mx-4">PAYLOAD ENCRYPTED ON-DEVICE</span>
+          <span className="mx-4">RADIO SILENCE ENGAGED</span>
+          <span className="mx-4">DEAD DROP // DEVICE-ONLY TRANSMISSION</span>
+          <span className="mx-4">NO NETWORK · NO SERVER · NO TRACKING</span>
+          <span className="mx-4">PAYLOAD ENCRYPTED ON-DEVICE</span>
+          <span className="mx-4">RADIO SILENCE ENGAGED</span>
+        </div>
+      </div>
+      <span className="field-label tabular-nums text-bone/90">{now}</span>
+    </div>
+  );
+}
+
+/** A single brutalist nav tab. Active = filled signal-lime block w/ ink icon. */
 function DockItem({
   label,
   active,
@@ -114,46 +173,22 @@ function DockItem({
   return (
     <motion.button
       onClick={onClick}
-      whileHover={{ scale: 1.12 }}
-      whileTap={{ scale: 0.88 }}
-      transition={{ type: "spring", stiffness: 500, damping: 22 }}
+      whileTap={{ scale: 0.94 }}
+      transition={{ type: "spring", stiffness: 600, damping: 25 }}
       className={cn(
-        "no-tap relative flex h-11 w-11 items-center justify-center rounded-full transition-colors",
-        active ? "text-foreground" : "text-muted-foreground"
+        "no-tap press relative flex flex-1 flex-col items-center justify-center gap-1 py-2.5",
+        active ? "bg-signal text-ink" : "bg-card text-ink hover:bg-secondary"
       )}
       aria-current={active ? "page" : undefined}
       aria-label={label}
     >
-      {/* active background highlight — a frosted disc behind the icon */}
-      {active && (
-        <motion.span
-          layoutId="dock-active-bg"
-          className="absolute inset-0 rounded-full bg-foreground/8"
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        />
-      )}
-      <motion.div
-        animate={active ? { y: -2, scale: 1.1 } : { y: 0, scale: 1 }}
-        transition={{ type: "spring", stiffness: 500, damping: 22 }}
-        className="relative z-10"
-      >
-        <Icon className="h-[22px] w-[22px]" strokeWidth={active ? 2.4 : 1.8} />
-      </motion.div>
-      {/* macOS dock running indicator — a small dot beneath the active icon */}
-      {active && (
-        <motion.span
-          layoutId="dock-indicator"
-          className="absolute -bottom-0.5 h-1 w-1 rounded-full bg-clay"
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        />
-      )}
+      <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.6 : 2} />
+      <span className="field-label text-[9px] font-bold">{label}</span>
     </motion.button>
   );
 }
 
-/** A large title header — iOS 27 style. No glass bar, no back button.
- *  Just a large bold title at the top, with action buttons inline to the right.
- *  Back navigation is handled by the floating dock + Android back gesture. */
+/** A large title header — DEAD DROP style: heavy Anton, bracketed, with readout. */
 export function ScreenHeader({
   title,
   onBack,
@@ -172,7 +207,7 @@ export function ScreenHeader({
       style={{ paddingTop: "max(env(safe-area-inset-top, 0px), 44px)" }}
     >
       <div className="flex items-center gap-2">
-        <h1 className="flex-1 font-sans text-[28px] font-bold leading-[1.1] tracking-[-0.025em] text-foreground">
+        <h1 className="flex-1 font-display text-[30px] font-normal uppercase leading-[0.95] tracking-[-0.01em] text-foreground">
           {title}
         </h1>
         {helpGuideId && (
@@ -184,10 +219,10 @@ export function ScreenHeader({
                 navigate("help-guide");
               }
             }}
-            className="no-tap flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:text-foreground active:scale-95"
+            className="no-tap press flex h-9 w-9 items-center justify-center border-2 border-ink bg-card text-ink shadow-[2px_2px_0_0_var(--ink)] transition-colors hover:bg-signal"
             aria-label={`Help with ${title}`}
           >
-            <HelpCircle className="h-[18px] w-[18px]" strokeWidth={1.75} />
+            <HelpCircle className="h-[18px] w-[18px]" strokeWidth={2} />
           </button>
         )}
         {action}
@@ -196,10 +231,10 @@ export function ScreenHeader({
   );
 }
 
-/** The HandOff wordmark. */
+/** The HandOff wordmark — DEAD DROP style. */
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn("font-display font-semibold tracking-tight", className)}>
+    <span className={cn("font-display font-normal uppercase tracking-[-0.01em]", className)}>
       {BRAND.name}
     </span>
   );

@@ -6,10 +6,11 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-display: var(--font-anton), var(--font-archivo-black), Impact, sans-serif;
+  --font-heavy: var(--font-archivo-black), Impact, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -43,83 +44,87 @@
   --color-paper: var(--paper);
   --color-clay: var(--clay);
   --color-clay-soft: var(--clay-soft);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --color-signal: var(--signal);
+  --color-void: var(--void);
+  --color-bone: var(--bone);
+  --color-cobalt: var(--cobalt);
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 4px;
 }
 
-/* ===== HandOff — ARCHIPELAGO Design System =====
-   The app is a calm nautical chart. Each feature is an island in a quiet sea.
-   Visual language: editorial cartography — hairlines, graticule ticks, contour
-   lines, tiny spaced-caps chart labels. Dark mode is the "night chart".
+/* ======================================================================
+   HandOff — "DEAD DROP / SIGNAL//NOISE" design system
+   A post-digital brutalist "intercepted transmission" aesthetic.
+   The app is a field-operative's dead-drop device: your card is a payload
+   packet, privacy is radio silence, sharing is transmission.
 
-   Palette: chart paper #F6F3EE, ink navy #0E1B33, vermilion beacon #B93D17,
-   brass instrument #8A6A1F. QR plates stay light in both themes.
+   Palette: bone canvas #F2EFE6, ink #0A0A0A, acid signal #C6FF00,
+   vermilion alert #FF3B1F, cobalt data #1B2BE0.
+   Type: Anton (heavy condensed display), Space Grotesk (body sans),
+   JetBrains Mono (data/transmission readouts).
 
-   Guardrails: no glassmorphism, no neon, no gradient buttons. AA contrast.
-   Max 3 font families: display serif (Fraunces), sans (Instrument Sans), mono labels. */
+   Guardrails: hard edges (2px radius max), thick ink borders, hard offset
+   shadows, mono metadata overlays, scanline + grain textures. AA contrast.
+   ====================================================================== */
 :root {
-  --radius: 0.75rem;
-
-  /* Core palette — light (day chart) */
-  --paper: #F6F3EE;          /* chart paper (canvas) */
-  --ink: #16161A;           /* text primary (ink) */
-  --clay: #B93D17;           /* beacon accent (vermilion) */
-  --clay-soft: #F6E3DA;     /* accent subtle fill */
-  --navy: #0E1B33;           /* ink navy (strategic dark sections, chart ink) */
-  --brass: #8A6A1F;         /* instrument details (rare) */
+  /* Core palette — light (day transmission) */
+  --bone: #F2EFE6;          /* canvas — aged paper / receipt */
+  --ink: #0A0A0A;           /* ink black (text + borders) */
+  --signal: #C6FF00;        /* ACID LIME — primary brutalist accent */
+  --clay: #FF3B1F;          /* vermilion — alert/warning accent */
+  --cobalt: #1B2BE0;        /* cobalt — rare data accent */
+  --void: #08080A;          /* deepest black (rare full-bleed) */
 
   /* Surface hierarchy */
-  --background: #F6F3EE;     /* chart paper */
-  --foreground: #16161A;     /* ink */
-  --card: #FBF9F5;           /* surface (island) */
-  --card-foreground: #16161A;
-  --popover: #FBF9F5;
-  --popover-foreground: #16161A;
+  --paper: #F2EFE6;
+  --background: #F2EFE6;     /* bone canvas */
+  --foreground: #0A0A0A;     /* ink */
+  --card: #FFFFFF;           /* pure white surface — pops off bone */
+  --card-foreground: #0A0A0A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0A0A0A;
 
-  --primary: #16161A;
-  --primary-foreground: #F6F3EE;
-  --secondary: #EFEBE4;     /* surface-2 (sunken waters) */
-  --secondary-foreground: #16161A;
-  --muted: #EFEBE4;
-  --muted-foreground: #6E6A62;
-  --accent: #B93D17;        /* vermilion beacon */
-  --accent-foreground: #FFFFFF;
-  --destructive: #B42318;
-  --border: #E3DED5;        /* hairline (chart lines) */
-  --input: #E3DED5;
-  --ring: #B93D17;
+  --primary: #0A0A0A;        /* ink */
+  --primary-foreground: #F2EFE6; /* bone on ink */
+  --secondary: #E6E1D2;      /* sunken bone (inset fields) */
+  --secondary-foreground: #0A0A0A;
+  --muted: #E6E1D2;
+  --muted-foreground: #6B6557;
+  --accent: #C6FF00;         /* signal lime */
+  --accent-foreground: #0A0A0A;
+  --destructive: #FF3B1F;
+  --border: #0A0A0A;         /* INK borders — brutalist hairlines everywhere */
+  --input: #0A0A0A;
+  --ring: #C6FF00;
 
   /* Extended */
-  --accent-press: #9F3212;
-  --accent-fill: #F6E3DA;
-  --text-2: #5B5750;
-  --text-3: #6E6A62;
-  --success: #2E6B45;
-  --warning: #8F5A00;
-  --danger: #B42318;
+  --accent-press: #A8D900;
+  --accent-fill: #E6FF66;
+  --text-2: #3A372F;
+  --text-3: #6B6557;
+  --success: #1F7A3A;
+  --warning: #B87400;
+  --danger: #FF3B1F;
+  --clay-soft: #FFE0DA;
 
-  /* Chart-specific tokens */
-  --graticule-color: rgba(14, 27, 51, 0.12);   /* faint navy edge ticks */
-  --graticule-major: rgba(14, 27, 51, 0.18);     /* major edge ticks */
-  --contour-color: rgba(14, 27, 51, 0.04);      /* contour lines */
-  --chart-label: #6E6A62;                        /* chart label text */
-  --chart-label-size: 9px;                       /* tiny spaced-caps */
-  --chart-label-tracking: 0.15em;
-  --hairline-width: 0.5px;                      /* chart hairline width */
-  --island-radius: 16px;                         /* island card radius */
+  /* Field-grid + scanline tokens */
+  --grid-color: rgba(10, 10, 10, 0.06);     /* faint ink grid lines */
+  --grid-major: rgba(10, 10, 10, 0.12);      /* major grid every 4 cells */
+  --scanline-color: rgba(10, 10, 10, 0.025); /* CRT scanlines */
+  --field-label: #6B6557;                     /* mono metadata text */
 
-  /* Elevation shadows — subtle, like a paper object on a chart */
-  --elevation-subtle: 0 1px 2px rgba(22, 22, 26, 0.04), 0 2px 6px rgba(22, 22, 26, 0.03);
-  --elevation-card: 0 4px 12px rgba(22, 22, 26, 0.05), 0 1px 3px rgba(22, 22, 26, 0.03);
-  --elevation-sheet: 0 -8px 24px rgba(22, 22, 26, 0.08), 0 -2px 6px rgba(22, 22, 26, 0.04);
-  --elevation-floating: 0 12px 32px rgba(22, 22, 26, 0.12), 0 4px 8px rgba(22, 22, 26, 0.06);
+  /* Elevation — brutalist HARD offset shadows (no blur) */
+  --elevation-subtle: 2px 2px 0 0 var(--ink);
+  --elevation-card: 4px 4px 0 0 var(--ink);
+  --elevation-sheet: 6px 6px 0 0 var(--ink);
+  --elevation-floating: 8px 8px 0 0 var(--ink);
 
   /* Motion */
-  --duration-fast: 180ms;
-  --duration-normal: 260ms;
-  --duration-deliberate: 360ms;
+  --duration-fast: 120ms;
+  --duration-normal: 200ms;
+  --duration-deliberate: 320ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-enter: cubic-bezier(0, 0, 0.2, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
@@ -129,86 +134,86 @@
   --layout-max-width: 540px;
   --min-touch-target: 44px;
 
-  --chart-1: #B93D17;
-  --chart-2: #0E1B33;
-  --chart-3: #8A6A1F;
-  --chart-4: #2E6B45;
-  --chart-5: #8F5A00;
+  --chart-1: #C6FF00;
+  --chart-2: #FF3B1F;
+  --chart-3: #1B2BE0;
+  --chart-4: #0A0A0A;
+  --chart-5: #B87400;
 
-  --sidebar: #FBF9F5;
-  --sidebar-foreground: #16161A;
-  --sidebar-primary: #B93D17;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #EFEBE4;
-  --sidebar-accent-foreground: #16161A;
-  --sidebar-border: #E3DED5;
-  --sidebar-ring: #B93D17;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0A0A0A;
+  --sidebar-primary: #C6FF00;
+  --sidebar-primary-foreground: #0A0A0A;
+  --sidebar-accent: #E6E1D2;
+  --sidebar-accent-foreground: #0A0A0A;
+  --sidebar-border: #0A0A0A;
+  --sidebar-ring: #C6FF00;
 }
 
-/* ===== Dark mode: "night chart" =====
-   Canvas → surface → surface-2 steps UP in lightness.
-   Accent text on accent = charcoal (#111113), NOT white. */
+/* ===== Dark mode: "night transmission" =====
+   Canvas → void, surfaces step UP in lightness. Lime stays loud. */
 .dark {
-  --paper: #111113;
-  --ink: #F3F0EA;
-  --clay: #F2704A;
-  --clay-soft: #3A1F17;
-  --navy: #0E1B33;
-  --brass: #D2B061;
+  --bone: #08080A;
+  --ink: #EDEAE0;
+  --signal: #D4FF1A;
+  --clay: #FF4A2E;
+  --cobalt: #3B4BE6;
+  --void: #000000;
 
-  --background: #111113;
-  --foreground: #F3F0EA;
-  --card: #1A1A1D;
-  --card-foreground: #F3F0EA;
-  --popover: #1A1A1D;
-  --popover-foreground: #F3F0EA;
+  --paper: #08080A;
+  --background: #08080A;
+  --foreground: #EDEAE0;
+  --card: #141416;
+  --card-foreground: #EDEAE0;
+  --popover: #141416;
+  --popover-foreground: #EDEAE0;
 
-  --primary: #F3F0EA;
-  --primary-foreground: #111113;
-  --secondary: #232327;
-  --secondary-foreground: #F3F0EA;
-  --muted: #232327;
-  --muted-foreground: #9A958C;
-  --accent: #F2704A;
-  --accent-foreground: #111113;
-  --destructive: #FF8A80;
-  --border: #2E2E33;
-  --input: #2E2E33;
-  --ring: #F2704A;
+  --primary: #EDEAE0;
+  --primary-foreground: #08080A;
+  --secondary: #1E1E22;
+  --secondary-foreground: #EDEAE0;
+  --muted: #1E1E22;
+  --muted-foreground: #8A8478;
+  --accent: #D4FF1A;
+  --accent-foreground: #08080A;
+  --destructive: #FF4A2E;
+  --border: #EDEAE0;
+  --input: #EDEAE0;
+  --ring: #D4FF1A;
 
-  --accent-press: #D95C37;
-  --accent-fill: #3A1F17;
+  --accent-press: #B8E000;
+  --accent-fill: #3A4A0A;
   --text-2: #B3AEA5;
-  --text-3: #9A958C;
+  --text-3: #8A8478;
   --success: #5FBF86;
   --warning: #E0A340;
-  --danger: #FF8A80;
+  --danger: #FF4A2E;
+  --clay-soft: #3A1F17;
 
-  /* Night chart graticule — dimmer */
-  --graticule-color: rgba(255, 255, 255, 0.04);
-  --graticule-major: rgba(255, 255, 255, 0.07);
-  --contour-color: rgba(255, 255, 255, 0.03);
-  --chart-label: #9A958C;
+  --grid-color: rgba(237, 234, 224, 0.05);
+  --grid-major: rgba(237, 234, 224, 0.1);
+  --scanline-color: rgba(237, 234, 224, 0.03);
+  --field-label: #8A8478;
 
-  --elevation-subtle: 0 1px 2px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.15);
-  --elevation-card: 0 4px 12px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15);
-  --elevation-sheet: 0 -8px 24px rgba(0, 0, 0, 0.4), 0 -2px 6px rgba(0, 0, 0, 0.2);
-  --elevation-floating: 0 12px 32px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+  --elevation-subtle: 2px 2px 0 0 var(--ink);
+  --elevation-card: 4px 4px 0 0 var(--ink);
+  --elevation-sheet: 6px 6px 0 0 var(--ink);
+  --elevation-floating: 8px 8px 0 0 var(--ink);
 
-  --chart-1: #F2704A;
-  --chart-2: #D2B061;
-  --chart-3: #5FBF86;
-  --chart-4: #E0A340;
-  --chart-5: #FF8A80;
+  --chart-1: #D4FF1A;
+  --chart-2: #FF4A2E;
+  --chart-3: #3B4BE6;
+  --chart-4: #EDEAE0;
+  --chart-5: #E0A340;
 
-  --sidebar: #1A1A1D;
-  --sidebar-foreground: #F3F0EA;
-  --sidebar-primary: #F2704A;
-  --sidebar-primary-foreground: #111113;
-  --sidebar-accent: #232327;
-  --sidebar-accent-foreground: #F3F0EA;
-  --sidebar-border: #2E2E33;
-  --sidebar-ring: #F2704A;
+  --sidebar: #141416;
+  --sidebar-foreground: #EDEAE0;
+  --sidebar-primary: #D4FF1A;
+  --sidebar-primary-foreground: #08080A;
+  --sidebar-accent: #1E1E22;
+  --sidebar-accent-foreground: #EDEAE0;
+  --sidebar-border: #EDEAE0;
+  --sidebar-ring: #D4FF1A;
 }
 
 @layer base {
@@ -224,32 +229,51 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv01", "cv03";
+    /* Brutalist body: tighter, more compressed */
+    letter-spacing: -0.005em;
   }
-  /* Editorial display tracking */
+  /* Display = Anton: heavy condensed, slightly negative tracking for impact */
   .font-display {
+    font-family: var(--font-anton), var(--font-archivo-black), Impact, sans-serif;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    line-height: 0.92;
+  }
+  /* Heavy = Archivo Black: for stamps/labels (not uppercased by default) */
+  .font-heavy {
+    font-family: var(--font-archivo-black), Impact, sans-serif;
     letter-spacing: -0.02em;
   }
-  /* Refined scrollbar */
+  /* Mono field label — tiny spaced-caps transmission readout */
+  .field-label {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--field-label);
+    font-weight: 500;
+  }
+  /* Brutalist scrollbar — chunky, ink */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: var(--secondary);
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 999px;
+    background: var(--ink);
+    border: 2px solid var(--secondary);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--muted-foreground);
+    background: var(--signal);
   }
-  /* Selection */
+  /* Selection — acid lime, ink text */
   ::selection {
-    background: var(--clay);
-    color: #fff;
+    background: var(--signal);
+    color: var(--ink);
   }
-  /* Safe-area aware — with sensible fallbacks for non-notch environments */
+  /* Safe-area aware */
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -259,209 +283,195 @@
 }
 
 @layer utilities {
-  /* Hairline border that respects theme */
-  .hairline {
-    border: 1px solid var(--border);
+  /* ===== DEAD DROP brutalist surfaces =====
+     Hard edges, thick ink borders, hard offset shadows (no blur).
+     .brut = card/plate, .brut-lg = hero, .brut-sm = chip. */
+
+  .brut {
+    border: 2px solid var(--ink);
+    box-shadow: var(--elevation-card);
+    border-radius: 2px;
+    background: var(--card);
   }
-  .hairline-b {
-    border-bottom: 1px solid var(--border);
+  .brut-lg {
+    border: 3px solid var(--ink);
+    box-shadow: var(--elevation-sheet);
+    border-radius: 3px;
+    background: var(--card);
   }
-  .hairline-t {
-    border-top: 1px solid var(--border);
+  .brut-sm {
+    border: 1.5px solid var(--ink);
+    box-shadow: 2px 2px 0 0 var(--ink);
+    border-radius: 2px;
+    background: var(--card);
+  }
+  /* Filled signal tile (lime block w/ ink text) */
+  .brut-signal {
+    border: 2px solid var(--ink);
+    box-shadow: var(--elevation-card);
+    border-radius: 2px;
+    background: var(--signal);
+    color: var(--ink);
+  }
+  /* Filled ink tile (ink block w/ bone text) */
+  .brut-ink {
+    border: 2px solid var(--ink);
+    box-shadow: var(--elevation-card);
+    border-radius: 2px;
+    background: var(--ink);
+    color: var(--bone);
   }
 
-  /* ===== ARCHIPELAGO + Glass + Mesh Gradient =====
-     Three layers working together:
-     1. Vibrant mesh gradient (drifting orbs) — the BACKGROUND that glass refracts
-     2. Liquid glass surfaces (backdrop-blur + translucency + borders + shadows)
-     3. Paper grain texture (subtle noise overlay)
-     Archipelago chart labels (ISL-XXXX, CARD, BEARING) sit on top. */
-
-  /* Shared glass base */
+  /* ---- Legacy glass (kept so existing screens don't break) ----
+     In DEAD DROP we prefer .brut, but glass is retained for components
+     that still reference it. Re-skinned to feel like frosted field-glass. */
   .glass, .glass-strong, .glass-pill, .glass-card {
     position: relative;
     isolation: isolate;
+    border-radius: 2px;
   }
   .glass > *, .glass-strong > *, .glass-pill > *, .glass-card > * {
     position: relative;
     z-index: 1;
   }
-
-  /* ---- Standard glass (header, sticky bars) ---- */
   .glass {
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  }
-  .glass::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    pointer-events: none; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 40%);
-  }
-
-  /* ---- Strong glass (modals, sheets) ---- */
-  .glass-strong {
-    background: rgba(255, 255, 255, 0.12);
-    -webkit-backdrop-filter: blur(32px) saturate(200%);
-    backdrop-filter: blur(32px) saturate(200%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-  }
-  .glass-strong::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    pointer-events: none; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 40%);
-  }
-
-  /* ---- Glass pill (floating dock, buttons, badges) ---- */
-  .glass-pill {
-    background: rgba(255, 255, 255, 0.1);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.06),
-      0 8px 24px rgba(0, 0, 0, 0.05);
-  }
-  .glass-pill::before {
-    content: "";
-    position: absolute; inset: 0;
-    border-radius: inherit;
-    pointer-events: none; z-index: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
-  }
-
-  /* ---- Glass card (settings cards — NO canvas inside) ---- */
-  .glass-card {
-    background: rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--card);
+    border: 2px solid var(--ink);
     box-shadow: var(--elevation-card);
   }
-
-  /* ---- Solid card (QR plate — canvas parent, NO backdrop-filter) ---- */
+  .glass-strong {
+    background: var(--card);
+    border: 3px solid var(--ink);
+    box-shadow: var(--elevation-sheet);
+  }
+  .glass-pill {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    box-shadow: 2px 2px 0 0 var(--ink);
+  }
+  .glass-card {
+    background: var(--card);
+    border: 2px solid var(--ink);
+    box-shadow: var(--elevation-card);
+  }
   .solid-card {
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 2px solid var(--ink);
     box-shadow: var(--elevation-card);
+    border-radius: 2px;
   }
 
-  /* ---- Dark mode glass ---- */
-  .dark .glass {
-    background: rgba(28, 28, 30, 0.08);
-    -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(0.9);
-    backdrop-filter: blur(20px) saturate(160%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-  }
-  .dark .glass::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 40%);
-  }
-  .dark .glass-strong {
-    background: rgba(44, 44, 46, 0.12);
-    -webkit-backdrop-filter: blur(32px) saturate(170%) brightness(0.88);
-    backdrop-filter: blur(32px) saturate(170%) brightness(0.88);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
-  }
-  .dark .glass-strong::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 40%);
-  }
-  .dark .glass-pill {
-    background: rgba(44, 44, 46, 0.1);
-    -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-  .dark .glass-pill::before {
-    background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, transparent 50%);
-  }
-  .dark .glass-card {
-    background: rgba(44, 44, 46, 0.08);
-    -webkit-backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    backdrop-filter: blur(16px) saturate(160%) brightness(0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--elevation-card);
-  }
-  .dark .solid-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    box-shadow: var(--elevation-card);
-  }
-
-  /* ---- Chart graticule: edge ticks only (not a full grid) ----
-     Per Archipelago spec: "ticks every 24px at the screen edges only, never a full grid"
-     Two contour layers: faint edge ticks + slightly stronger corner marks. */
-  .graticule {
-    /* Edge ticks: repeating linear gradients at the screen edges only.
-       Top + bottom edges: vertical ticks. Left + right edges: horizontal ticks.
-       This creates the look of a chart's border graticule without a full grid. */
+  /* ---- Field grid: full graph-paper grid (not just edge ticks) ---- */
+  .field-grid {
     background-image:
-      /* top edge ticks */
-      linear-gradient(to right, var(--graticule-color) 1px, transparent 1px),
-      /* bottom edge ticks */
-      linear-gradient(to right, var(--graticule-color) 1px, transparent 1px),
-      /* left edge ticks */
-      linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px),
-      /* right edge ticks */
-      linear-gradient(to bottom, var(--graticule-color) 1px, transparent 1px);
-    background-size: 24px 3px, 24px 3px, 3px 24px, 3px 24px;
-    background-position: 0 0, 0 100%, 0 0, 100% 0;
-    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+      linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px),
+      linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px);
+    background-size: 24px 24px, 24px 24px, 96px 96px, 96px 96px;
   }
-
-  /* Chart label — tiny spaced-caps mono, like "CHART 0427" */
-  .chart-label {
-    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-    font-size: var(--chart-label-size);
-    letter-spacing: var(--chart-label-tracking);
-    text-transform: uppercase;
-    color: var(--chart-label);
-    font-weight: 500;
-  }
-
-  /* Hairline — 0.5px chart line */
-  .chart-hairline {
-    border: var(--hairline-width) solid var(--border);
-  }
-  .chart-hairline-b {
-    border-bottom: var(--hairline-width) solid var(--border);
-  }
-  .chart-hairline-t {
-    border-top: var(--hairline-width) solid var(--border);
-  }
-
-  /* Editorial container width */
-  .container-editorial {
-    max-width: 28rem;
-    margin-inline: auto;
-  }
-  /* Paper texture (subtle) */
-  .paper-grain {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      rgba(0, 0, 0, 0.015) 1px,
-      transparent 0
+  /* ---- Scanlines: faint CRT overlay ---- */
+  .scanlines {
+    background-image: repeating-linear-gradient(
+      0deg,
+      var(--scanline-color) 0px,
+      var(--scanline-color) 1px,
+      transparent 1px,
+      transparent 3px
     );
-    background-size: 24px 24px;
+  }
+  /* ---- Grain: harsher noise than the old paper-grain ---- */
+  .field-grain {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0),
+      radial-gradient(circle at 3px 4px, rgba(0,0,0,0.02) 1px, transparent 0);
+    background-size: 5px 5px, 7px 7px;
+  }
+  .dark .field-grain {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0),
+      radial-gradient(circle at 3px 4px, rgba(255,255,255,0.02) 1px, transparent 0);
+  }
+  /* Legacy alias */
+  .paper-grain {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(0,0,0,0.04) 1px, transparent 0);
+    background-size: 5px 5px;
   }
   .dark .paper-grain {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      rgba(255, 255, 255, 0.02) 1px,
-      transparent 0
-    );
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
   }
+
+  /* ---- Transmission readouts ---- */
+  /* Marquee ticker — scrolls mono text horizontally */
+  .ticker-track {
+    display: inline-block;
+    white-space: nowrap;
+    animation: ticker 28s linear infinite;
+  }
+  /* Blinking REC dot / live indicator */
+  .blink {
+    animation: blink 1.4s steps(2, start) infinite;
+  }
+  /* Glitch text — RGB-split clip on hover/loop */
+  .glitch {
+    position: relative;
+    animation: glitch-shift 4s steps(1) infinite;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .glitch::before {
+    color: var(--clay);
+    transform: translate(-1.5px, 0);
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    animation: glitch-1 3.6s steps(2) infinite;
+  }
+  .glitch::after {
+    color: var(--cobalt);
+    transform: translate(1.5px, 0);
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    animation: glitch-2 4.2s steps(2) infinite;
+  }
+  /* Tape strip — translucent label tape */
+  .tape {
+    background: rgba(255, 229, 102, 0.7);
+    border: 1px dashed rgba(10,10,10,0.3);
+    box-shadow: 0 1px 0 rgba(10,10,10,0.1);
+  }
+  .dark .tape {
+    background: rgba(212, 255, 26, 0.18);
+    border-color: rgba(237,234,224,0.3);
+  }
+  /* Stamp — inset double border, like an ink stamp */
+  .stamp {
+    border: 2px solid var(--ink);
+    outline: 1px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Hairline (legacy, now = ink border) */
+  .hairline { border: 1px solid var(--border); }
+  .hairline-b { border-bottom: 1px solid var(--border); }
+  .hairline-t { border-top: 1px solid var(--border); }
+  .chart-label {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--field-label);
+    font-weight: 500;
+  }
+  .chart-hairline { border: 1px solid var(--border); }
+  .chart-hairline-b { border-bottom: 1px solid var(--border); }
+  .chart-hairline-t { border-top: 1px solid var(--border); }
+  .container-editorial { max-width: 28rem; margin-inline: auto; }
+  .graticule { display: none; } /* replaced by .field-grid */
+
   /* Focus ring */
   .focus-ring {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
@@ -470,14 +480,45 @@
   .no-tap {
     -webkit-tap-highlight-color: transparent;
   }
-  /* Smooth fast transitions for ALL interactive elements */
+  /* Brutalist transitions — snappy */
   button, a, [role="button"], [role="switch"] {
-    transition: transform 0.1s ease, opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    transition: transform 0.08s ease, background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;
   }
-  /* Smooth fast transitions for cards/surfaces */
-  .glass, .glass-pill, .glass-card, .solid-card {
-    transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.15s ease;
+  .brut, .brut-lg, .brut-sm, .brut-signal, .brut-ink, .glass, .glass-pill, .glass-card, .solid-card {
+    transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.1s ease;
   }
+  /* Press-down: translate into the hard shadow (like a button being stamped) */
+  .press:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 var(--ink) !important;
+  }
+
+  /* Keyframes */
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0.15; }
+  }
+  @keyframes glitch-shift {
+    0%, 90%, 100% { transform: translate(0,0); }
+    92% { transform: translate(-1px, 1px); }
+    94% { transform: translate(1px, -1px); }
+    96% { transform: translate(-1px, 0); }
+  }
+  @keyframes glitch-1 {
+    0%, 80%, 100% { clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); }
+    82% { clip-path: polygon(0 10%, 100% 10%, 100% 35%, 0 35%); }
+    86% { clip-path: polygon(0 0, 100% 0, 100% 48%, 0 48%); }
+  }
+  @keyframes glitch-2 {
+    0%, 75%, 100% { clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%); }
+    78% { clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%); }
+    82% { clip-path: polygon(0 50%, 100% 50%, 100% 95%, 0 95%); }
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *,
