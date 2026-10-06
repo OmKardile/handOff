@@ -480,6 +480,20 @@
   .no-tap {
     -webkit-tap-highlight-color: transparent;
   }
+  /* Hide native scrollbar on a scroll container — used on <main> so the
+     10px ink scrollbar doesn't eat into the right padding and shift
+     centered content (mx-auto max-w-md) off-center. Touch users never
+     see scrollbars anyway; desktop users still scroll via wheel/trackpad. */
+  .no-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE10+ */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chromium/Safari */
+  }
+  /* Safeguard: any lime/yellow surface defaults to ink (black) text.
+     Belt-and-suspenders so bg-signal never renders with non-black text. */
+  .brut-signal { color: var(--ink); }
   /* Brutalist transitions — snappy */
   button, a, [role="button"], [role="switch"] {
     transition: transform 0.08s ease, background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease, box-shadow 0.1s ease;

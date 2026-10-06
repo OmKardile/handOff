@@ -65,10 +65,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           Mono readout: SIGNAL · live clock · ticker · REC dot. */}
       {!hideBar && <TransmissionBar />}
 
-      {/* Scrollable content area — the ONLY thing that scrolls. */}
+      {/* Scrollable content area — the ONLY thing that scrolls.
+          no-scrollbar hides the 10px ink scrollbar so it doesn't eat into
+          the right padding and shift centered (mx-auto) content off-center. */}
       <main
         className={cn(
-          "relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
+          "no-scrollbar relative z-10 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain",
           hideBar ? "pb-0" : "pb-32 pt-7"
         )}
       >

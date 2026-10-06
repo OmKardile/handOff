@@ -856,3 +856,29 @@ Stage Summary:
 - Settings title now uses the shared ScreenHeader (Anton font-display, 30px, uppercase) — matching every other screen. Font consistency restored across all sessions/screens.
 - The one-off `font-sans` iOS-27 large title was the only outlier; removed.
 - Lint clean. Browser-verified: Studio and Settings titles compute to the exact same font-family/size/weight/transform.
+
+---
+Task ID: BLACK-ON-YELLOW + SCROLLBAR/CENTERING
+Agent: main
+Task: "black text on yellow looks good / change it to black stupid wherever theres yellow bg / also theres scroll bar to the right take care of it while thinking of margins paddings and centralizations"
+
+Work Log:
+- AUDIT (black-on-yellow): grepped every bg-signal / brut-signal / bg-accent usage across src. Confirmed ALL lime/yellow surfaces already pair with ink (black) text: home hero header strip (bg-signal text-ink), SHARE button (bg-signal text-ink), "ON YOUR CARD" section bar (bg-signal + text-ink), onboarding CTAs (bg-signal text-ink), active nav tab (bg-signal text-ink), QR-breakdown dot, signal meter bars, done-state Check (brut-signal → color:ink), photo icon tile. shadcn bg-accent components use --accent-foreground:#0A0A0A (ink). All correct.
+  - Added a CSS safeguard anyway: `.brut-signal { color: var(--ink); }` (was already there, kept) so any future lime surface defaults to black text. Belt-and-suspenders.
+- SCROLLBAR + CENTERING FIX:
+  - Problem: <main> had a 10px-wide ink scrollbar (`::-webkit-scrollbar { width: 10px }` + `var(--secondary)` track) that took layout space on the right. This ate into the right padding and shifted centered content (`mx-auto max-w-md px-5`) ~5px left of true center.
+  - Fix: added a `.no-scrollbar` utility in globals.css:
+      .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+  - Applied `no-scrollbar` to the <main> scroll container in app-shell.tsx. Now the scrollbar is hidden on the main scroll area — touch users never saw it anyway, and desktop users still scroll via wheel/trackpad. The brutalist scrollbar styles are retained for any inner scroll areas (modals/sheets) that might need them.
+  - Result: with the scrollbar gone, `mx-auto max-w-md` now perfectly centers content — left and right margins are equal.
+- Verification:
+  - `bun run lint`: 0 errors
+  - agent-browser eval: confirmed <main> has `no-scrollbar` class applied.
+  - VLM screenshot of home: confirmed (1) NO visible scrollbar on the right, (2) content card horizontally centered, (3) left and right margins equal.
+  - VLM scan of all yellow/lime elements: confirmed every single one (SIGNAL·OK dot, signal bars, QR-breakdown dot, SHARE button, ON YOUR CARD bar, edit icon tile, CARD nav tab) has BLACK text/icons — not white, not grey.
+
+Stage Summary:
+- Black-on-yellow is consistent across every lime surface in the app (verified by VLM element-by-element).
+- The right-side scrollbar is gone — main scroll container uses .no-scrollbar (hidden via scrollbar-width:none + ::-webkit-scrollbar display:none). Content is now perfectly centered with symmetric left/right margins. Padding (px-5) and max-width (max-w-md) unchanged; they now render truly centered because nothing steals the right gutter.
+- Lint clean. Browser + VLM verified.
