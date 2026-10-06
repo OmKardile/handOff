@@ -23,6 +23,7 @@
     "cap:open:ios": "cap open ios"
   },
   "dependencies": {
+    "@capacitor/android": "^8.5.2",
     "@capacitor/core": "^8.5.2",
     "@capacitor/haptics": "^8.0.2",
     "@dnd-kit/core": "^6.3.1",
