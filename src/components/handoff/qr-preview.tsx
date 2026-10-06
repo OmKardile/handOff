@@ -52,8 +52,8 @@ export function QrPreview({
 
   return (
     <div
-      className={cn("relative inline-block", className)}
-      style={{ width: size, height: size }}
+      className={cn("relative inline-block overflow-hidden border-2 border-ink", className)}
+      style={{ width: size, height: size, borderRadius: style.plateRadius }}
     >
       <canvas
         ref={canvasRef}

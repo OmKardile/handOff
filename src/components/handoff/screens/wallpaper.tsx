@@ -312,7 +312,7 @@ export function WallpaperScreen() {
         <div className="mt-5 flex justify-center">
           <div
             className="relative overflow-hidden border-[3px] border-ink shadow-[5px_5px_0_0_var(--ink)]"
-            style={{ width: 220, height: 440, background: activeTemplate.bg, borderRadius: 18 }}
+            style={{ width: 220, height: 440, background: activeTemplate.bg, borderRadius: 24 }}
           >
             {/* faux clock */}
             <div className="absolute left-0 right-0 top-6 flex flex-col items-center">
@@ -327,7 +327,7 @@ export function WallpaperScreen() {
               </span>
             </div>
             {/* QR */}
-            <div className="absolute left-1/2 top-[36%] -translate-x-1/2 border-2 border-ink bg-white p-1.5" style={{ borderRadius: 6 }}>
+            <div className="absolute left-1/2 top-[36%] -translate-x-1/2 border-2 border-ink bg-white p-1.5" style={{ borderRadius: 24 }}>
               <QrPreview card={card} style={wallpaperStyle} size={120} photoDataUrl={photo?.full} showLoading={false} />
             </div>
             {/* name */}
@@ -363,7 +363,7 @@ export function WallpaperScreen() {
                 {/* mini preview swatch */}
                 <span
                   className="flex h-10 w-full items-center justify-center"
-                  style={{ background: t.bg, borderRadius: 6 }}
+                  style={{ background: t.bg, borderRadius: 10 }}
                 >
                   <span className="h-4 w-4" style={{ background: t.accent, borderRadius: 2 }} />
                 </span>
@@ -403,7 +403,7 @@ export function WallpaperScreen() {
                 aria-label={p.name}
                 aria-pressed={qrPresetId === p.id}
               >
-                <div className="aspect-square w-full overflow-hidden border border-ink" style={{ borderRadius: 6 }}>
+                <div className="aspect-square w-full overflow-hidden border border-ink" style={{ borderRadius: 10 }}>
                   <QrPreview card={card} style={p.style} size={56} photoDataUrl={photo?.full} showLoading={false} />
                 </div>
                 <span className="w-full truncate text-center text-[9px] font-bold uppercase tracking-wide text-foreground">

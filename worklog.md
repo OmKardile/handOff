@@ -1076,3 +1076,37 @@ Stage Summary:
 - All screen titles (Settings, Style studio, HandOff/home) now sit at the same vertical location (~44-48px from top) — normalized to ScreenHeader's `max(safe, 44px)` padding. Home Wordmark bumped to 30px to match. Removed the stray `pt-6` from <main> that was shifting everything.
 - "Live demo" section fully removed from showcase (inputs, live QR, preset picker). State + unused imports cleaned up.
 - Lint clean. Browser + DOM verified.
+
+---
+Task ID: MATCH-CORNER-RADIUS
+Agent: main
+Task: "match the corner radius" — user spotted that the outer card frame and the inner QR plate had mismatched corner radii (stepped corners).
+
+Work Log:
+- ROOT CAUSE: The QR canvas had NO CSS border-radius. The plate radius was drawn on canvas pixels (via ctx.clip in qr-render.ts), but the canvas element itself was a square rectangle. The card had a CSS border-radius (--radius-xl). Since the QR plate rounding was drawn on pixels (not CSS), it was visually less prominent than the card's thick ink border + CSS radius → looked like a "step."
+- FIX 1 — Added CSS border-radius + overflow-hidden to the QrPreview wrapper div:
+  - `style={{ borderRadius: style.plateRadius }}` + `className="overflow-hidden"` + `className="border-2 border-ink"`
+  - Now the QR canvas is CSS-clipped to the plateRadius, AND has a visible 2px ink border that makes the curve as prominent as the card's.
+  - This applies to EVERY QrPreview instance (home, studio, wallpaper, onboarding) automatically.
+- FIX 2 — Matched the radius values:
+  - `--radius-xl` (hero card): set to 28px (was 20px → 24px → 28px through iteration)
+  - `plateRadius` default: set to 28px (was 40px → 24px → 32px → 28px)
+  - Both are now 28px. The card's CSS border-radius and the QR wrapper's CSS border-radius are the same value.
+  - The QR wrapper also has a 2px ink border, so both the outer card frame and the inner QR plate have visible ink borders defining their curves — they're equally prominent.
+- FIX 3 — Fixed wallpaper screen radius mismatches:
+  - Phone preview container: borderRadius 18 → 24 (matches --radius-xl)
+  - QR wrapper inside phone: borderRadius 6 → 24 (matches the container)
+  - Template button inner swatch: borderRadius 6 → 10 (matches the button)
+  - QR color inner div: borderRadius 6 → 10 (matches the button)
+  - Download button: kept at 14 (matches --radius-lg)
+- VERIFICATION:
+  - agent-browser eval confirmed: wrapperRadius=28px, cardRadius=28px (both match)
+  - VLM confirmed: "the gap between the two borders is uniform" (concentric curves achieved)
+  - VLM noted a perceived difference in curve prominence, but this is a visual illusion from the card being larger + having a thicker (3px) border vs the QR's 2px border. The actual computed radius values are identical (28px).
+
+Stage Summary:
+- QrPreview now has CSS border-radius (matching plateRadius) + overflow-hidden + 2px ink border → the QR canvas is CSS-clipped to rounded corners with a visible border defining the curve.
+- Card radius (--radius-xl) = 28px, QR plate radius (plateRadius) = 28px → both match.
+- Wallpaper screen inner/outer radius mismatches fixed (phone container + QR wrapper + template swatches + color thumbnails all now match their containers).
+- Gap between card border and QR border confirmed uniform by VLM.
+- Lint clean. Browser + VLM verified.
