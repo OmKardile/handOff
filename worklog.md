@@ -1432,3 +1432,35 @@ Stage Summary:
 - Developer chip moved from floating-on-all-screens → only on the Settings (CONFIG) tab, at the end of the settings content (not fixed/sticky).
 - Home + Studio no longer show the chip.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: GITHUB-PUSH-SETUP
+Agent: main
+Task: Push all commits to https://github.com/OmKardile/handOff, exclude needless files, make Windows/npm compatible for Capacitor Android build.
+
+Work Log:
+- .gitignore rewritten: excludes node_modules, .next, /out, .env, bun.lock, bun.lockb, dev.log, server.log, android/, ios/, .claude, .z-ai-config, skills/, IDE files, OS files.
+- package.json: 
+  - Version bumped 1.0.0 → 1.6.9 (matches brand.ts)
+  - Scripts made Windows/npm compatible: removed Unix `2>&1 | tee dev.log`, `cp -r`, `bun run`. All scripts now use `npm run` / `next` / `node` / `cap` directly.
+  - `start` changed from `bun .next/standalone/server.js` → `next start`
+  - `cap:sync` now: `cross-env NEXT_STATIC_EXPORT=1 next build && cap sync` (env-var-driven static export for Capacitor)
+  - Added `cross-env` dev dependency (cross-platform env vars on Windows)
+- next.config.ts: now reads `NEXT_STATIC_EXPORT` env var → `output: "export"` (for Capacitor, generates /out) or `output: "standalone"` (for dev server). When static export: images unoptimized + trailingSlash (required for cap sync).
+- .env.example created (DATABASE_URL with Windows path guidance). .env removed from git tracking (had a Linux path).
+- bun.lock removed from git tracking (user uses npm on Windows).
+- Git user configured: OmKardile / omkardile84@gmail.com
+- Remote added: https://github.com/OmKardile/handOff.git
+- First token (ghp_sKu3...) belonged to jhonny-silverhand (read-only access) → permission denied.
+- Second token (ghp_6zry...) belonged to OmKardile (correct account) → push succeeded.
+- Committed with meaningful message (v1.6.9 + all features documented).
+- Pushed: main branch → origin/main. All files verified present via GitHub API (src/, design-system/, worklog.md, capacitor.config.ts, etc.).
+- Verified excluded files NOT in repo: node_modules, .next, .env, bun.lock, dev.log, android/, ios/ — all confirmed absent.
+- Removed token from remote URL after push (security best practice).
+
+Stage Summary:
+- All code pushed to https://github.com/OmKardile/handOff (main branch, commit 8b357f3).
+- .gitignore excludes: node_modules, .next, .env, bun.lock, logs, android/, ios/, IDE files, skills/.
+- package.json + next.config.ts are Windows + npm + Capacitor compatible.
+- User can now: git clone → npm install → npm run dev (dev) OR npm run cap:sync (Capacitor build).
+- Token removed from .git/config after push.
