@@ -510,6 +510,50 @@ const TEMPLATES: ArtTemplate[] = [
 /** QR color presets that pair well with the templates. */
 const WALLPAPER_QR_IDS = ["ink", "aurora", "lagoon", "sunset-strip", "royal-jade", "neon-pulse"];
 
+/** Renders the template art to a canvas for the phone preview (live).
+ *  Scales the 1080×1920 template draw to the 220×440 preview size. */
+function WallpaperArtPreview({ template }: { template: ArtTemplate }) {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const PW = 220;
+  const PH = 440;
+
+  React.useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    // render at 2x for crispness
+    canvas.width = PW * 2;
+    canvas.height = PH * 2;
+    ctx.scale(2, 2);
+
+    // clear + fill bg
+    ctx.fillStyle = template.bg;
+    ctx.fillRect(0, 0, PW, PH);
+
+    // scale the template draw from 1080×1920 → 220×440
+    const scaleX = PW / 1080;
+    const scaleY = PH / 1920;
+    ctx.save();
+    ctx.scale(scaleX, scaleY);
+    // QR band in the 36%-80% range, qrSize = W*0.56
+    const qrSize = Math.round(1080 * 0.56);
+    const qrX = (1080 - qrSize) / 2;
+    const qrY = Math.round(1920 * 0.36);
+    template.draw(ctx, 1080, 1920, qrSize, qrX, qrY);
+    ctx.restore();
+  }, [template]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 h-full w-full"
+      style={{ width: PW, height: PH }}
+      aria-hidden="true"
+    />
+  );
+}
+
 export function WallpaperScreen() {
   const { card, style, photo } = useHandOff();
   const { navigate } = useView();
@@ -604,8 +648,10 @@ export function WallpaperScreen() {
             className="relative overflow-hidden border-[3px] border-ink shadow-[5px_5px_0_0_var(--ink)]"
             style={{ width: 220, height: 440, background: activeTemplate.bg, borderRadius: 24 }}
           >
+            {/* template art — rendered live to canvas */}
+            <WallpaperArtPreview template={activeTemplate} />
             {/* faux clock */}
-            <div className="absolute left-0 right-0 top-6 flex flex-col items-center">
+            <div className="absolute left-0 right-0 top-6 z-10 flex flex-col items-center">
               <span className="font-display text-5xl font-light leading-none" style={{ color: activeTemplate.fg }}>
                 9:41
               </span>
@@ -617,11 +663,11 @@ export function WallpaperScreen() {
               </span>
             </div>
             {/* QR */}
-            <div className="absolute left-1/2 top-[36%] -translate-x-1/2 border-2 border-ink bg-white p-1.5" style={{ borderRadius: 24 }}>
+            <div className="absolute left-1/2 top-[36%] z-10 -translate-x-1/2 border-2 border-ink bg-white p-1.5" style={{ borderRadius: 24 }}>
               <QrPreview card={card} style={wallpaperStyle} size={120} photoDataUrl={photo?.full} showLoading={false} />
             </div>
             {/* name */}
-            <div className="absolute left-1/2 top-[72%] -translate-x-1/2 text-center" style={{ color: activeTemplate.fg }}>
+            <div className="absolute left-1/2 top-[72%] z-10 -translate-x-1/2 text-center" style={{ color: activeTemplate.fg }}>
               <p className="font-display text-sm font-medium uppercase tracking-wide leading-tight">
                 {[card.firstName, card.lastName].filter(Boolean).join(" ")}
               </p>

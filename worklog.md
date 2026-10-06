@@ -1353,3 +1353,31 @@ Stage Summary:
 - Version updated to 1.6.9 everywhere (brand.ts → welcome + floating chip + page footer).
 - Developer button removed from Settings; now floats as a small brutalist chip at bottom-left on all main screens (hidden on onboarding/fullscreen).
 - Lint clean. Browser + VLM + DOM verified.
+
+---
+Task ID: FIX-WALLPAPER-ART-PREVIEW
+Agent: main
+Task: "check if the kawai cat and other wallpaper really render as we want i dont see anything after aplying kawai except pink bg"
+
+Work Log:
+- ROOT CAUSE: The phone preview was pure HTML/CSS — just `background: activeTemplate.bg` (a solid color). The template `draw()` functions (sunburst rays, kawaii cat, clouds, etc.) only ran inside the `generate()` function for the DOWNLOADED PNG, NOT in the live phone preview. So users saw only the solid bg color, never the art.
+- FIX: Created a `WallpaperArtPreview` component that renders the template art to a live canvas inside the phone preview:
+  - Renders at 2x resolution (440×880) for crispness, displayed at 220×440.
+  - Fills the bg color, then scales the template's `draw()` function from the full 1080×1920 coordinate space down to the 220×440 preview (using `ctx.scale(scaleX, scaleY)`).
+  - Passes the same qrSize/qrX/qrY as the generate() function so the art positions match exactly what the downloaded PNG will look like.
+  - Re-runs via useEffect whenever the template changes.
+- Added `<WallpaperArtPreview template={activeTemplate} />` inside the phone preview div (before the faux clock).
+- Added `z-10` to the clock, QR, and name layers so they sit ABOVE the art canvas (which is at z-0/auto).
+- VERIFICATION:
+  - `bun run lint`: 0 errors
+  - VLM Sunburst: "radiating rays behind the QR, not plain solid. Sunburst rays visible as darker lines spreading diagonally." ✅
+  - VLM Kawaii cat: "pink background + cat face (ears, eyes, whiskers) peeking from behind QR + cat paws at the bottom + floating hearts." ✅ (all 4 elements confirmed)
+  - VLM Clouds: "white fluffy clouds + blue sky + green grass with blades. Not just plain blue." ✅
+  - Download button: clicked, no errors — generate() still works (it already had the art, only the preview was broken).
+
+Stage Summary:
+- Wallpaper phone preview now renders the template art LIVE (was only showing solid bg color).
+- WallpaperArtPreview component scales the 1080×1920 template draw to the 220×440 preview canvas at 2x crispness.
+- Verified: Sunburst (rays), Kawaii cat (ears/eyes/whiskers/paws/hearts), Clouds (clouds/sky/grass) all render in the phone preview now.
+- The downloaded PNG was already correct (generate() had the art) — only the preview was missing it.
+- Lint clean. Browser + VLM verified.
