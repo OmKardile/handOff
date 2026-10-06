@@ -22,8 +22,9 @@ export function FullscreenQr() {
 
   React.useEffect(() => {
     function resize() {
-      const s = Math.min(window.innerWidth, window.innerHeight) - 120;
-      setSize(Math.min(s, 560));
+      // leave room for the grabber + the name strip below the QR (inside the card)
+      const s = Math.min(window.innerWidth - 80, window.innerHeight - 280);
+      setSize(Math.min(s, 480));
     }
     resize();
     window.addEventListener("resize", resize);
@@ -123,32 +124,36 @@ export function FullscreenQr() {
       </button>
 
       <div className="flex flex-1 flex-col items-center justify-center px-6">
-        <div className="rounded-[28px] border-2 border-ink bg-card p-5 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.25)]">
-          <QrPreview
-            card={card}
-            style={style}
-            size={size}
-            photoDataUrl={photo?.full}
-            showLoading={false}
-          />
-        </div>
-        <div className="mt-8 text-center">
-          {photo && (
-            <img
-              src={photo.full}
-              alt=""
-              className="mx-auto mb-3 h-12 w-12 rounded-full object-cover"
+        <div className="brut-lg overflow-hidden">
+          {/* QR */}
+          <div className="flex justify-center p-5">
+            <QrPreview
+              card={card}
+              style={style}
+              size={size}
+              photoDataUrl={photo?.full}
+              showLoading={false}
             />
-          )}
-          <h1 className="font-display text-2xl font-medium tracking-tight">
-            {fullName || "Your card"}
-          </h1>
-          {card.jobTitle && (
-            <p className="mt-1 text-[14px] text-muted-foreground">{card.jobTitle}</p>
-          )}
-          {card.company && (
-            <p className="mt-0.5 text-[13px] text-muted-foreground">{card.company}</p>
-          )}
+          </div>
+          {/* name — inside the card, centered at the bottom */}
+          <div className="flex flex-col items-center gap-1 border-t-2 border-ink bg-card px-6 py-4 text-center">
+            {photo && (
+              <img
+                src={photo.full}
+                alt=""
+                className="mb-1 h-10 w-10 border-2 border-ink object-cover"
+              />
+            )}
+            <h1 className="font-display text-xl uppercase tracking-tight">
+              {fullName || "Your card"}
+            </h1>
+            {card.jobTitle && (
+              <p className="text-[12px] text-muted-foreground">{card.jobTitle}</p>
+            )}
+            {card.company && (
+              <p className="text-[11px] text-muted-foreground">{card.company}</p>
+            )}
+          </div>
         </div>
       </div>
 

@@ -127,32 +127,8 @@ export function HomeScreen() {
           <span className="field-label text-black/60">Ready</span>
         </div>
 
-        {/* name plate */}
-        <div className="flex items-start justify-between gap-4 px-6 pt-6">
-          <div className="min-w-0 flex-1">
-            {photo ? (
-              <img
-                src={photo.full}
-                alt=""
-                className="mb-3 h-12 w-12 border-2 border-ink object-cover"
-              />
-            ) : null}
-            {card.company ? (
-              <p className="field-label text-clay">{card.company}</p>
-            ) : null}
-            <h1 className="mt-1 font-display text-[2.1rem] uppercase leading-[0.95] tracking-tight">
-              {fullName || "Your name"}
-            </h1>
-            {card.jobTitle && (
-              <p className="mt-1 text-[14px] text-muted-foreground">
-                {card.jobTitle}
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* QR */}
-        <div className="flex justify-center px-6 py-6">
+        {/* QR — centered at the top */}
+        <div className="flex justify-center px-6 pt-8 pb-4">
           <QrReveal>
           <button
             onClick={() => navigate("fullscreen-qr")}
@@ -167,6 +143,28 @@ export function HomeScreen() {
             />
           </button>
           </QrReveal>
+        </div>
+
+        {/* name plate — centered at the BOTTOM of the card */}
+        <div className="flex flex-col items-center px-6 pb-7 text-center">
+          {photo ? (
+            <img
+              src={photo.full}
+              alt=""
+              className="mb-3 h-12 w-12 border-2 border-ink object-cover"
+            />
+          ) : null}
+          {card.company ? (
+            <p className="field-label text-clay">{card.company}</p>
+          ) : null}
+          <h1 className="mt-1 font-display text-[2.1rem] uppercase leading-[0.95] tracking-tight">
+            {fullName || "Your name"}
+          </h1>
+          {card.jobTitle && (
+            <p className="mt-1 text-[14px] text-muted-foreground">
+              {card.jobTitle}
+            </p>
+          )}
         </div>
       </div>
       </Reveal>
