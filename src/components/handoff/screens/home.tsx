@@ -64,10 +64,10 @@ export function HomeScreen() {
         await navigator.clipboard.write([item]);
         toast.success("QR image copied — paste into any app");
       } else {
-        // fallback: download
+        // fallback: download (native bridge handles Capacitor + web)
         const { downloadBlob } = await import("@/lib/export");
-        downloadBlob(blob, `${card.firstName || "contact"}-qr.png`);
-        toast("Image copied to downloads (clipboard not supported here)");
+        await downloadBlob(blob, `${card.firstName || "contact"}-qr.png`);
+        toast("Image saved (clipboard not supported here)");
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Couldn't copy image");

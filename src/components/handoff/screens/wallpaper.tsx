@@ -7,7 +7,7 @@ import { useView } from "../view-context";
 import { ScreenHeader } from "../app-shell";
 import { QrPreview } from "../qr-preview";
 import { renderQrToCanvas, canvasToBlob } from "@/lib/qr-render";
-import { downloadBlob } from "@/lib/export";
+import { saveOrShareBlob } from "@/lib/native-bridge";
 import { STYLE_PRESETS } from "@/lib/style-presets";
 import type { QrStyle } from "@/shared/types";
 import { toast } from "sonner";
@@ -738,8 +738,13 @@ export function WallpaperScreen() {
       }
 
       const blob = await canvasToBlob(canvas, "image/png");
-      downloadBlob(blob, `${card.firstName || "contact"}-wallpaper.png`);
-      toast.success("Wallpaper downloaded");
+      const result = await saveOrShareBlob(
+        blob,
+        `${card.firstName || "contact"}-wallpaper.png`,
+        "HandOff wallpaper",
+        "Here's my wallpaper"
+      );
+      toast.success(result === "shared" ? "Wallpaper shared" : result === "saved" ? "Wallpaper saved" : "Wallpaper downloaded");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
     } finally {

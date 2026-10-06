@@ -23,14 +23,8 @@ export function BackupScreen() {
       const json = await exportBackup();
       const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
       const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${BRAND.slug}-backup-${date}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      const { saveOrShareBlob } = await import("@/lib/native-bridge");
+      await saveOrShareBlob(blob, `${BRAND.slug}-backup-${date}.json`, "HandOff backup", "Here's my backup");
       toast.success("Backup saved");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Backup failed");

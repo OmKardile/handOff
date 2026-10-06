@@ -7,6 +7,7 @@ import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
 import { HELP_GUIDES, setSelectedGuide } from "@/lib/help-content";
+import { installBackButton, ensurePersistentStorage } from "@/lib/native-bridge";
 
 const TABS = [
   { id: "card", label: "CARD", icon: CreditCard, view: "home" as const },
@@ -17,6 +18,14 @@ const TABS = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { view, navigate, tab } = useView();
   const hideBar = view === "onboarding" || view === "fullscreen-qr";
+
+  // Install the Android hardware back-button handler (once).
+  // On sub-screens: back → home. On home/onboarding: back → exit app.
+  // Also request persistent storage so data survives app restarts.
+  React.useEffect(() => {
+    void installBackButton(() => view, (v) => navigate(v));
+    void ensurePersistentStorage();
+  }, [view, navigate]);
 
   return (
     <div className="relative flex h-[100dvh] flex-col overflow-hidden field-grain">
