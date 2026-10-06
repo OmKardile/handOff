@@ -1293,3 +1293,33 @@ Stage Summary:
 - Corner radius FIXED: inner QR plate is now 20px, outer card is 28px, difference (8px) = the padding. Concentric — gap is uniform at corners (picture-frame-mat effect). No more pinching/step.
 - Both the CSS border-radius (QrPreview wrapper) and the canvas-drawn plateRadius (qr-render.ts) are now 20px, so they align.
 - Verified on home + fullscreen. Lint clean. Browser + VLM (with context) verified.
+
+---
+Task ID: FIX-STUDIO-PRESET-THUMBNAIL-RADIUS
+Agent: main
+Task: "still" — the corner radius was STILL mismatched, but in the Studio preset thumbnails (not the home card). The user's screenshot showed an orange-bordered selected preset thumbnail where the inner QR radius (20px) was bigger than the outer button radius (12px / rounded-xl).
+
+Work Log:
+- ROOT CAUSE: The QrPreview wrapper had a FIXED borderRadius: 20px. But QrPreview is used at MANY sizes:
+  - Home/fullscreen (264-560px) → parent card is 28px → inner 20px is correct
+  - Studio preset thumbnails (72px) → parent button is `rounded-xl` (12px) → inner 20px is WAY too big → the QR plate corners poke outside the button's curve → visible mismatch
+  - Wallpaper thumbnails (56px) → same issue
+- FIX: made the QrPreview radius SCALE with size, using the same formula in both the CSS wrapper AND the canvas-drawn plate:
+  - `borderRadius = max(6, min(20, round(size * 0.1)))`
+  - 264px QR → 20px (matches 28px card with 8px padding)
+  - 72px thumbnail → 7px (matches 12px button with ~2px padding)
+  - 56px thumbnail → 6px
+  - 560px fullscreen → 20px (capped)
+- Updated BOTH:
+  1. `qr-preview.tsx` wrapper CSS: `borderRadius: Math.max(6, Math.min(20, Math.round(size * 0.1)))`
+  2. `qr-render.ts` canvas-drawn plate: `const r = Math.max(6, Math.min(20, Math.round(size * 0.1)))` — so the canvas-drawn curve aligns with the CSS clip
+- VERIFICATION:
+  - Studio preset thumbnails: VLM confirmed "radii match, gap uniform, no visible steps or mismatches. Clean and geometrically precise."
+  - Home card: wrapperRadius=20px, cardRadius=28px, size=264px. VLM confirmed "gap uniform at all four corners, concentric picture-frame-mat effect."
+  - Both the large card AND the small thumbnails now have matching radii.
+
+Stage Summary:
+- Corner radius FIXED everywhere: the QrPreview radius now scales with size (6-20px, ~10% of canvas) so it always matches its parent container's curve — whether that's a 28px hero card (inner 20px) or a 12px preset thumbnail button (inner 7px).
+- Both CSS border-radius and canvas-drawn plateRadius use the same formula, so they align.
+- Verified on Studio preset thumbnails (72px) + home hero card (264px). No more mismatch.
+- Lint clean. Browser + VLM verified.

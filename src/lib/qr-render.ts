@@ -124,7 +124,9 @@ export async function renderQrToCanvas(
   // BEFORE drawing the QR image, so the QR's own square background fill
   // gets cropped to rounded corners (otherwise it paints over the plate
   // as a sharp square).
-  const r = style.plateRadius;
+  // Scale the radius with size so it matches the CSS border-radius on the
+  // wrapper (which uses the same formula): ~10% of size, clamped 6-20px.
+  const r = Math.max(6, Math.min(20, Math.round(size * 0.1)));
   ctx.save();
   roundRect(ctx, 0, 0, size, size, r);
   ctx.clip();

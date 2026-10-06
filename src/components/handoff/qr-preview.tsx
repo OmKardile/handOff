@@ -56,11 +56,12 @@ export function QrPreview({
       style={{
         width: size,
         height: size,
-        // Concentric radius: the parent card is --radius-xl (28px) with padding
-        // around this QR wrapper. To keep the gap uniform at the corners
-        // (concentric curves), the inner radius = outer radius - padding.
-        // Card is 28px, padding is ~8px → inner = 20px.
-        borderRadius: 20,
+        // Concentric radius: scales with QR size so it always matches the
+        // parent container's curve. For large QRs (home/fullscreen, ≥200px)
+        // the parent card is 28px with 8px padding → inner = 20px.
+        // For small thumbnails (≤100px) the parent button is ~10-12px →
+        // inner = 6-8px. Formula: ~10% of size, clamped 6-20px.
+        borderRadius: Math.max(6, Math.min(20, Math.round(size * 0.1))),
       }}
     >
       <canvas
