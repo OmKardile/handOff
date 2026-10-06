@@ -148,22 +148,6 @@ export function StudioScreen() {
 
         {tab === "Presets" && (
           <div className="space-y-5">
-            {recentStyles.length > 0 && (
-              <RecentStylesStrip
-                styles={recentStyles}
-                currentId={style.presetId}
-                onApply={(id) => {
-                  applyPreset(id);
-                  rememberStyle(id);
-                }}
-                onClear={() => {
-                  clearRecents();
-                  toast("Recents cleared");
-                }}
-                card={card}
-                photo={photo?.full}
-              />
-            )}
             <PresetGroup title="Quiet & editorial" presets={STYLE_PRESETS.filter((p) => p.group === "quiet")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
             <PresetGroup title="Warm & colourful" presets={STYLE_PRESETS.filter((p) => p.group === "warm")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />
             <PresetGroup title="Cool & fresh" presets={STYLE_PRESETS.filter((p) => p.group === "cool")} currentId={style.presetId} onApply={(id) => { applyPreset(id); rememberStyle(id); }} card={card} style={style} photo={photo?.full} />

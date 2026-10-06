@@ -8,6 +8,7 @@ import { HandOffMark } from "@/app/page";
 import { QrPreview } from "../qr-preview";
 import { processPhoto } from "@/lib/photo";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
+import { DevSignature } from "../dev-signature";
 import { Reveal, staggerContainer, staggerItem } from "../motion";
 import { motion } from "framer-motion";
 import {
@@ -110,7 +111,13 @@ export function Onboarding() {
           </div>
         </motion.div>
 
-        <div className="flex-1" />
+        <div className="flex-1 flex flex-col items-center justify-center gap-3 py-6">
+          {/* Developer signature — centered in the open space */}
+          <DevSignature className="text-[12px]" />
+          <p className="field-label opacity-50">
+            {BRAND.name} v{BRAND.version}
+          </p>
+        </div>
 
         {/* privacy spec strip */}
         <motion.div

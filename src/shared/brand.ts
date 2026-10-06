@@ -14,7 +14,7 @@ export const BRAND = {
   appId: "com.example.handoff", // placeholder — change before store submission
   androidPackage: "com.example.handoff",
   iosBundleId: "com.example.handoff",
-  version: "1.0.0",
+  version: "1.6.9",
   /** Brand voice: confident, concise, human, specific. */
   voice: {
     do: [

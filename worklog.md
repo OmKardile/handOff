@@ -1323,3 +1323,33 @@ Stage Summary:
 - Both CSS border-radius and canvas-drawn plateRadius use the same formula, so they align.
 - Verified on Studio preset thumbnails (72px) + home hero card (264px). No more mismatch.
 - Lint clean. Browser + VLM verified.
+
+---
+Task ID: REMOVE-RECENTS + WELCOME-SIG + VERSION-1.6.9 + FLOATING-DEV
+Agent: main
+Task: (1) Remove "recently used" from Studio; (2) add signature at very start page (onboarding welcome) — it has space; (3) change version to 1.6.9; (4) move the developer button (just below that in settings) to floating at bottom.
+
+Work Log:
+- REMOVE "RECENTLY USED" FROM STUDIO:
+  - Removed the `RecentStylesStrip` block (conditional on `recentStyles.length > 0`) from the Presets tab in studio.tsx. The preset groups (Quiet/Warm/Cool/Social/Vivid) now start directly at the top.
+  - Verified via DOM: `hasRecentlyUsed: false`.
+- WELCOME SIGNATURE:
+  - The onboarding welcome had a `flex-1` empty spacer between the tagline and the privacy spec strip. Replaced it with a centered signature block: `<DevSignature className="text-[12px]" />` + `HandOff v1.6.9` version label.
+  - Imported DevSignature into onboarding.tsx.
+  - VLM confirmed: "Designed & developed by Omkar Kardile" + "HANDOFF V1.6.9" centered in the open space.
+- VERSION 1.6.9:
+  - Updated `BRAND.version` in brand.ts from "1.0.0" → "1.6.9".
+  - Now appears on the welcome signature + the floating developer chip + PageFooter.
+- FLOATING DEVELOPER CHIP:
+  - Created `src/components/handoff/floating-developer.tsx` — a `FloatingDeveloperChip` component: a small brutalist chip (border-2 ink, hard shadow, rounded-8px) fixed at bottom-left, above the nav (`bottom: max(safe, 84px)`). Shows external-link icon + "HandOff" + "v1.6.9". Links to omkardile.is-a.dev. Hover → lime fill.
+  - Wired into app-shell.tsx: `<FloatingDeveloperChip hide={hideBar} />` — floats on all main screens, hidden on onboarding + fullscreen (where it would interfere).
+  - Removed the "Developer" row from settings.tsx (the ExternalLink nav row + the DevSignature at the bottom). Cleaned up unused imports (ExternalLink, DevSignature).
+  - VLM confirmed: floating chip at bottom-left with "HANDOFF V1.6.9" + external link icon, brutalist styled.
+  - DOM confirmed: `hasDeveloperRow: false` in settings.
+
+Stage Summary:
+- "Recently used" strip removed from Studio Presets tab.
+- Welcome signature added: "Designed & developed by Omkar Kardile" + "HandOff v1.6.9" centered in the onboarding welcome's open space.
+- Version updated to 1.6.9 everywhere (brand.ts → welcome + floating chip + page footer).
+- Developer button removed from Settings; now floats as a small brutalist chip at bottom-left on all main screens (hidden on onboarding/fullscreen).
+- Lint clean. Browser + VLM + DOM verified.

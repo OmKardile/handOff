@@ -14,12 +14,10 @@ import {
   HardDrive,
   Sparkles,
   HelpCircle,
-  ExternalLink,
 } from "lucide-react";
 import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
 import { ScreenHeader, Wordmark } from "../app-shell";
-import { DevSignature } from "../dev-signature";
 import { BRAND, PRIVACY_PROMISE } from "@/shared/brand";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
@@ -165,28 +163,11 @@ export function SettingsScreen() {
           <NavRow icon={Sparkles} label="Showcase" onClick={() => navigate("showcase")} />
           <RowDivider />
           <NavRow icon={HelpCircle} label="Help centre" onClick={() => navigate("help")} />
-          <RowDivider />
-          <a
-            href="https://omkardile.is-a.dev/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="no-tap flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors active:bg-foreground/5"
-          >
-            <ExternalLink className="h-[18px] w-[18px] text-muted-foreground" />
-            <div className="flex-1">
-              <p className="text-[15px]">Developer</p>
-              <p className="text-[12px] text-muted-foreground">Omkar Kardile</p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-          </a>
         </CardGroup>
 
-        <div className="mt-6 flex flex-col items-center gap-2">
-          <DevSignature />
-          <p className="text-[11px] text-muted-foreground/60">
-            No servers. No tracking. Ever.
-          </p>
-        </div>
+        <p className="mt-6 text-center text-[11px] text-muted-foreground/60">
+          No servers. No tracking. Ever.
+        </p>
       </motion.div>
     </div>
   );
