@@ -83,7 +83,7 @@ export function HomeScreen() {
           className="press no-tap flex h-9 items-center gap-1.5 border-2 border-ink bg-ink px-2.5 font-heavy text-[11px] uppercase tracking-wide text-bone shadow-[2px_2px_0_0_var(--ink)]"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-signal blink" />
-          OFFLINE
+          On device
         </button>
       </div>
 
@@ -93,10 +93,10 @@ export function HomeScreen() {
           <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-clay" strokeWidth={2.5} />
           <div className="flex-1">
             <p className="font-heavy text-[12px] uppercase leading-snug tracking-wide text-foreground">
-              Payload modified
+              Your card changed
             </p>
             <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">
-              Old transmissions still carry the previous packet.
+              Anything printed or saved earlier still shows the old details.
             </p>
           </div>
           <button
@@ -109,16 +109,16 @@ export function HomeScreen() {
         </div>
       )}
 
-      {/* hero card — PAYLOAD PACKET */}
+      {/* hero card — YOUR CARD */}
       <Reveal delay={0.05}>
       <div className="brut-lg relative overflow-hidden">
-        {/* header strip */}
-        <div className="flex items-center justify-between border-b-2 border-ink bg-ink px-4 py-1.5 text-bone">
-          <span className="field-label flex items-center gap-1.5 text-bone/90">
-            <span className="h-1.5 w-1.5 rounded-full bg-signal blink" />
-            TRANSMISSION READY
+        {/* header strip — INK ON LIME (black on yellow) */}
+        <div className="flex items-center justify-between border-b-2 border-ink bg-signal px-4 py-1.5 text-ink">
+          <span className="field-label flex items-center gap-1.5 font-bold text-ink">
+            <span className="h-1.5 w-1.5 rounded-full bg-ink blink" />
+            YOUR CARD
           </span>
-          <span className="field-label text-bone/60">{"//PAYLOAD"}</span>
+          <span className="field-label text-ink/60">{"//READY"}</span>
         </div>
 
         {/* name plate */}
@@ -131,7 +131,9 @@ export function HomeScreen() {
                 className="mb-3 h-12 w-12 border-2 border-ink object-cover"
               />
             ) : null}
-            <p className="field-label text-clay">{card.company || "UNREGISTERED"}</p>
+            {card.company ? (
+              <p className="field-label text-clay">{card.company}</p>
+            ) : null}
             <h1 className="mt-1 font-display text-[2.1rem] uppercase leading-[0.95] tracking-tight">
               {fullName || "Your name"}
             </h1>
@@ -201,7 +203,7 @@ export function HomeScreen() {
         />
         <PrimaryAction
           icon={Share2}
-          label="Transmit"
+          label="Share"
           onClick={() => navigate("share")}
           highlight
         />
@@ -237,7 +239,11 @@ export function HomeScreen() {
       {/* contact details */}
       <Reveal delay={0.28}>
       <div className="mt-7 mb-4">
-        <p className="mb-2 field-label">{"//PAYLOAD CONTENTS"}</p>
+        {/* section label — INK ON LIME strip */}
+        <div className="mb-2 flex items-center gap-2 border-2 border-ink bg-signal px-2 py-1 shadow-[2px_2px_0_0_var(--ink)]">
+          <span className="h-1.5 w-1.5 bg-ink" />
+          <span className="font-heavy text-[11px] uppercase tracking-wide text-ink">On your card</span>
+        </div>
         {hasContactDetails ? (
           <div className="brut overflow-hidden">
             <DetailRow label="Phone" value={card.phone} />
@@ -256,7 +262,7 @@ export function HomeScreen() {
           <EmptyContactState onEdit={() => navigate("editor")} />
         )}
         <p className="mt-3 text-center field-label leading-relaxed">
-          QR ENCODES A vCARD · STOCK CAMERAS OFFER
+          THE QR ENCODES A vCARD · STOCK CAMERAS OFFER
           <span className="font-bold text-foreground"> ADD CONTACT </span>
           — NO APP NEEDED
         </p>
@@ -362,7 +368,7 @@ function EmptyContactState({ onEdit }: { onEdit: () => void }) {
         <Pencil className="h-5 w-5" strokeWidth={2} />
       </div>
       <p className="mt-3 font-heavy text-[14px] uppercase tracking-wide">
-        No payload data
+        No contact details yet
       </p>
       <p className="mx-auto mt-1 max-w-[15rem] text-[12px] leading-relaxed text-muted-foreground">
         Add a phone, email or social link so people can reach you.
@@ -371,7 +377,7 @@ function EmptyContactState({ onEdit }: { onEdit: () => void }) {
         onClick={onEdit}
         className="press no-tap mx-auto mt-3 flex items-center gap-1.5 border-2 border-ink bg-signal px-3.5 py-1.5 font-heavy text-[12px] uppercase tracking-wide text-ink shadow-[2px_2px_0_0_var(--ink)]"
       >
-        Add data
+        Add details
         <ChevronRight className="h-3 w-3" strokeWidth={2.5} />
       </button>
     </div>
@@ -398,7 +404,7 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.g
         >
           <span className="flex items-center gap-2">
             <span className="h-2 w-2 border border-ink bg-signal" />
-            <span className="font-heavy text-[12px] uppercase tracking-wide">Payload breakdown</span>
+            <span className="font-heavy text-[12px] uppercase tracking-wide">QR breakdown</span>
             <span className="border border-ink bg-card px-1.5 field-label">
               {dataFieldCount} field{dataFieldCount === 1 ? "" : "s"}
             </span>
@@ -440,12 +446,12 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.g
                 );
               })}
             <p className="pt-1 field-label leading-relaxed">
-              PAYLOAD = COMPACT vCARD. FEWER BYTES = FASTER, RELIABLE SCANS.
+              THE QR ENCODES A COMPACT vCARD. FEWER BYTES = FASTER, MORE RELIABLE SCANS.
               <button
                 onClick={() => navigate("editor")}
                 className="ml-1 font-bold text-foreground underline-offset-2 hover:underline"
               >
-                EDIT PAYLOAD
+                Edit contents
               </button>
             </p>
           </div>

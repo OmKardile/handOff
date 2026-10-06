@@ -76,8 +76,8 @@ export function Onboarding() {
         <div className="brut-signal flex h-16 w-16 items-center justify-center">
           <Check className="h-8 w-8" strokeWidth={3} />
         </div>
-        <p className="font-display text-3xl uppercase tracking-tight">Payload ready</p>
-        <p className="field-label">{"//TRANSMISSION ARMED · DEVICE-ONLY"}</p>
+        <p className="font-display text-3xl uppercase tracking-tight">Your card is ready</p>
+        <p className="field-label">{"//NOTHING LEAVES THIS DEVICE"}</p>
       </div>
     );
   }
@@ -143,7 +143,7 @@ export function Onboarding() {
             onClick={() => setStep("identity")}
             className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0_0_var(--ink)]"
           >
-            ▸ Initiate dead drop
+            ▸ Create your card
           </button>
           <p className="mt-3 text-center field-label">
             {"//EST. 30s · PAYLOAD STAYS ON THIS DEVICE"}
@@ -256,7 +256,7 @@ export function Onboarding() {
             className="press no-tap flex w-full items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-4 font-heavy text-[15px] uppercase tracking-wide text-ink shadow-[5px_5px_0_0_var(--ink)]"
           >
             <Check className="h-4 w-4" strokeWidth={3} />
-            Arm payload
+            Create card
           </motion.button>
         ) : (
           <div className="flex gap-3">
@@ -360,7 +360,7 @@ function IdentityStep({
   return (
     <div className="space-y-5">
       <div>
-        <p className="field-label opacity-70">{"//PACKET 01 · IDENTITY"}</p>
+        <p className="field-label opacity-70">{"//STEP 01 · IDENTITY"}</p>
         <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Who are you</h2>
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -424,7 +424,7 @@ function ContactStep({
   return (
     <div className="space-y-5">
       <div>
-        <p className="field-label opacity-70">{"//PACKET 02 · COMMS"}</p>
+        <p className="field-label opacity-70">{"//STEP 02 · CONTACT"}</p>
         <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Reach you how</h2>
       </div>
       <Field label="Phone">
@@ -472,7 +472,7 @@ function PhotoStep({
   return (
     <div className="space-y-5">
       <div>
-        <p className="field-label opacity-70">{"//PACKET 03 · FACE"}</p>
+        <p className="field-label opacity-70">{"//STEP 03 · PHOTO"}</p>
         <h2 className="mt-1 font-display text-4xl uppercase leading-[0.92] tracking-tight">Add a face</h2>
         <p className="mt-1 text-[13px] text-muted-foreground">
           Optional. Cropped square. All location data stripped on-device.

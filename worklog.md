@@ -801,3 +801,38 @@ Stage Summary:
 - Home: payload-packet hero (TRANSMISSION READY strip + SIGNAL meter), brutalist action grid, payload-breakdown panel.
 - Other screens (studio/settings/editor/share/etc.) inherit the new palette automatically via repointed semantic tokens (--border=ink, --card=white, --accent=lime) — they look consistent without per-screen rewrites.
 - Works in light + dark mode. QR rendering preserved. Lint clean. Browser + VLM verified.
+
+---
+Task ID: PLAIN-TITLES + INK-ON-LIME
+Agent: main
+Task: User feedback — "black text on yellow looks good" + "keep the titles something a normal person will understand".
+
+Work Log:
+- PLAIN-ENGLISH TITLES (big readable titles → normal-person language; kept the tiny `//` mono decorative tags as brutalist flavor):
+  - Onboarding CTA: "▸ Initiate dead drop" → "▸ Create your card"
+  - Onboarding done: "Payload ready" → "Your card is ready"; "//TRANSMISSION ARMED · DEVICE-ONLY" → "//NOTHING LEAVES THIS DEVICE"
+  - Onboarding finish button: "Arm payload" → "Create card"
+  - Onboarding step tags: "//PACKET 01·IDENTITY/02·COMMS/03·FACE" → "//STEP 01·IDENTITY/02·CONTACT/03·PHOTO"
+  - Home status chip: "OFFLINE" → "On device"
+  - Home QR-changed banner: "Payload modified" → "Your card changed"; subtext → "Anything printed or saved earlier still shows the old details."
+  - Home hero header strip: "TRANSMISSION READY" + "//PAYLOAD" → "YOUR CARD" + "//READY"
+  - Home company label: was hardcoded "UNREGISTERED" when empty → now hidden entirely when card.company is empty (cleaner)
+  - Home action: "Transmit" → "Share"
+  - Home section label: "//PAYLOAD CONTENTS" → "On your card"
+  - Home breakdown panel: "Payload breakdown" → "QR breakdown"; body copy → "THE QR ENCODES A COMPACT vCARD. FEWER BYTES = FASTER, MORE RELIABLE SCANS."; link "EDIT PAYLOAD" → "Edit contents"
+  - Home empty state: "No payload data" → "No contact details yet"; "Add data" → "Add details"
+- INK-ON-LIME (black-on-yellow) as a DOMINANT pattern, not just the CTA:
+  - Hero card header strip: was bg-ink (black) with bone text → FLIPPED to bg-signal (lime) with INK text + a blinking INK dot. "YOUR CARD" now reads black-on-yellow.
+  - "On your card" section label: was a plain mono `//` line → now a full ink-on-lime BAR (bg-signal, ink text, ink border, 2px hard offset shadow). The brutalist lime strip repeats down the page.
+  - Existing lime+ink surfaces retained: CTA button, active nav tab, signal meter bars, onboarding progress segments, QR breakdown indicator dot, empty-state icon tile, photo-step dashed tile hover.
+- Verification:
+  - `bun run lint`: 0 errors
+  - agent-browser: full onboarding flow → home. Accessible names confirm plain text ("▸ CREATE YOUR CARD", "CREATE CARD", "ON DEVICE", "SHARE", "On your card").
+  - VLM onboarding: CTA reads "▸ CREATE YOUR CARD", acid-lime fill + black text confirmed, headline "HAND OFF" readable.
+  - VLM home top: header strip = black text on lime, "YOUR CARD" + "//READY", chip = "ON DEVICE", "ADA LOVELACE" big heavy uppercase.
+  - VLM home mid: SHOW / SHARE (lime+black) / STYLE action row confirmed; "ON YOUR CARD" lime bar with ink text confirmed; contact detail rows render below.
+
+Stage Summary:
+- Titles are now plain English ("Create your card", "Your card is ready", "YOUR CARD", "Share", "On your card", "QR breakdown", "On device") while the tiny `//` mono tags stay as decorative brutalist flavor.
+- Ink-on-lime (black-on-yellow) promoted from CTA-only to a repeating system pattern: hero header strip + section-label bars + existing CTA/nav/meter. The lime reads as the app's signature accent.
+- Browser + VLM verified in light mode. Lint clean.
