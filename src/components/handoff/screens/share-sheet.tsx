@@ -77,8 +77,8 @@ export function ShareSheet() {
           break;
         }
         case "vcf": {
-          exportVcf(card, photo?.thumb);
-          toast.success(".vcf downloaded");
+          await exportVcf(card, photo?.thumb);
+          toast.success(".vcf saved");
           break;
         }
         case "story": {
@@ -175,8 +175,7 @@ export function ShareSheet() {
               return (
                 <button
                   key={l.id}
-                  onClick={() => setSelectedLayout(l.id)}
-                  onDoubleClick={() => runLayout(l.id)}
+                  onClick={() => { setSelectedLayout(l.id); setPreviewing(l.id); }}
                   className={cn(
                     "no-tap relative flex flex-col overflow-hidden rounded-2xl border-2 p-3 text-left transition-all",
                     active ? "border-clay bg-clay/5" : "border-border bg-card"
@@ -377,50 +376,53 @@ function PreviewModal({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="glass-strong fixed inset-0 z-50 flex flex-col pt-safe"
+        className="fixed inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-sm pt-safe"
         role="dialog"
         aria-label={`Preview ${layoutName} layout`}
       >
-        <div className="flex items-center justify-between p-4">
+        <div className="flex items-center justify-between border-b-2 border-ink p-4">
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-clay">Preview</p>
-            <h2 className="font-display text-lg font-medium tracking-tight">{layoutName}</h2>
+            <p className="field-label text-clay">Preview</p>
+            <h2 className="font-display text-xl uppercase tracking-tight">{layoutName}</h2>
           </div>
           <button
             onClick={onClose}
-            className="no-tap flex h-10 w-10 items-center justify-center rounded-full bg-muted text-foreground"
+            className="press no-tap flex h-10 w-10 items-center justify-center border-2 border-ink bg-card text-ink shadow-[2px_2px_0_0_var(--ink)]"
+            style={{ borderRadius: 8 }}
             aria-label="Close preview"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" strokeWidth={2.5} />
           </button>
         </div>
-        <div className="relative flex flex-1 items-center justify-center px-6 pb-6">
+        <div className="relative flex flex-1 items-center justify-center px-6 py-6">
           <canvas
             ref={canvasRef}
-            className="max-h-full max-w-full rounded-xl shadow-2xl"
+            className="max-h-full max-w-full brut-lg p-2"
             style={{ height: "60vh", width: "auto", display: loading ? "none" : "block" }}
           />
           {loading && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-              <Loader2 className="h-6 w-6 animate-spin text-clay" />
-              <p className="text-[12px] text-muted-foreground">Rendering {layoutName}…</p>
+              <Loader2 className="h-6 w-6 animate-spin text-clay" strokeWidth={2.5} />
+              <p className="field-label">Rendering {layoutName}…</p>
             </div>
           )}
         </div>
-        <div className="border-t border-border p-4 pb-safe">
+        <div className="border-t-2 border-ink p-4 pb-safe">
           <div className="mx-auto flex max-w-md gap-2">
             <button
               onClick={onClose}
-              className="no-tap flex-1 rounded-full border border-border py-3.5 text-[14px] font-medium text-foreground"
+              className="press no-tap flex-1 border-2 border-ink bg-card py-3.5 font-heavy text-[14px] uppercase tracking-wide text-ink shadow-[2px_2px_0_0_var(--ink)]"
+              style={{ borderRadius: 10 }}
             >
               Back
             </button>
             <button
               onClick={onExport}
-              className="no-tap flex-[2] flex items-center justify-center gap-2 rounded-full bg-foreground py-3.5 text-[14px] font-medium text-background"
+              className="press no-tap flex-[2] flex items-center justify-center gap-2 border-[2.5px] border-ink bg-signal py-3.5 font-heavy text-[14px] uppercase tracking-wide text-black shadow-[4px_4px_0_0_var(--ink)]"
+              style={{ borderRadius: 10 }}
             >
-              <Download className="h-4 w-4" />
-              Export {layoutName}
+              <Download className="h-4 w-4" strokeWidth={2.5} />
+              Export
             </button>
           </div>
         </div>

@@ -527,22 +527,17 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-/** Trigger a file download (web). */
-export function downloadBlob(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+/** Trigger a file download (web + native). Delegates to the native bridge on Capacitor. */
+export async function downloadBlob(blob: Blob, filename: string): Promise<void> {
+  // Use the native bridge (handles Capacitor Filesystem + Share, web <a download>, web share API)
+  const { saveOrShareBlob } = await import("./native-bridge");
+  await saveOrShareBlob(blob, filename, "HandOff", "Here's my card");
 }
 
 /** Trigger a text download (for .vcf). */
-export function downloadText(text: string, filename: string, mime = "text/vcard"): void {
+export async function downloadText(text: string, filename: string, mime = "text/vcard"): Promise<void> {
   const blob = new Blob([text], { type: `${mime};charset=utf-8` });
-  downloadBlob(blob, filename);
+  await downloadBlob(blob, filename);
 }
 
 /** Share via Web Share API if available, else download. */
@@ -552,28 +547,17 @@ export async function shareOrDownload(
   title: string,
   text: string
 ): Promise<"shared" | "downloaded"> {
-  const file = new File([blob], filename, { type: blob.type });
-  if (
-    typeof navigator !== "undefined" &&
-    navigator.canShare &&
-    navigator.canShare({ files: [file] })
-  ) {
-    try {
-      await navigator.share({ files: [file], title, text });
-      return "shared";
-    } catch {
-      /* user cancelled, fall through to download */
-    }
-  }
-  downloadBlob(blob, filename);
-  return "downloaded";
+  // Use the native bridge which handles Capacitor Filesystem + Share + web fallbacks
+  const { saveOrShareBlob } = await import("./native-bridge");
+  const result = await saveOrShareBlob(blob, filename, title, text);
+  return result === "shared" ? "shared" : "downloaded";
 }
 
 /** Export the .vcf file with proper filename + MIME. */
-export function exportVcf(card: Card, photoThumb?: string): void {
+export async function exportVcf(card: Card, photoThumb?: string): Promise<void> {
   const content = buildVcfContent(card, photoThumb);
   const filename = vcardFilename(card.firstName, card.lastName);
-  downloadText(content, filename, "text/vcard");
+  await downloadText(content, filename, "text/vcard");
 }
 
 export { getQrPayload };

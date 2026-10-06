@@ -7,6 +7,8 @@ const config: CapacitorConfig = {
   bundledWebRuntime: false,
   plugins: {
     Haptics: {},
+    Filesystem: {},
+    Share: {},
   },
   server: {
     androidScheme: "https",
