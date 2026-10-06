@@ -1010,3 +1010,35 @@ Stage Summary:
 - Light mode is now the default (ThemeProvider defaultTheme="light" + enableSystem=false; store default "light"). App always loads light regardless of OS.
 - QR plate radius bumped 28→40 by default (all presets), slider range extended 0-72 so users can go rounder. Rounded corners render on the QR canvas itself (exports/wallpapers/previews all inherit).
 - Lint clean. Browser + VLM verified in light mode.
+
+---
+Task ID: SIZE-INTO-BREAKDOWN + QR-ROUND-FIX + NO-CAPTION
+Agent: main
+Task: (1) Move the "Size" section into the QR breakdown expandable; (2) QR still wasn't round (user: "qr aint round still"); (3) stray small name at the bottom of the QR ("wtf is that small name").
+
+Work Log:
+- QR ROUND CORNERS — root cause found + fixed:
+  - Root cause: in qr-render.ts I drew a rounded plate (roundRect + fill) BEHIND the QR, then drew the QR PNG ON TOP via ctx.drawImage(). But the QR PNG from qr-code-styling includes its OWN square background fill — so the square QR image painted OVER the rounded plate, making the visible corners sharp again.
+  - Fix: wrap the plate fill + the QR drawImage() inside a single ctx.save() → roundRect() → ctx.clip() → (fill + drawImage) → ctx.restore(). The clip crops the QR's square background to the rounded shape, so the visible plate corners are now genuinely rounded. The plateRadius (40px default) now actually applies to the rendered QR.
+  - VLM confirmed: "the QR code's white plate/frame has rounded corners. It is not a sharp square."
+- STRAY NAME CAPTION — fixed:
+  - Root cause: renderQrToCanvas had `if (style.captionEnabled) { const text = style.captionText || [card.firstName, card.lastName]...; drawCaption(...) }`. So even if the user never typed a caption, enabling captions auto-drew their NAME on the QR (that was the "Atharva" text at the bottom). The user's persisted style had captionEnabled=true.
+  - Fix: caption now ONLY draws when `style.captionEnabled && style.captionText.trim()` — i.e. the user explicitly enabled it AND typed custom text. Removed the `|| [firstName, lastName]` auto-name fallback. Never auto-draw the card name on the QR again.
+  - VLM confirmed: "no small name or text at the bottom of the QR card."
+- SIZE METER → into QR breakdown expandable:
+  - Removed the Size meter strip from the hero card (was directly under the QR, always visible).
+  - Added it as the FIRST row inside the QrInsights expandable panel (top of the expanded content), above the per-field byte breakdown. Separated by a border-t-2. Same 12-segment bar meter + byte count.
+  - Passed `size` as a prop from HomeScreen → QrInsights (added to the component signature).
+  - Collapsed state: hero card is cleaner (just the QR + name plate). Expanded: Size meter + per-field bars + Edit contents link.
+  - agent-browser eval on expanded panel confirmed content: "Size [bars] 71B | vCard envelope 37B 51% | Name 36B 49% | The QR encodes a compact vCard... Edit contents".
+- Verification:
+  - `bun run lint`: 0 errors
+  - Restarted dev server + cleared .next CSS cache.
+  - VLM home: QR plate rounded, no caption name, no size strip under QR.
+  - VLM expanded panel: Size row at top, per-field breakdown below, Edit contents link at bottom.
+
+Stage Summary:
+- QR plate is now ACTUALLY rounded (clip-before-draw fix — the QR's square background is cropped to the rounded shape instead of painting over it).
+- No more stray name caption on the QR (caption only renders when explicitly enabled + custom text typed; removed the auto-name fallback).
+- Size meter moved out of the hero card into the QR breakdown expandable (first row, above the per-field breakdown). Hero card is cleaner.
+- Lint clean. Browser + VLM verified.

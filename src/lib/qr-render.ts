@@ -120,17 +120,20 @@ export async function renderQrToCanvas(
   canvas.height = size;
   ctx.clearRect(0, 0, size, size);
 
-  // plate background with radius
+  // Plate background with rounded corners. We CLIP to the rounded shape
+  // BEFORE drawing the QR image, so the QR's own square background fill
+  // gets cropped to rounded corners (otherwise it paints over the plate
+  // as a sharp square).
   const r = style.plateRadius;
   ctx.save();
   roundRect(ctx, 0, 0, size, size, r);
+  ctx.clip();
+  // fill the plate color inside the clipped (rounded) region
   ctx.fillStyle = style.background;
-  ctx.fill();
-  ctx.restore();
+  ctx.fillRect(0, 0, size, size);
 
-  // Draw the QR modules onto the canvas.
-  // getRawData("png") returns a Blob we load into an Image and draw —
-  // this is the most reliable path (append() can race the paint in some versions).
+  // Draw the QR modules. getRawData("png") returns a Blob → Image → drawImage.
+  // Because we're inside a clip, the square QR image is cropped to the rounded shape.
   let drew = false;
   try {
     const blob = await qr.getRawData("png");
@@ -159,17 +162,17 @@ export async function renderQrToCanvas(
     document.body.removeChild(tmp);
   }
 
+  ctx.restore(); // remove the rounded clip
+
   // centre element overlay
   if (style.centerType !== "none" && style.centerSize > 0) {
     await drawCenterElement(ctx, canvas, card, style, photoDataUrl);
   }
 
-  // caption
-  if (style.captionEnabled) {
-    const text = style.captionText || [card.firstName, card.lastName].filter(Boolean).join(" ");
-    if (text) {
-      await drawCaption(ctx, canvas, text, style);
-    }
+  // Caption — ONLY when the user explicitly enabled it AND typed custom text.
+  // Never auto-draw the card name on the QR (that caused the stray "name" at the bottom).
+  if (style.captionEnabled && style.captionText.trim()) {
+    await drawCaption(ctx, canvas, style.captionText.trim(), style);
   }
 }
 

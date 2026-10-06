@@ -163,31 +163,6 @@ export function HomeScreen() {
           </button>
           </QrReveal>
         </div>
-
-        {/* signal strength meter (byte size) */}
-        <div className="flex items-center justify-between gap-3 border-t-2 border-ink px-4 py-2.5">
-          <span className="field-label">Size</span>
-          <div className="flex flex-1 items-center gap-1">
-            {Array.from({ length: 12 }).map((_, i) => {
-              const threshold = i / 12;
-              const lit =
-                size.status === "green" ? threshold < 0.4 :
-                size.status === "amber" ? threshold < 0.7 :
-                threshold < 1;
-              return (
-                <div
-                  key={i}
-                  className={cn(
-                    "h-3 flex-1 border border-ink",
-                    lit && (size.status === "red" || size.status === "overflow" ? "bg-clay" : "bg-signal"),
-                    !lit && "bg-card"
-                  )}
-                />
-              );
-            })}
-          </div>
-          <span className="field-label tabular-nums">{size.bytes}B</span>
-        </div>
       </div>
       </Reveal>
 
@@ -197,7 +172,7 @@ export function HomeScreen() {
       </Reveal>
 
       {/* QR insights — byte breakdown */}
-      <QrInsights card={card} />
+      <QrInsights card={card} size={size} />
 
       {/* primary actions */}
       <Reveal delay={0.15}>
@@ -391,7 +366,7 @@ function EmptyContactState({ onEdit }: { onEdit: () => void }) {
 }
 
 /** QR insights panel — byte breakdown by field, with a visual bar chart. */
-function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.getState>["card"]> }) {
+function QrInsights({ card, size }: { card: NonNullable<ReturnType<typeof useHandOff.getState>["card"]>; size: ReturnType<typeof getQrSizeInfo> }) {
   const { navigate } = useView();
   const [expanded, setExpanded] = React.useState(false);
   const fields = getFieldBytes(card);
@@ -421,7 +396,32 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.g
           </span>
         </button>
         {expanded && (
-          <div className="space-y-2 px-4 py-3">
+          <div className="space-y-3 px-4 py-3">
+            {/* Size meter — moved here from the hero card */}
+            <div className="flex items-center justify-between gap-3">
+              <span className="field-label font-bold">Size</span>
+              <div className="flex flex-1 items-center gap-1">
+                {Array.from({ length: 12 }).map((_, i) => {
+                  const threshold = i / 12;
+                  const lit =
+                    size.status === "green" ? threshold < 0.4 :
+                    size.status === "amber" ? threshold < 0.7 :
+                    threshold < 1;
+                  return (
+                    <div
+                      key={i}
+                      className={cn(
+                        "h-3 flex-1 border border-ink",
+                        lit && (size.status === "red" || size.status === "overflow" ? "bg-clay" : "bg-signal"),
+                        !lit && "bg-card"
+                      )}
+                    />
+                  );
+                })}
+              </div>
+              <span className="field-label tabular-nums">{size.bytes}B</span>
+            </div>
+            <div className="border-t-2 border-ink pt-2">
             {fields
               .slice()
               .sort((a, b) => b.bytes - a.bytes)
@@ -434,7 +434,7 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.g
                   pct < 50 ? "bg-amber-500" :
                   "bg-red-500";
                 return (
-                  <div key={f.id} className="flex items-center gap-2">
+                  <div key={f.id} className="flex items-center gap-2 py-0.5">
                     <span className="w-16 flex-shrink-0 field-label">{f.label}</span>
                     <div className="relative h-3 flex-1 border-2 border-ink bg-card">
                       <div
@@ -451,8 +451,9 @@ function QrInsights({ card }: { card: NonNullable<ReturnType<typeof useHandOff.g
                   </div>
                 );
               })}
+            </div>
             <p className="pt-1 field-label leading-relaxed">
-              THE QR ENCODES A COMPACT vCARD. FEWER BYTES = FASTER, MORE RELIABLE SCANS.
+              The QR encodes a compact vCard. Fewer bytes = faster, more reliable scans.
               <button
                 onClick={() => navigate("editor")}
                 className="ml-1 font-bold text-foreground underline-offset-2 hover:underline"
