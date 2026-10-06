@@ -7,7 +7,6 @@ import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
 import { HELP_GUIDES, setSelectedGuide } from "@/lib/help-content";
-import { FloatingDeveloperChip } from "./floating-developer";
 
 const TABS = [
   { id: "card", label: "CARD", icon: CreditCard, view: "home" as const },
@@ -68,9 +67,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         {children}
       </main>
-
-      {/* Floating developer chip — bottom-left, above the nav */}
-      <FloatingDeveloperChip hide={hideBar} />
 
       {/* ===== Brutalist bottom nav ===== */}
       {!hideBar && (

@@ -14,6 +14,7 @@ import {
   HardDrive,
   Sparkles,
   HelpCircle,
+  ExternalLink,
 } from "lucide-react";
 import { useHandOff } from "@/lib/store";
 import { useView } from "../view-context";
@@ -168,6 +169,21 @@ export function SettingsScreen() {
         <p className="mt-6 text-center text-[11px] text-muted-foreground/60">
           No servers. No tracking. Ever.
         </p>
+
+        {/* Developer chip — at the end of settings, not floating/fixed */}
+        <div className="mt-4 flex justify-center">
+          <a
+            href="https://omkardile.is-a.dev/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="no-tap press flex items-center gap-1.5 border-2 border-ink bg-card px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-wide text-ink shadow-[2px_2px_0_0_var(--ink)] transition-colors hover:bg-signal hover:text-black"
+            style={{ borderRadius: 8 }}
+            aria-label="Developer: Omkar Kardile (opens in a new tab)"
+          >
+            <ExternalLink className="h-3 w-3" strokeWidth={2.5} />
+            {BRAND.name} · v{BRAND.version}
+          </a>
+        </div>
       </motion.div>
     </div>
   );

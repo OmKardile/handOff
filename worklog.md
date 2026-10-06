@@ -1412,3 +1412,23 @@ Stage Summary:
 - Kawaii cat completely redesigned: premium chibi-style illustration with gradient eyes + double shine, rounded ears, heart nose, muzzle, blush, tabby stripe, detailed paws with toe beans, curling tail, floating hearts, and sparkles.
 - Drawn entirely with canvas primitives (app is offline — no external images).
 - Lint clean. VLM verified all 8 features render.
+
+---
+Task ID: DEV-CHIP-SETTINGS-ONLY
+Agent: main
+Task: "yo that floating button should only appear when switched to config/setting tab and not sticky make it fixed at the end"
+
+Work Log:
+- Removed `FloatingDeveloperChip` from app-shell.tsx (it was floating on ALL screens, fixed at bottom-left).
+- Removed the unused import + the now-unused FloatingDeveloperChip component reference.
+- Added the developer chip directly into the Settings screen (settings.tsx) at the END of the settings content (after the "No servers. No tracking. Ever." text), as a normal centered block (not fixed/floating).
+- Re-added the `ExternalLink` lucide import to settings.tsx.
+- VERIFICATION:
+  - `bun run lint`: 0 errors
+  - VLM home: "bottom-left area above the nav bar is EMPTY. No HandOff v1.6.9 chip visible." ✅ (removed from home)
+  - VLM settings: "at the bottom of the settings content, a centered pill-shaped chip 'HANDOFF · V1.6.9' with external link icon. Not fixed to the screen — sits naturally at the end of the scrollable content area." ✅ (only on settings, at the end)
+
+Stage Summary:
+- Developer chip moved from floating-on-all-screens → only on the Settings (CONFIG) tab, at the end of the settings content (not fixed/sticky).
+- Home + Studio no longer show the chip.
+- Lint clean. Browser + VLM verified.
