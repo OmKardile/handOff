@@ -42,17 +42,8 @@ export function SettingsScreen() {
 
   return (
     <div className="mx-auto max-w-md">
-      {/* iOS 27 large title — standalone, no nav bar, left-aligned, bold sans */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 35 }}
-        className="px-5 pt-[max(env(safe-area-inset-top,0px),44px)] pb-2"
-      >
-        <h1 className="font-sans text-[34px] font-bold leading-[1.1] tracking-[-0.025em] text-foreground">
-          Settings
-        </h1>
-      </motion.div>
+      {/* Shared screen header — same font-display (Anton) as every other screen */}
+      <ScreenHeader title="Settings" />
 
       <motion.div
         variants={staggerContainer}

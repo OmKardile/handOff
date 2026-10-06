@@ -836,3 +836,23 @@ Stage Summary:
 - Titles are now plain English ("Create your card", "Your card is ready", "YOUR CARD", "Share", "On your card", "QR breakdown", "On device") while the tiny `//` mono tags stay as decorative brutalist flavor.
 - Ink-on-lime (black-on-yellow) promoted from CTA-only to a repeating system pattern: hero header strip + section-label bars + existing CTA/nav/meter. The lime reads as the app's signature accent.
 - Browser + VLM verified in light mode. Lint clean.
+
+---
+Task ID: FONT-CONSISTENCY
+Agent: main
+Task: "maintain font consistency same for each session - setting title font is different from other"
+
+Work Log:
+- AUDIT: grepped every <h1>/<h2> across src/components/handoff/screens/*. Found the single inconsistency: settings.tsx:52 used a one-off `<h1 className="font-sans text-[34px] font-bold">` (Space Grotesk, 34px, sentence case) — an iOS-27-style large title. EVERY other screen title (studio, editor, wallpaper, privacy, backup, wallet, share-sheet, help, fullscreen-qr, home, showcase, onboarding) uses the shared `ScreenHeader` component → `font-display` (Anton), 30px, uppercase.
+- FIX: replaced the one-off Settings title block with `<ScreenHeader title="Settings" />`. ScreenHeader was already imported in settings.tsx (line 21). It handles safe-area padding + renders the title in Anton `font-display` uppercase, exactly like Studio/Wallpaper/Privacy/etc.
+- Removed the now-redundant motion wrapper + iOS-27 comment.
+- Verification:
+  - `bun run lint`: 0 errors
+  - agent-browser eval on Studio title: {family: "Anton", size: "30px", weight: "400", transform: "uppercase"}
+  - agent-browser eval on Settings title: {family: "Anton", size: "30px", weight: "400", transform: "uppercase"} — IDENTICAL to Studio.
+  - VLM screenshot of Settings: confirmed "SETTINGS" in heavy condensed uppercase (Anton-like), brutalist aesthetic, readable labels (Appearance/Storage/Theme/Haptics).
+
+Stage Summary:
+- Settings title now uses the shared ScreenHeader (Anton font-display, 30px, uppercase) — matching every other screen. Font consistency restored across all sessions/screens.
+- The one-off `font-sans` iOS-27 large title was the only outlier; removed.
+- Lint clean. Browser-verified: Studio and Settings titles compute to the exact same font-family/size/weight/transform.
