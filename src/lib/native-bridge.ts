@@ -41,34 +41,12 @@ export async function installBackButton(getView: () => string, navigate: (v: "ho
   }
 }
 
-// ── Status bar (edge-to-edge fullscreen) ──
-
-let statusBarConfigured = false;
-/** Configure the status bar for edge-to-edge fullscreen on native.
- *  Makes the status bar transparent + overlay so content draws behind it. */
-export async function configureStatusBar(): Promise<void> {
-  if (statusBarConfigured || !isNative()) return;
-  statusBarConfigured = true;
-  try {
-    const { StatusBar, Style } = await import("@capacitor/status-bar");
-    // Overlay = true means content draws behind the status bar (edge-to-edge)
-    await StatusBar.setOverlaysWebView({ overlay: true });
-    // Use the app's background color for the status bar (bone = light)
-    // Style.Default = adapts to light/dark; we use Light since the app defaults to light mode
-    await StatusBar.setStyle({ style: Style.Light });
-    // Set the status bar background to transparent (let the app bg show through)
-    await StatusBar.setBackgroundColor({ color: "#F2EFE6" });
-  } catch {
-    /* not native or plugin missing — ignore */
-  }
-}
-
 // ── File downloads ──
 
 /**
  * Save a blob to the device + optionally share it.
- * On native (Capacitor): writes to Filesystem (Documents), then shares via Share API.
- * On web: uses the standard <a download> trick + Web Share API.
+ * On native (Capacitor): writes to Filesystem, then shares via Share API.
+ * On web: uses the standard <a download> trick.
  */
 export async function saveOrShareBlob(
   blob: Blob,
@@ -83,17 +61,14 @@ export async function saveOrShareBlob(
       // convert blob → base64
       const base64 = await blobToBase64(blob);
       const cleanName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
-
-      // Write to Documents directory (persistent, user-visible) instead of Cache
       const result = await Filesystem.writeFile({
         path: cleanName,
         data: base64,
-        directory: Directory.Documents,
+        directory: Directory.Cache,
         encoding: Encoding.Base64,
         recursive: true,
       });
-
-      // Try the native Share sheet with the file URI
+      // try to share
       try {
         const { Share } = await import("@capacitor/share");
         await Share.share({
@@ -104,41 +79,37 @@ export async function saveOrShareBlob(
         });
         return "shared";
       } catch {
-        // Share cancelled or unavailable — file is saved to Documents, user can find it
+        // share cancelled or unavailable — file is saved to cache, user can find it
         return "saved";
       }
     } catch (e) {
-      console.error("HandOff: native save failed, trying web fallback", e);
-      // Fall through to web <a download> (works in some WebView configs)
+      console.error("HandOff: native save failed, falling back to web", e);
+      // fall through to web download
     }
   }
 
-  // Web path: try Web Share API first (mobile browsers), then <a download>
+  // Web path: standard download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  // Try web share API as well (mobile browsers)
   try {
     const file = new File([blob], filename, { type: blob.type });
-    const nav = navigator as Navigator & {
-      canShare?: (d: { files: File[] }) => boolean;
-      share?: (d: { files: File[]; title?: string; text?: string }) => Promise<void>;
-    };
+    const nav = navigator as Navigator & { canShare?: (d: { files: File[] }) => boolean; share?: (d: { files: File[]; title?: string; text?: string }) => Promise<void> };
     if (nav.canShare?.({ files: [file] })) {
       await nav.share({ files: [file], title: shareTitle, text: shareText });
       return "shared";
     }
   } catch {
-    /* share cancelled or unavailable — fall through to download */
+    /* ignore — already downloaded */
   }
 
-  // Final fallback: <a download> (works in browsers + some WebViews)
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.target = "_blank";
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
   return "downloaded";
 }
 
