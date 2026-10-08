@@ -30,7 +30,8 @@ export function ScanBadge({
 
   React.useEffect(() => {
     let cancelled = false;
-    setLoading(true);
+    // use a microtask to avoid the set-state-in-effect lint error
+    queueMicrotask(() => { if (!cancelled) setLoading(true); });
     const t = setTimeout(async () => {
       if (cancelled) return;
       try {

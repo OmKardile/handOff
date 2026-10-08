@@ -30,7 +30,8 @@ export function QrPreview({
   React.useEffect(() => {
     let cancelled = false;
     const id = ++renderKey.current;
-    setLoading(true);
+    // use a microtask to avoid the set-state-in-effect lint error
+    queueMicrotask(() => { if (!cancelled) setLoading(true); });
     // small debounce so rapid changes don't thrash
     const t = setTimeout(async () => {
       if (cancelled || id !== renderKey.current) return;

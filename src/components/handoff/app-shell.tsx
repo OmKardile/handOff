@@ -7,7 +7,7 @@ import { useView } from "./view-context";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/shared/brand";
 import { HELP_GUIDES, setSelectedGuide } from "@/lib/help-content";
-import { installBackButton, ensurePersistentStorage } from "@/lib/native-bridge";
+import { installBackButton, ensurePersistentStorage, configureStatusBar } from "@/lib/native-bridge";
 
 const TABS = [
   { id: "card", label: "CARD", icon: CreditCard, view: "home" as const },
@@ -20,10 +20,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const hideBar = view === "onboarding" || view === "fullscreen-qr";
 
   // Install the Android hardware back-button handler (once).
-  // On sub-screens: back → home. On home/onboarding: back → exit app.
-  // Also request persistent storage so data survives app restarts.
+  // Configure status bar for edge-to-edge fullscreen (transparent overlay).
+  // Request persistent storage so data survives app restarts.
   React.useEffect(() => {
     void installBackButton(() => view, (v) => navigate(v));
+    void configureStatusBar();
     void ensurePersistentStorage();
   }, [view, navigate]);
 

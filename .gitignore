@@ -75,3 +75,4 @@ Thumbs.db
 
 # ===== Worklog (keep — it's project history) =====
 # worklog.md  ← committed
+.zscripts/
