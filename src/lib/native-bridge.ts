@@ -17,6 +17,23 @@ export function isNative(): boolean {
   }
 }
 
+/**
+ * Configure the native status bar to match the app theme.
+ * On Android: sets the status bar background to the bone canvas color (#F2EFE6)
+ * and uses dark icons (for the light theme). No-op on web.
+ */
+export async function configureStatusBar(): Promise<void> {
+  if (!isNative()) return;
+  try {
+    const { StatusBar, Style } = await import("@capacitor/status-bar");
+    // Light theme: bone background (#F2EFE6) + dark icons
+    await StatusBar.setBackgroundColor({ color: "#F2EFE6" });
+    await StatusBar.setStyle({ style: Style.Light });
+  } catch {
+    /* not native or plugin missing — ignore */
+  }
+}
+
 // ── Back button handling ──
 
 let backHandlerInstalled = false;
