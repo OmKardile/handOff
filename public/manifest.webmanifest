@@ -4,8 +4,8 @@
   "description": "One card. One scan. Nothing leaves your phone.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f6f3ee",
-  "theme_color": "#161619",
+  "background_color": "#F2EFE6",
+  "theme_color": "#0A0A0A",
   "orientation": "portrait",
   "icons": [
     {

@@ -1,0 +1,17 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Android adaptive icon foreground — transparent bg, icon centered -->
+  <!-- QR finders -->
+  <rect x="96" y="96" width="88" height="88" rx="14" fill="none" stroke="#C6FF00" stroke-width="14"/>
+  <rect x="120" y="120" width="40" height="40" rx="6" fill="#C6FF00"/>
+  <rect x="328" y="96" width="88" height="88" rx="14" fill="none" stroke="#F2EFE6" stroke-width="14"/>
+  <rect x="352" y="120" width="40" height="40" rx="6" fill="#F2EFE6"/>
+  <rect x="96" y="328" width="88" height="88" rx="14" fill="none" stroke="#F2EFE6" stroke-width="14"/>
+  <rect x="120" y="352" width="40" height="40" rx="6" fill="#F2EFE6"/>
+  <!-- H monogram -->
+  <rect x="220" y="200" width="22" height="112" rx="4" fill="#C6FF00"/>
+  <rect x="270" y="200" width="22" height="112" rx="4" fill="#C6FF00"/>
+  <rect x="220" y="244" width="72" height="22" rx="4" fill="#C6FF00"/>
+  <!-- hand-off arrow -->
+  <rect x="328" y="328" width="88" height="88" rx="14" fill="none" stroke="#FF3B1F" stroke-width="14"/>
+  <path d="M356 372 L388 372 M378 362 L388 372 L378 382" stroke="#FF3B1F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>
