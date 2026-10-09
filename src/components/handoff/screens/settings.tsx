@@ -35,9 +35,11 @@ export function SettingsScreen() {
 
   React.useEffect(() => {
     import("@/lib/storage").then(async ({ checkPersistence }) => {
-      setPersisted(await checkPersistence());
+      const ok = await checkPersistence();
+      setPersisted(ok);
+      setSettings((s) => ({ ...s, storagePersisted: ok }));
     });
-  }, []);
+  }, [setSettings]);
 
   return (
     <div className="mx-auto max-w-md">
@@ -86,7 +88,7 @@ export function SettingsScreen() {
                 <p className="text-[12px] text-muted-foreground">Keeps your card from being cleared</p>
               </div>
             </div>
-            <span className={cn("text-[13px] font-medium", persisted ? "text-emerald-500" : "text-amber-500")}>
+            <span className={cn("font-heavy text-[11px] uppercase tracking-wide", persisted ? "text-emerald-600" : "text-amber-600")}>
               {persisted === null ? "Checking…" : persisted ? "Protected" : "Not protected"}
             </span>
           </div>
@@ -102,7 +104,8 @@ export function SettingsScreen() {
                     setSettings((s) => ({ ...s, storagePersisted: ok }));
                     toast(ok ? "Storage protected" : "Couldn't enable — your browser may not support it");
                   }}
-                  className="no-tap w-full rounded-xl bg-foreground py-2.5 text-[14px] font-medium text-background active:scale-[0.98] transition-transform"
+                  className="press no-tap w-full border-2 border-ink bg-signal py-2.5 font-heavy text-[14px] uppercase tracking-wide text-black shadow-[2px_2px_0_0_var(--ink)]"
+                  style={{ borderRadius: 10 }}
                 >
                   Enable persistence
                 </button>

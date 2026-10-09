@@ -31,7 +31,7 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: "light",
   haptics: true,
   defaultEcc: "M",
-  storagePersisted: null,
+  storagePersisted: true,
 };
 
 export function makeEmptyCard(): Card {
@@ -136,10 +136,24 @@ export const useHandOff = create<HandOffState>((set, get) => ({
       getCustomPresets(),
       isOnboarded(),
     ]);
+    // Auto-enable persistent storage on load.
+    // On native (Capacitor): always true (app data dir is persistent).
+    // On web: requests navigator.storage.persist() — browser may grant/deny.
+    let persistence = settings?.storagePersisted ?? false;
+    try {
+      const { requestPersistence, checkPersistence } = await import("./storage");
+      // always try to request (idempotent — if already persistent, returns true)
+      await requestPersistence();
+      persistence = await checkPersistence();
+    } catch {
+      /* ignore */
+    }
     set({
       card: card ?? makeEmptyCard(),
       style: style ?? PLAIN_STYLE,
-      settings: settings ?? DEFAULT_SETTINGS,
+      settings: settings
+        ? { ...settings, storagePersisted: persistence }
+        : { ...DEFAULT_SETTINGS, storagePersisted: persistence },
       photo,
       presets,
       onboarded,

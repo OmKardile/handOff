@@ -127,8 +127,27 @@ export async function setOnboarded(v: boolean): Promise<void> {
   await set(K.onboarded, v);
 }
 
-/** Request persistent storage (web). Returns whether it was granted. */
+/** Returns true if running inside a Capacitor native shell. */
+function isNative(): boolean {
+  try {
+    const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+    return !!cap?.isNativePlatform?.();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Request persistent storage.
+ * On native (Capacitor): always returns true — the WebView's IndexedDB
+ * is already stored in the app's persistent data directory and won't be
+ * cleared by the OS. No web API request needed.
+ * On web: requests navigator.storage.persist() (browser may decline).
+ */
 export async function requestPersistence(): Promise<boolean> {
+  // Native: storage is already persistent (app data directory)
+  if (isNative()) return true;
+  // Web: ask the browser
   try {
     if (navigator.storage?.persist) {
       return await navigator.storage.persist();
@@ -139,7 +158,15 @@ export async function requestPersistence(): Promise<boolean> {
   return false;
 }
 
+/**
+ * Check if storage is persistent.
+ * On native: always true (app data directory is persistent).
+ * On web: checks navigator.storage.persisted().
+ */
 export async function checkPersistence(): Promise<boolean> {
+  // Native: storage is always persistent
+  if (isNative()) return true;
+  // Web: check the browser
   try {
     return navigator.storage?.persisted ? await navigator.storage.persisted() : false;
   } catch {
