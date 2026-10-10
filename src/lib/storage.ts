@@ -1,14 +1,14 @@
 /**
- * HandOff storage adapter — web only (IndexedDB via idb-keyval).
+ * HandOff storage — dual adapter.
+ * On native (Capacitor): uses @capacitor/preferences (SharedPreferences/NSUserDefaults).
+ * On web: uses IndexedDB via idb-keyval.
  * Privacy-first: everything stays on this device.
  * Debounced writes, .bak fallback, schema-versioned, corrupted-store recovery.
  */
 
-import { get, set, del, clear, createStore } from "idb-keyval";
+import { storageGet, storageSet, storageRemove, storageClear } from "./storage-adapter";
 import type { Card, QrStyle, Settings, PhotoData, CustomPreset } from "@/shared/types";
 import { LIMITS } from "@/shared/limits";
-
-const store = createStore("handoff-db", "handoff-store");
 
 const K = {
   card: "handoff:card",
@@ -41,11 +41,11 @@ function unwrap<T>(v: unknown): T | null {
 
 export async function getCard(): Promise<Card | null> {
   try {
-    const raw = await get(K.card);
+    const raw = await storageGet(K.card);
     const card = unwrap<Card>(raw);
     if (card) return card;
     // try backup
-    const bak = unwrap<Card>(await get(K.cardBak));
+    const bak = unwrap<Card>(await storageGet(K.cardBak));
     return bak;
   } catch {
     return null;
@@ -55,9 +55,9 @@ export async function getCard(): Promise<Card | null> {
 export async function saveCard(card: Card): Promise<void> {
   try {
     // rotate backup
-    const prev = await get(K.card);
-    if (prev) await set(K.cardBak, prev);
-    await set(K.card, wrap(card));
+    const prev = await storageGet(K.card);
+    if (prev) await storageSet(K.cardBak, prev);
+    await storageSet(K.card, wrap(card));
   } catch (e) {
     console.error("HandOff: failed to save card", e);
   }
@@ -65,66 +65,66 @@ export async function saveCard(card: Card): Promise<void> {
 
 export async function getStyle(): Promise<QrStyle | null> {
   try {
-    return unwrap<QrStyle>(await get(K.style));
+    return unwrap<QrStyle>(await storageGet(K.style));
   } catch {
     return null;
   }
 }
 
 export async function saveStyle(style: QrStyle): Promise<void> {
-  await set(K.style, wrap(style));
+  await storageSet(K.style, wrap(style));
 }
 
 export async function getSettings(): Promise<Settings | null> {
   try {
-    return unwrap<Settings>(await get(K.settings));
+    return unwrap<Settings>(await storageGet(K.settings));
   } catch {
     return null;
   }
 }
 
 export async function saveSettings(s: Settings): Promise<void> {
-  await set(K.settings, wrap(s));
+  await storageSet(K.settings, wrap(s));
 }
 
 export async function getPhoto(): Promise<PhotoData | null> {
   try {
-    return unwrap<PhotoData>(await get(K.photo));
+    return unwrap<PhotoData>(await storageGet(K.photo));
   } catch {
     return null;
   }
 }
 
 export async function savePhoto(photo: PhotoData): Promise<void> {
-  await set(K.photo, wrap(photo));
+  await storageSet(K.photo, wrap(photo));
 }
 
 export async function deletePhoto(): Promise<void> {
-  await del(K.photo);
+  await storageRemove(K.photo);
 }
 
 export async function getCustomPresets(): Promise<CustomPreset[]> {
   try {
-    return unwrap<CustomPreset[]>(await get(K.presets)) ?? [];
+    return unwrap<CustomPreset[]>(await storageGet(K.presets)) ?? [];
   } catch {
     return [];
   }
 }
 
 export async function saveCustomPresets(presets: CustomPreset[]): Promise<void> {
-  await set(K.presets, wrap(presets));
+  await storageSet(K.presets, wrap(presets));
 }
 
 export async function isOnboarded(): Promise<boolean> {
   try {
-    return (await get(K.onboarded)) === true;
+    return (await storageGet(K.onboarded)) === true;
   } catch {
     return false;
   }
 }
 
 export async function setOnboarded(v: boolean): Promise<void> {
-  await set(K.onboarded, v);
+  await storageSet(K.onboarded, v);
 }
 
 /** Returns true if running inside a Capacitor native shell. */
@@ -266,7 +266,7 @@ export async function importBackup(json: string): Promise<BackupBundle> {
 
 /** Erase all data and return to onboarding — clears IndexedDB + localStorage memories. */
 export async function eraseAll(): Promise<void> {
-  await clear();
+  await storageClear();
   // also clear the localStorage-backed memories (font/style recents/favourites)
   const MEMORY_KEYS = ["handoff:font-recents", "handoff:font-favs", "handoff:style-recents"];
   for (const key of MEMORY_KEYS) {

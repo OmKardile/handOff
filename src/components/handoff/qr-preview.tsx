@@ -13,6 +13,8 @@ interface QrPreviewProps {
   className?: string;
   /** show a subtle shimmer while rendering */
   showLoading?: boolean;
+  /** transparent background (no plate fill) — for studio preview */
+  transparentBg?: boolean;
 }
 
 export function QrPreview({
@@ -22,6 +24,7 @@ export function QrPreview({
   photoDataUrl,
   className,
   showLoading = true,
+  transparentBg = false,
 }: QrPreviewProps) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [loading, setLoading] = React.useState(true);
@@ -38,7 +41,7 @@ export function QrPreview({
       const canvas = canvasRef.current;
       if (!canvas) return;
       try {
-        await renderQrToCanvas(canvas, card, style, size, photoDataUrl);
+        await renderQrToCanvas(canvas, card, transparentBg ? { ...style, background: "transparent" } : style, size, photoDataUrl);
         if (!cancelled) setLoading(false);
       } catch (e) {
         console.error("QR render failed", e);
@@ -49,7 +52,7 @@ export function QrPreview({
       cancelled = true;
       clearTimeout(t);
     };
-  }, [card, style, size, photoDataUrl]);
+  }, [card, style, size, photoDataUrl, transparentBg]);
 
   return (
     <div

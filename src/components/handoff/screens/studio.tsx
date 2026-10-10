@@ -114,12 +114,10 @@ export function StudioScreen() {
       />
 
       <div className="px-5 pb-28">
-        {/* live preview — solid bg (backdrop-filter on a canvas parent breaks rendering) */}
-        <div className="sticky top-14 z-20 -mx-5 mb-4 border-b border-border bg-background px-5 py-3">
+        {/* live preview — transparent bg so the app field shows through */}
+        <div className="sticky top-14 z-20 -mx-5 mb-4 border-b-2 border-ink bg-card px-5 py-3">
           <div className="flex justify-center">
-            <div className="rounded-2xl border border-border bg-card p-3 shadow-sm">
-              <QrPreview card={card} style={style} size={200} photoDataUrl={photo?.full} />
-            </div>
+            <QrPreview card={card} style={style} size={200} photoDataUrl={photo?.full} transparentBg />
           </div>
           {/* scan indicator */}
           <div className="mt-2 flex items-center justify-center gap-1.5">

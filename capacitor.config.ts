@@ -10,8 +10,7 @@ const config: CapacitorConfig = {
     Filesystem: {},
     Share: {},
     StatusBar: {
-      // Draw content behind the status bar (edge-to-edge fullscreen)
-      overlaysWebView: true,
+      overlaysWebView: false,
       backgroundColor: "#F2EFE6",
       style: "LIGHT",
     },
@@ -19,7 +18,9 @@ const config: CapacitorConfig = {
       launchShowDuration: 800,
       backgroundColor: "#F2EFE6",
       showSpinner: false,
+      androidSplashResourceName: "splash",
     },
+    Preferences: {},
   },
   server: {
     androidScheme: "https",
