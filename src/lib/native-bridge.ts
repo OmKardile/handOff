@@ -38,19 +38,37 @@ export async function configureStatusBar(): Promise<void> {
 
 let backHandlerInstalled = false;
 /** Install the Android hardware back-button listener. Call once on app mount. */
-export async function installBackButton(getView: () => string, navigate: (v: "home" | "studio" | "settings") => void): Promise<void> {
+export async function installBackButton(
+  getView: () => string,
+  navigate: (v: "home" | "studio" | "settings" | "fullscreen-qr" | "editor" | "share" | "wallet" | "wallpaper" | "privacy" | "backup" | "showcase" | "help" | "help-guide") => void
+): Promise<void> {
   if (backHandlerInstalled || !isNative()) return;
   backHandlerInstalled = true;
   try {
     const { App } = await import("@capacitor/app");
     App.addListener("backButton", () => {
       const view = getView();
-      // On the home screen, minimize the app (native back = exit to home)
+      // On the home screen or onboarding, minimize the app
       if (view === "onboarding" || view === "home") {
         App.exitApp();
         return;
       }
-      // On any sub-screen, go back to home
+      // Fullscreen QR → go back to home
+      if (view === "fullscreen-qr") {
+        navigate("home");
+        return;
+      }
+      // Sub-screens under Settings → go back to settings
+      if (view === "privacy" || view === "backup" || view === "help" || view === "help-guide" || view === "showcase") {
+        navigate("settings");
+        return;
+      }
+      // Sub-screens under Home → go back to home
+      if (view === "editor" || view === "share" || view === "wallet" || view === "wallpaper") {
+        navigate("home");
+        return;
+      }
+      // Studio, Settings → go home
       navigate("home");
     });
   } catch {

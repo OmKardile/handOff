@@ -45,10 +45,30 @@ export function useHaptics() {
 }
 
 /** Fire-and-forget haptic for places that don't use hooks. */
-export function haptic(pattern: number | number[] = 10) {
+export async function haptic(pattern: number | number[] = 10) {
   try {
     const settings = useHandOff.getState().settings;
     if (!settings.haptics) return;
+
+    // Try Capacitor Haptics (native)
+    const cap = (window as unknown as { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+    if (cap?.isNativePlatform?.()) {
+      try {
+        const { Haptics, ImpactStyle } = await import("@capacitor/haptics");
+        if (typeof pattern === "number" && pattern > 30) {
+          await Haptics.impact({ style: ImpactStyle.Medium });
+        } else if (Array.isArray(pattern) && pattern.length > 1) {
+          await Haptics.impact({ style: ImpactStyle.Heavy });
+        } else {
+          await Haptics.impact({ style: ImpactStyle.Light });
+        }
+        return;
+      } catch {
+        /* fall through */
+      }
+    }
+
+    // Fallback: Web Vibration API
     navigator.vibrate?.(pattern);
   } catch {
     /* ignore */

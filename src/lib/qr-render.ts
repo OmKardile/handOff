@@ -50,19 +50,22 @@ export function styleToOptions(style: QrStyle, payload: string) {
     color: style.eyeInnerColor,
   };
 
-  const backgroundOptions: Record<string, unknown> = {
-    color: style.background,
-  };
-  if (style.backgroundGradient) {
-    backgroundOptions.gradient = {
-      type: style.backgroundGradient.type,
-      rotation: (style.backgroundGradient.rotation * Math.PI) / 180,
-      colorStops: [
-        { offset: 0, color: style.backgroundGradient.colors[0] },
-        { offset: 1, color: style.backgroundGradient.colors[1] },
-      ],
-    };
-    delete (backgroundOptions as { color?: string }).color;
+  const backgroundOptions: Record<string, unknown> = {};
+
+  // For transparent backgrounds, pass no color (qr-code-styling renders transparent)
+  if (style.background && style.background !== "transparent") {
+    backgroundOptions.color = style.background;
+    if (style.backgroundGradient) {
+      backgroundOptions.gradient = {
+        type: style.backgroundGradient.type,
+        rotation: (style.backgroundGradient.rotation * Math.PI) / 180,
+        colorStops: [
+          { offset: 0, color: style.backgroundGradient.colors[0] },
+          { offset: 1, color: style.backgroundGradient.colors[1] },
+        ],
+      };
+      delete (backgroundOptions as { color?: string }).color;
+    }
   }
 
   // image (centre element) handled separately via overlay; qr-code-styling image option
@@ -130,9 +133,12 @@ export async function renderQrToCanvas(
   ctx.save();
   roundRect(ctx, 0, 0, size, size, r);
   ctx.clip();
-  // fill the plate color inside the clipped (rounded) region
-  ctx.fillStyle = style.background;
-  ctx.fillRect(0, 0, size, size);
+
+  // Only fill the plate if background is NOT transparent
+  if (style.background && style.background !== "transparent") {
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, size, size);
+  }
 
   // Draw the QR modules. getRawData("png") returns a Blob → Image → drawImage.
   // Because we're inside a clip, the square QR image is cropped to the rounded shape.

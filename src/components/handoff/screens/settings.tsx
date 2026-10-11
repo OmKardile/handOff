@@ -71,7 +71,13 @@ export function SettingsScreen() {
             </div>
             <Switch
               checked={settings.haptics}
-              onCheckedChange={(v) => setSettings((s) => ({ ...s, haptics: v }))}
+              onCheckedChange={(v) => {
+                setSettings((s) => ({ ...s, haptics: v }));
+                // Fire a test haptic immediately so the user feels it work
+                if (v) {
+                  import("@/lib/haptics").then(({ haptic }) => haptic(30));
+                }
+              }}
               aria-label="Haptics"
             />
           </div>
