@@ -1464,3 +1464,32 @@ Stage Summary:
 - package.json + next.config.ts are Windows + npm + Capacitor compatible.
 - User can now: git clone → npm install → npm run dev (dev) OR npm run cap:sync (Capacitor build).
 - Token removed from .git/config after push.
+
+---
+Task ID: HANDOFF-STABILIZATION-PERF-DOCS
+Agent: main
+Task: Fix native persistence fallback, dynamic back button closure, eliminate translate typo, implement performance pipeline (React.memo, React.lazy, background orb throttling), and generate complete tracking documentation.
+
+Work Log:
+- Dual Storage Adapter (src/lib/storage-adapter.ts):
+  - Added resilient fallback: if native Preferences returns undefined, it checks IndexedDB and automatically migrates existing card data to native Preferences.
+  - Added dual mirroring on storageSet so native and web stores stay synchronized.
+- Native Bridge (src/lib/native-bridge.ts):
+  - Fixed hardware back-button listener stale closure: dynamic module-level pointers track currentGetView and currentNavigate, allowing seamless multi-screen navigation without app quitting.
+  - Fixed native image exports to write to Directory.Documents first with Directory.Cache fallback.
+- Performance Pipeline:
+  - Wrapped QrPreview with React.memo to prevent unnecessary canvas re-renders when unrelated store fields change.
+  - Converted heavy modal and auxiliary screens (WallpaperScreen, ShareSheet, FullscreenQr, EditorScreen, BackupScreen, WalletScreen, ShowcaseScreen, HelpScreen) to React.lazy with a brutalist Suspense loader.
+  - Added document visibility observer and fullscreen view check to pause heavy CSS blur animations for background orbs when inactive.
+- Bug Fixes:
+  - Eliminated legacy 'tranhandoff' typo across codebase (replaced with 'translate' in editor, studio, help, privacy, and UI components).
+  - Fixed set-state-in-effect lint errors in editor.tsx, help.tsx, carousel.tsx, and use-mobile.ts using queueMicrotask and lazy state initializers.
+  - Fixed scripts/check-privacy.ts and scripts/docs-check.ts for Node.js runtime compatibility.
+  - Created scripts/dev.mjs with host translation for cross-platform dev server execution.
+  - Enforced cross-env NODE_ENV=production in Next.js build scripts.
+- Documentation:
+  - Updated CHANGELOG.md with comprehensive v1.6.9 entry.
+  - Rewrote README.md for HandOff v1.6.9, Windows/npm setup, and DEAD DROP aesthetic.
+  - Created technical-documentation.md, business-documentation.md, decisions.md, help.md, and compact.md.
+  - Verified npm run verify:all passes with 0 errors.
+

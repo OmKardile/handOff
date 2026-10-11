@@ -6,25 +6,59 @@ import { ViewProvider, useView } from "@/components/handoff/view-context";
 import { AppShell } from "@/components/handoff/app-shell";
 import { Onboarding } from "@/components/handoff/screens/onboarding";
 import { HomeScreen } from "@/components/handoff/screens/home";
-import { EditorScreen } from "@/components/handoff/screens/editor";
-import { FullscreenQr } from "@/components/handoff/screens/fullscreen-qr";
 import { StudioScreen } from "@/components/handoff/screens/studio";
 import { SettingsScreen } from "@/components/handoff/screens/settings";
 import { PrivacyScreen } from "@/components/handoff/screens/privacy";
-import { ShareSheet } from "@/components/handoff/screens/share-sheet";
-import { BackupScreen } from "@/components/handoff/screens/backup";
-import { WalletScreen } from "@/components/handoff/screens/wallet";
-import { WallpaperScreen } from "@/components/handoff/screens/wallpaper";
-import { ShowcaseScreen } from "@/components/handoff/screens/showcase";
-import { HelpScreen, HelpGuideScreen } from "@/components/handoff/screens/help";
 import { ViewTransition } from "@/components/handoff/motion";
+
+// Lazy-load heavier screens to optimize bundle size and startup speed
+const EditorScreen = React.lazy(() =>
+  import("@/components/handoff/screens/editor").then((m) => ({ default: m.EditorScreen }))
+);
+const FullscreenQr = React.lazy(() =>
+  import("@/components/handoff/screens/fullscreen-qr").then((m) => ({ default: m.FullscreenQr }))
+);
+const ShareSheet = React.lazy(() =>
+  import("@/components/handoff/screens/share-sheet").then((m) => ({ default: m.ShareSheet }))
+);
+const WalletScreen = React.lazy(() =>
+  import("@/components/handoff/screens/wallet").then((m) => ({ default: m.WalletScreen }))
+);
+const WallpaperScreen = React.lazy(() =>
+  import("@/components/handoff/screens/wallpaper").then((m) => ({ default: m.WallpaperScreen }))
+);
+const BackupScreen = React.lazy(() =>
+  import("@/components/handoff/screens/backup").then((m) => ({ default: m.BackupScreen }))
+);
+const ShowcaseScreen = React.lazy(() =>
+  import("@/components/handoff/screens/showcase").then((m) => ({ default: m.ShowcaseScreen }))
+);
+const HelpScreen = React.lazy(() =>
+  import("@/components/handoff/screens/help").then((m) => ({ default: m.HelpScreen }))
+);
+const HelpGuideScreen = React.lazy(() =>
+  import("@/components/handoff/screens/help").then((m) => ({ default: m.HelpGuideScreen }))
+);
+
+function ScreenLoader() {
+  return (
+    <div className="flex min-h-[50vh] flex-col items-center justify-center p-8">
+      <div className="brut flex items-center gap-3 px-4 py-2 text-xs font-mono tracking-widest uppercase">
+        <span className="h-2 w-2 rounded-full bg-signal animate-ping" />
+        LOADING…
+      </div>
+    </div>
+  );
+}
 
 function Screens() {
   const { view } = useView();
   return (
-    <ViewTransition viewKey={view}>
-      {renderScreen(view)}
-    </ViewTransition>
+    <React.Suspense fallback={<ScreenLoader />}>
+      <ViewTransition viewKey={view}>
+        {renderScreen(view)}
+      </ViewTransition>
+    </React.Suspense>
   );
 }
 

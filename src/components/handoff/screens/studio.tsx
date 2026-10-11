@@ -275,7 +275,7 @@ export function StudioScreen() {
                       role="switch"
                       aria-checked={style.centerRing}
                     >
-                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.centerRing ? "tranhandoff-x-[18px]" : "tranhandoff-x-0.5")} />
+                      <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.centerRing ? "translate-x-[18px]" : "translate-x-0.5")} />
                     </button>
                   </div>
                 </ControlGroup>
@@ -344,7 +344,7 @@ export function StudioScreen() {
                   role="switch"
                   aria-checked={style.captionEnabled}
                 >
-                  <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.captionEnabled ? "tranhandoff-x-[18px]" : "tranhandoff-x-0.5")} />
+                  <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", style.captionEnabled ? "translate-x-[18px]" : "translate-x-0.5")} />
                 </button>
               </div>
             </ControlGroup>

@@ -94,7 +94,7 @@ export function PrivacyScreen() {
           <ul className="space-y-1.5">
             {PRIVACY_PROMISE.map((p) => (
               <li key={p} className="flex items-baseline gap-2 text-[13px]">
-                <span className="h-1 w-1 flex-shrink-0 tranhandoff-y-[-2px] rounded-full bg-clay" />
+                <span className="h-1 w-1 flex-shrink-0 translate-y-[-2px] rounded-full bg-clay" />
                 {p}
               </li>
             ))}

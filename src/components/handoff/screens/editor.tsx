@@ -298,7 +298,9 @@ function TextField({
   normalize?: (v: string) => string;
 }) {
   const [local, setLocal] = React.useState(value);
-  React.useEffect(() => setLocal(value), [value]);
+  React.useEffect(() => {
+    queueMicrotask(() => setLocal(value));
+  }, [value]);
   return (
     <label className="block">
       <span className="mb-1 block text-[12px] font-medium text-muted-foreground">{label}</span>
@@ -343,7 +345,7 @@ function ToggleRow({
         <span
           className={cn(
             "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform",
-            on ? "tranhandoff-x-[18px]" : "tranhandoff-x-0.5"
+            on ? "translate-x-[18px]" : "translate-x-0.5"
           )}
         />
       </button>

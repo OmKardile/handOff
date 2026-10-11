@@ -44,6 +44,7 @@ prompt
 local-*
 .claude
 .z-ai-config
+metadata.json
 
 # ===== Vercel =====
 .vercel

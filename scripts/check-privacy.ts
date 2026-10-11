@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * HandOff check:privacy — privacy enforcement gate.
  * Fails when app code contains network calls (fetch/XHR/WebSocket/sendBeacon/EventSource)
@@ -6,8 +6,10 @@
  */
 import { readFileSync, readdirSync, statSync } from "fs";
 import { join, resolve, basename } from "path";
+import { fileURLToPath } from "url";
 
-const ROOT = resolve(import.meta.dir, "..");
+const DIRNAME = typeof import.meta.dirname !== "undefined" ? import.meta.dirname : fileURLToPath(new URL(".", import.meta.url));
+const ROOT = resolve(DIRNAME, "..");
 let failures: string[] = [];
 
 // Patterns that indicate network access in app code

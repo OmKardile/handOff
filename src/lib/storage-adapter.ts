@@ -100,21 +100,45 @@ async function webClear(): Promise<void> {
 
 // ── Unified API ──
 export async function storageGet(key: string): Promise<unknown> {
-  if (isNative()) return nativeGet(key);
+  if (isNative()) {
+    const nativeVal = await nativeGet(key);
+    if (nativeVal !== undefined) return nativeVal;
+    // Fallback: check IndexedDB (e.g. from previous web session or migration)
+    const webVal = await webGet(key);
+    if (webVal !== undefined) {
+      // Auto-migrate to native Preferences for future persistent loads
+      void nativeSet(key, webVal);
+      return webVal;
+    }
+    return undefined;
+  }
   return webGet(key);
 }
 
 export async function storageSet(key: string, value: unknown): Promise<void> {
-  if (isNative()) return nativeSet(key, value);
+  if (isNative()) {
+    await nativeSet(key, value);
+    // Mirror to IndexedDB as secondary backup
+    void webSet(key, value);
+    return;
+  }
   return webSet(key, value);
 }
 
 export async function storageRemove(key: string): Promise<void> {
-  if (isNative()) return nativeRemove(key);
+  if (isNative()) {
+    await nativeRemove(key);
+    void webRemove(key);
+    return;
+  }
   return webRemove(key);
 }
 
 export async function storageClear(): Promise<void> {
-  if (isNative()) return nativeClear();
+  if (isNative()) {
+    await nativeClear();
+    void webClear();
+    return;
+  }
   return webClear();
 }

@@ -83,6 +83,11 @@ export const metadata: Metadata = {
     siteName: "HandOff",
     type: "website",
   },
+  other: {
+    "Content-Security-Policy":
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; form-action 'none'; base-uri 'self'; object-src 'none';",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+  },
 };
 
 export const viewport: Viewport = {
@@ -103,16 +108,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Content Security Policy: pure offline, zero network.
-            Enforces the privacy promise at the browser level. */}
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; form-action 'none'; base-uri 'self'; object-src 'none';"
-        />
-        {/* iOS status bar: translucent so the glass header refracts through it */}
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-      </head>
       <body
         className={`${anton.variable} ${archivoBlack.variable} ${spaceGrotesk.variable} ${fraunces.variable} ${instrumentSans.variable} ${jetbrainsMono.variable} font-sans antialiased select-none`}
       >

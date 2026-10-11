@@ -75,7 +75,7 @@ export function SettingsScreen() {
                 setSettings((s) => ({ ...s, haptics: v }));
                 // Fire a test haptic immediately so the user feels it work
                 if (v) {
-                  import("@/lib/haptics").then(({ haptic }) => haptic(30));
+                  import("@/lib/haptics").then(({ haptic }) => haptic(30, true));
                 }
               }}
               aria-label="Haptics"

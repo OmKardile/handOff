@@ -36,18 +36,27 @@ export async function configureStatusBar(): Promise<void> {
 
 // ── Back button handling ──
 
+type AppView = "home" | "studio" | "settings" | "fullscreen-qr" | "editor" | "share" | "wallet" | "wallpaper" | "privacy" | "backup" | "showcase" | "help" | "help-guide";
+
+let currentGetView: (() => string) | null = null;
+let currentNavigate: ((v: AppView) => void) | null = null;
 let backHandlerInstalled = false;
+
 /** Install the Android hardware back-button listener. Call once on app mount. */
 export async function installBackButton(
   getView: () => string,
-  navigate: (v: "home" | "studio" | "settings" | "fullscreen-qr" | "editor" | "share" | "wallet" | "wallpaper" | "privacy" | "backup" | "showcase" | "help" | "help-guide") => void
+  navigate: (v: AppView) => void
 ): Promise<void> {
+  currentGetView = getView;
+  currentNavigate = navigate;
+
   if (backHandlerInstalled || !isNative()) return;
   backHandlerInstalled = true;
   try {
     const { App } = await import("@capacitor/app");
     App.addListener("backButton", () => {
-      const view = getView();
+      if (!currentGetView || !currentNavigate) return;
+      const view = currentGetView();
       // On the home screen or onboarding, minimize the app
       if (view === "onboarding" || view === "home") {
         App.exitApp();
@@ -55,21 +64,21 @@ export async function installBackButton(
       }
       // Fullscreen QR → go back to home
       if (view === "fullscreen-qr") {
-        navigate("home");
+        currentNavigate("home");
         return;
       }
       // Sub-screens under Settings → go back to settings
       if (view === "privacy" || view === "backup" || view === "help" || view === "help-guide" || view === "showcase") {
-        navigate("settings");
+        currentNavigate("settings");
         return;
       }
       // Sub-screens under Home → go back to home
       if (view === "editor" || view === "share" || view === "wallet" || view === "wallpaper") {
-        navigate("home");
+        currentNavigate("home");
         return;
       }
       // Studio, Settings → go home
-      navigate("home");
+      currentNavigate("home");
     });
   } catch {
     /* not native — ignore */
@@ -80,7 +89,7 @@ export async function installBackButton(
 
 /**
  * Save a blob to the device + optionally share it.
- * On native (Capacitor): writes to Filesystem, then shares via Share API.
+ * On native (Capacitor): writes to Filesystem Documents, then shares via Share API.
  * On web: uses the standard <a download> trick.
  */
 export async function saveOrShareBlob(
@@ -96,25 +105,41 @@ export async function saveOrShareBlob(
       // convert blob → base64
       const base64 = await blobToBase64(blob);
       const cleanName = filename.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const result = await Filesystem.writeFile({
-        path: cleanName,
-        data: base64,
-        directory: Directory.Cache,
-        encoding: Encoding.Base64,
-        recursive: true,
-      });
+      
+      let fileUri: string | undefined;
+      try {
+        const result = await Filesystem.writeFile({
+          path: cleanName,
+          data: base64,
+          directory: Directory.Documents,
+          encoding: Encoding.Base64,
+          recursive: true,
+        });
+        fileUri = result.uri;
+      } catch {
+        // Fallback to Cache directory if Documents has permission or path constraint
+        const result = await Filesystem.writeFile({
+          path: cleanName,
+          data: base64,
+          directory: Directory.Cache,
+          encoding: Encoding.Base64,
+          recursive: true,
+        });
+        fileUri = result.uri;
+      }
+
       // try to share
       try {
         const { Share } = await import("@capacitor/share");
         await Share.share({
           title: shareTitle,
           text: shareText,
-          url: result.uri,
+          url: fileUri,
           dialogTitle: shareTitle,
         });
         return "shared";
       } catch {
-        // share cancelled or unavailable — file is saved to cache, user can find it
+        // share cancelled or unavailable — file is saved, user can find it
         return "saved";
       }
     } catch (e) {

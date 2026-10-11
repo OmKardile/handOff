@@ -28,29 +28,42 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     void ensurePersistentStorage();
   }, [view, navigate]);
 
+  const [isVisible, setIsVisible] = React.useState(true);
+
+  React.useEffect(() => {
+    const handleVisibility = () => {
+      setIsVisible(document.visibilityState === "visible");
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
   return (
     <div className="relative flex h-[100dvh] flex-col overflow-hidden field-grain">
       {/* ===== DEAD DROP background field =====
           Layer 1: full graph-paper grid (field-grid)
           Layer 2: drifting "interference" color blocks (lime + cobalt) that hue-cycle
           Layer 3: scanlines (CRT)
-          Layer 4: giant rotated watermark word
           All pointer-events-none, all behind content. */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
         {/* base canvas wash */}
         <div className="absolute inset-0 bg-background" />
         {/* field grid */}
         <div className="absolute inset-0 field-grid opacity-70" />
-        {/* interference blocks — drift + hue cycle (nested wrappers) */}
-        <div className="absolute -top-[15%] -right-[10%] h-[60vh] w-[60vh] animate-[hueA_50s_linear_infinite]" style={{ animationDelay: "-10s" }}>
-          <div className="h-full w-full opacity-[0.18] blur-[70px] animate-[driftA_24s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #C6FF00, transparent 60%)" }} />
-        </div>
-        <div className="absolute top-[40%] -left-[15%] h-[55vh] w-[55vh] animate-[hueB_64s_linear_infinite]" style={{ animationDelay: "-30s" }}>
-          <div className="h-full w-full opacity-[0.14] blur-[75px] animate-[driftB_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #1B2BE0, transparent 60%)" }} />
-        </div>
-        <div className="absolute bottom-[-12%] right-[10%] h-[45vh] w-[45vh] animate-[hueC_72s_linear_infinite]" style={{ animationDelay: "-50s" }}>
-          <div className="h-full w-full opacity-[0.12] blur-[80px] animate-[driftC_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #FF3B1F, transparent 60%)" }} />
-        </div>
+        {/* interference blocks — drift + hue cycle (paused when hidden or on fullscreen-qr) */}
+        {isVisible && !hideBar && (
+          <>
+            <div className="absolute -top-[15%] -right-[10%] h-[60vh] w-[60vh] animate-[hueA_50s_linear_infinite]" style={{ animationDelay: "-10s" }}>
+              <div className="h-full w-full opacity-[0.18] blur-[70px] animate-[driftA_24s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #C6FF00, transparent 60%)" }} />
+            </div>
+            <div className="absolute top-[40%] -left-[15%] h-[55vh] w-[55vh] animate-[hueB_64s_linear_infinite]" style={{ animationDelay: "-30s" }}>
+              <div className="h-full w-full opacity-[0.14] blur-[75px] animate-[driftB_30s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #1B2BE0, transparent 60%)" }} />
+            </div>
+            <div className="absolute bottom-[-12%] right-[10%] h-[45vh] w-[45vh] animate-[hueC_72s_linear_infinite]" style={{ animationDelay: "-50s" }}>
+              <div className="h-full w-full opacity-[0.12] blur-[80px] animate-[driftC_28s_ease-in-out_infinite]" style={{ background: "radial-gradient(circle, #FF3B1F, transparent 60%)" }} />
+            </div>
+          </>
+        )}
         {/* scanlines */}
         <div className="absolute inset-0 scanlines opacity-60" />
       </div>

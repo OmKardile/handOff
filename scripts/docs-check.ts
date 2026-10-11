@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * HandOff docs:check — documentation quality gate.
  * Fails when:
@@ -10,8 +10,10 @@
  */
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join, dirname, resolve, basename } from "path";
+import { fileURLToPath } from "url";
 
-const ROOT = resolve(import.meta.dir, "..");
+const DIRNAME = typeof import.meta.dirname !== "undefined" ? import.meta.dirname : fileURLToPath(new URL(".", import.meta.url));
+const ROOT = resolve(DIRNAME, "..");
 let failures: string[] = [];
 let warnings: string[] = [];
 
